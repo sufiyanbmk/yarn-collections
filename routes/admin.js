@@ -294,9 +294,7 @@ router.post('/day-sales-report',async (req,res)=>{
   console.log(date);
   var products = await  adminHelper.viewProduct()
   for (let product of products) {
-    // console.log(product)
     let dayReport = await adminHelper.daySalesReport(product._id, date)
-    // console.log(dayReport);
   }
   
   res.render('adminSide/daySalesReport')
