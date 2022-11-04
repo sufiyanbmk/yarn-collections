@@ -1,0 +1,60 @@
+{{>adminlinks}}
+
+{{>adminSidebar}}
+<main class="main-wrap">
+    {{>adminHeader}}
+    <section class="content-main">
+        <div class="row">
+            <div class="col-9">
+                <div class="content-header">
+                    <h2 class="content-title">Add New Banner</h2>
+
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>Basic</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="/admin/add-banner" method='post' enctype="multipart/form-data">
+                            <div class="mb-4">
+                                <label for="product_name" class="form-label">Banner Title</label>
+                                <input type="text" placeholder="Type here" name="name" class="form-control"
+                                    id="product_name" required>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-lg-4">
+                                    <div class="mb-4">
+                                        <label class="form-label">Expire Date</label>
+                                        <div class="row gx-2">
+                                            <input placeholder="" type="text" name="date" class="form-control" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header ">
+                                            <h4>Image</h4>
+                                        </div>
+                                        <div class="card-body">
+                                            <div class="input-upload">
+                                                <img src="assets/imgs/theme/upload.svg" alt="">
+                                                <input class="form-control" type="file" onchange="viewImage(event) "
+                                                    name="banner-image" multiple required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-md rounded font-sm hover-up">Add</button>
+                        </form>
+                    </div>
+
+                </div>
+                <!-- card end// -->
+
+            </div>
+        </div>
+    </section>
+
+    {{>adminjs}}
