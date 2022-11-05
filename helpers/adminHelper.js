@@ -307,7 +307,30 @@ module.exports = {
               orderDate: fmtDate,
             },
           },
-          { $count: "count" },
+          {
+            $unwind: '$products'
+          },
+          {
+            $project:{
+              totalAmount:1,
+              products: "$products.product",
+              orderDate : 1,
+
+            }
+
+          },
+          {
+            $lookup:{
+              from : collection.PRODUCT_COLLECTION,
+              localField : 'products',
+              foriegnField : "_id",
+              as : 'productSold'
+            }
+          },
+          // { 
+          //   $count: "count" 
+          // },
+        
         ])
         .toArray();
       console.log(productInfo);
