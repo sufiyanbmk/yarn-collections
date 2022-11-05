@@ -307,34 +307,73 @@ module.exports = {
               orderDate: fmtDate,
             },
           },
+
           {
-            $unwind: '$products'
+            $unwind: "$products",
+          },
+          {
+            $project: {
+              totalAmount: 1,
+              products: "$products.product",
+              quantity: "$products.quantity",
+              orderDate: 1,
+            },
+          },
+          {
+            $lookup: {
+              from: collection.PRODUCT_COLLECTION,
+              localField: "products",
+              foreignField: "_id",
+              as: "productSold",
+            },
+          },
+          {
+            $project: {
+              totalAmount: 1,
+              orderDate: 1,
+              quantity: 1,
+              productSold: { $arrayElemAt: ["$productSold", 0] },
+            },
+          },
+          // {
+          //   $addFields:{
+          //     sold:{$sum:'total'}
+          //   }
+          // },
+
+          {
+            $project: {
+              totalAmount: 1,
+              orderDate: 1,
+              productname: "$productSold.name",
+              quantity: 1,
+            },
+          },
+          {
+            $group: {
+              _id: {
+                totalAmount: "$totalAmount",
+                orderDate: "$orderDate",
+                productname: "$productname",
+                quantity: "$quantity",
+              },
+            count: { $count: {} },
+            },
           },
           {
             $project:{
-              totalAmount:1,
-              products: "$products.product",
-              orderDate : 1,
-
-            }
-
-          },
-          {
-            $lookup:{
-              from : collection.PRODUCT_COLLECTION,
-              localField : 'products',
-              foriegnField : "_id",
-              as : 'productSold'
+              prdoductname:'$_id.productname',
+              orderDate:'$_id.orderDate',
+              totalAmount:'$_id.totalAmount',
+              quantity:"$_id.quantity",
+              count:1,
+              totalSold:{$sum:["$quantity","$count"]},
+              _id:0
             }
           },
-          // { 
-          //   $count: "count" 
-          // },
-        
-        ])
+         ])
         .toArray();
-      console.log(productInfo);
-      resolve(productInfo);
+        resolve(productInfo);
     });
   },
 };
