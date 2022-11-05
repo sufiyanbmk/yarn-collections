@@ -291,13 +291,18 @@ router.get('/sales-report',(req,res)=>{
 //daily report
 router.post('/day-sales-report',async (req,res)=>{
   let date = req.body.day
-  console.log(date);
   var products = await  adminHelper.viewProduct()
+  let td=[]
   for (let product of products) {
-    let dayReport = await adminHelper.daySalesReport(product._id, date)
+    var dayReport = await adminHelper.daySalesReport(product._id, date)
+
+    td.push(dayReport)
   }
-  
-  res.render('adminSide/daySalesReport')
+  // console.log(td);
+  // console.log(td[1]);
+  // dailyrepoer.push(dayReport)
+  res.render('adminSide/daySalesReport',{td})
+
 })
 
 //coupen section
