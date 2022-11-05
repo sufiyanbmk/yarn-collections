@@ -376,4 +376,36 @@ module.exports = {
         resolve(productInfo);
     });
   },
+
+  //month sales report
+  monthSalesReport :async (proId,date)=>{
+    let monthReport =await db.get().collection(collection.ORDER_COLLECTION)
+    .aggregate([
+      {
+        $match: {
+          products: {
+            $elemMatch: {
+              product: proId,
+              paymentStatus: { $ne: "Order Cancelled" },
+            },
+          },
+        },
+      },
+      {
+        $unwind:'$products'
+      },
+      {
+        $project:{
+          totalAmount: 1,
+          products: "$products.product",
+          quantity: "$products.quantity",
+        
+          orderDate: { $dateString: { format: "%Y-%m", date: "$orderDate" } },
+          // newdate: { $dateToString: { format: "%Y-%m-%d", date: "$orderDate" } },
+        }
+      }
+      
+    ]).toArray()
+    console.log(monthReport)
+  }
 };
