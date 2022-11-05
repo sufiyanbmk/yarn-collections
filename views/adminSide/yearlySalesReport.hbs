@@ -1,0 +1,98 @@
+{{>adminlinks}}
+
+{{>adminSidebar}}
+ <main class="main-wrap">
+    {{>adminHeader}}
+    <div class="row tm-content-row tm-mt-big">
+        <div class="col-xl-12 col-lg-12 tm-md-12 tm-sm-12 tm-col">
+            <div class="bg-white tm-block h-100">
+                <div class="row">
+                    <div class="col-md-8 col-sm-12">
+                        <h2 class="tm-block-title d-inline-block">Products</h2>
+
+                    </div>
+                   
+                </div>
+         
+
+                <div class="tm-table-mt tm-table-actions-row">
+                    {{!-- <div class="tm-table-actions-col-left">
+                        <button class="btn btn-danger">Delete Selected Items</button>
+                    </div> --}}
+                    {{!-- <div class="tm-table-actions-col-right offset-9">
+                        <span class="tm-pagination-label">Page</span>
+                        <nav aria-label="Page navigation" class="d-inline-block">
+                            <ul class="pagination tm-pagination">
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item">
+                                    <span class="tm-dots d-block">...</span>
+                                </li>
+                                <li class="page-item"><a class="page-link" href="#">13</a></li>
+                                <li class="page-item"><a class="page-link" href="#">14</a></li>
+                            </ul>
+                        </nav>
+                    </div> --}}
+                </div>
+            </div>
+        </div>
+
+         <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover" id="order-table">
+                            <thead>
+                                <tr>
+                                    <th>no</th>
+                                    <th>Order #ID</th>
+                                    <th scope="col">Name</th>
+                                    <th scope="col">Email</th>
+                                    <th scope="col">Total</th>
+                                    <th scope="col">Status</th>
+                                    <th scope="col">Date</th>
+                                     <th scope="col">Payment</th>
+                                    <th scope="col" class="text-end"> Action </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                 {{#each year}}
+                                 {{#each []}}
+                                <tr>
+                                    <td>{{inc @ index}}</td>
+                                    <td>{{this.count}}</td>
+                                    <td><b>{{this.address.name}}</b></td>
+                                    <td>{{this.address.phone}}</td>
+                                    <td>{{this.totalAmount}}</td>
+                                    <td><span class="badge rounded-pill alert-warning">{{this.status}}</span></td>
+                                    <td>{{this.orderDate}}</td>
+                                     <td>{{this.paymentMethod}}</td>
+                                    <td class="text-end">
+                                        <a href="/admin/order-details/{{this._id}}" class="btn btn-md rounded font-sm">Detail</a>
+                                        <div class="dropdown">
+                                            <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" href="#">shipped</a>
+                                                <a class="dropdown-item" href="/admin/delivered/{{this._id}}">Delivered</a>
+                                                <a class="dropdown-item text-danger" href="/admin/cancel-order/{{this._id}}">Cancel</a>
+                                            </div>
+                                        </div> <!-- dropdown //end -->
+                                    </td>
+                                </tr>
+                                {{/each}}
+                                {{/each}}
+                            </tbody>
+                        </table>
+                    </div> <!-- table-responsive //end -->
+                </div>
+</main>
+<script>
+$(document).ready( function () {
+    $('#order-table').DataTable({
+       dom: 'Bfrtip',
+       buttons: [
+             'excel', 'pdf', 'print'
+        ]
+    });
+} );
+</script>
+{{>adminjs}}
