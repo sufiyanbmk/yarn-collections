@@ -304,9 +304,60 @@ router.post('/day-sales-report',async (req,res)=>{
   res.render('adminSide/daySalesReport',{td})
 
 })
+//monthly report sales
+router.post('/monthly-sale',async (req,res)=>{
+  let date = req.body.month
+  let month = []
+  let products =  await adminHelper.viewProduct()
+  for(let product of products){
+    let monthReport = await adminHelper.monthSalesReport(product._id,date)
+    month.push(monthReport)
+  }
+  res.render('adminSide/monthlySalesReport',{month})
+})
+
+//yearly sale report
+router.post('/year-sale',async (req,res)=>{
+  let date = req.body.year;
+  let year =[]
+  let products = await adminHelper.viewProduct()
+  for(let product of products){
+    let yearReport = await adminHelper.yearSalesReport(product._id,date)
+    year.push(yearReport)
+  }
+  res.render('adminSide/yearlySalesReport',{year})
+})
 
 //coupen section
-router.get('/coupen',(req,res)=>{
-  res.render('adminSide/coupen')
+router.get('/coupon', async(req,res)=>{
+  let couponCollection = await adminHelper.copuonView()
+  res.render('adminSide/coupen',{couponCollection})
+})
+
+//adding coupon
+router.get('/add-coupon',(req,res)=>{
+  res.render('adminSide/addCoupon')
+})
+//add coupon post
+router.post('/post-coupon',(req,res)=>{
+  adminHelper.addCoupon(req.body).then((response)=>{
+    res.redirect('/add-coupon')
+  })
+
+})
+
+//----------edit coupon----------------//
+router.get('/edit-coupon/:id',async (req,res)=>{
+  let couponId = req.params.id
+ let singleCoupon = await adminHelper.editCoupon(couponId)
+ console.log(singleCoupon)
+ res.render('adminSide/editCoupon',{singleCoupon})
+})
+
+router.post('/update-coupon/:id',(req,res)=>{
+  let couponId = req.params.id;
+  adminHelper.updateCoupon(req.body,couponId).then(()=>{
+    res.redirect('/admin/coupon')
+  })
 })
 module.exports = router;
