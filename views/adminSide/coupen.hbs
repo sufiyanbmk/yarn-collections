@@ -3,7 +3,31 @@
 {{>adminSidebar}}
  <main class="main-wrap">
     {{>adminHeader}}
-    <p>hiiiii</p>
-
+    <div class="offset-10 m-5">
+    <a class="btn btn-warning" href="/admin/add-coupon">Add coupun</a>
+    </div>
+      {{#each couponCollection}}
+       <div class="card-body">
+                    <div class="row gx-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 row-cols-xxl-5">
+                        <div class="col">
+                            <div class="card card-product-grid">
+                                
+                                <div class="info-wrap">
+                                    <a href="#" class="title text-truncate">Just another product name</a>
+                                    <div class="price mb-2">$179.00</div> <!-- price.// --> 
+                                    <a href="/admin/edit-coupon/{{this._id}}" class="btn btn-sm font-sm rounded btn-brand">
+                                        <i class="material-icons md-edit"></i> Edit
+                                    </a>
+                                    <a href="#" class="btn btn-sm font-sm btn-light rounded">
+                                        <i class="material-icons md-delete_forever"></i> Delete
+                                    </a>
+                                </div>
+                            </div> <!-- card-product  end// -->
+                        </div> <!-- col.// -->
+                         </div> <!-- row.// -->
+                </div>
+    
+      {{/each}}
+ </main>
 {{>adminjs}}
 

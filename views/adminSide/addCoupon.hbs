@@ -1,0 +1,83 @@
+{{>adminlinks}}
+
+{{>adminSidebar}}
+ <main class="main-wrap">
+    {{>adminHeader}}
+    
+    <section class="content-main">
+            <div class="row">
+                <div class="col-9">
+                    <div class="content-header">
+                        <h2 class="content-title">Add New Coupon</h2>
+                      
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4>Basic</h4>
+                        </div>
+                        <div class="card-body">
+                            <form action="/admin/post-coupon" method="post">
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Coupon Code</label>
+                                    <input type="text" name="couponCode" placeholder="Type here" class="form-control" id="product_name">
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Description</label>
+                                    <input placeholder="Type here" name="description" class="form-control" rows="4">
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <div class="mb-4">
+                                            <label class="form-label">Coupon value</label>
+                                            <div class="row gx-2">
+                                                <input placeholder="$" name="value" type="text" class="form-control">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <div class="mb-4">
+                                            <label class="form-label">Expire date</label>
+                                            <input  type="date" name="date" class="form-control">
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-4">
+                                        <label class="form-label">Coupon Type</label>
+                                        <select name="type" class="form-select">
+                                            <option> Percentage</option>
+                                            <option> Amount</option>
+                                        </select>
+                                    </div>
+                                </div>
+                           
+                                <label class="form-check mb-4">
+                                    <input class="form-check-input" type="checkbox" value="">
+                                    <span class="form-check-label"> Make a template </span>
+                                </label>
+                            
+                        </div>
+                    </div> <!-- card end// -->
+                 
+                </div>
+                <div class="col-lg-3">
+                    <div class="card mb-4">
+                        <div class="card-header">
+                            <h4>Media</h4>
+                        </div>
+                        <div class="card-body">
+                            <div class="input-upload">
+                                <img src="assets/imgs/theme/upload.svg" alt="">
+                                <input class="form-control" name="image" type="file">
+                            </div>
+                        </div>
+                    </div> <!-- card end// -->
+                </div>
+                  <div>
+                          <button type="submit" class="btn btn-md rounded font-sm hover-up">Add Coupon</button>
+                        </div>
+                  </form>
+            </div>
+        </section> <!-- content-main end// -->
+ </main>
+{{>adminjs}}
