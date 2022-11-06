@@ -357,55 +357,244 @@ module.exports = {
                 productname: "$productname",
                 quantity: "$quantity",
               },
-            count: { $count: {} },
+              count: { $count: {} },
             },
           },
           {
-            $project:{
-              prdoductname:'$_id.productname',
-              orderDate:'$_id.orderDate',
-              totalAmount:'$_id.totalAmount',
-              quantity:"$_id.quantity",
-              count:1,
-              totalSold:{$sum:["$quantity","$count"]},
-              _id:0
-            }
+            $project: {
+              prdoductname: "$_id.productname",
+              orderDate: "$_id.orderDate",
+              totalAmount: "$_id.totalAmount",
+              quantity: "$_id.quantity",
+              count: 1,
+              totalSold: { $sum: ["$quantity", "$count"] },
+              _id: 0,
+            },
           },
-         ])
+        ])
         .toArray();
-        resolve(productInfo);
+      resolve(productInfo);
     });
   },
 
   //month sales report
-  monthSalesReport :async (proId,date)=>{
-    let monthReport =await db.get().collection(collection.ORDER_COLLECTION)
-    .aggregate([
-      {
-        $match: {
-          products: {
-            $elemMatch: {
-              product: proId,
-              paymentStatus: { $ne: "Order Cancelled" },
+  monthSalesReport: (proId, date) => {
+    return new Promise(async (resolve,reject)=>{
+    let monthReport = await db
+      .get()
+      .collection(collection.ORDER_COLLECTION)
+      .aggregate([
+        {
+          $match: {
+            products: {
+              $elemMatch: {
+                product: proId,
+                paymentStatus: { $ne: "Order Cancelled" },
+              },
             },
           },
         },
-      },
-      {
-        $unwind:'$products'
-      },
-      {
-        $project:{
-          totalAmount: 1,
-          products: "$products.product",
-          quantity: "$products.quantity",
-        
-          orderDate: { $dateString: { format: "%Y-%m", date: "$orderDate" } },
-          // newdate: { $dateToString: { format: "%Y-%m-%d", date: "$orderDate" } },
-        }
+        {
+          $unwind: "$products",
+        },
+        {
+          $project: {
+            totalAmount: 1,
+            products: "$products.product",
+            quantity: "$products.quantity",
+            month: 1,
+          },
+        },
+        {
+          $match: {
+            month: date,
+          },
+        },
+        {
+          $lookup: {
+            from: collection.PRODUCT_COLLECTION,
+            localField: "products",
+            foreignField: "_id",
+            as: "productSold",
+          },
+        },
+        {
+          $project: {
+            totalAmount: 1,
+            orderDate: 1,
+            quantity: 1,
+            productSold: { $arrayElemAt: ["$productSold", 0] },
+          },
+        },
+        {
+          $project: {
+            totalAmount: 1,
+            orderDate: 1,
+            productname: "$productSold.name",
+            quantity: 1,
+          },
+        },
+        {
+          $group: {
+            _id: {
+              totalAmount: "$totalAmount",
+              orderDate: "$orderDate",
+              productname: "$productname",
+              quantity: "$quantity",
+            },
+            count: { $count: {} },
+          },
+        },
+        {
+          $project: {
+            prdoductname: "$_id.productname",
+            orderDate: "$_id.orderDate",
+            totalAmount: "$_id.totalAmount",
+            quantity: "$_id.quantity",
+            count: 1,
+            totalSold: { $sum: ["$quantity", "$count"] },
+            _id: 0,
+          },
+        },
+      ])
+      .toArray();
+    resolve(monthReport);
+  })
+  },
+
+  //yearly sales report
+  yearSalesReport: (proId, date) => {
+    return new Promise(async (resolve, reject) => {
+      let yearReport = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .aggregate([
+          {
+            $match: {
+              products: {
+                $elemMatch: {
+                  product: proId,
+                  paymentStatus: { $ne: "Order Cancelled" },
+                },
+              },
+            },
+          },
+          {
+            $unwind: "$products",
+          },
+          {
+            $project: {
+              totalAmount: 1,
+              products: "$products.product",
+              quantity: "$products.quantity",
+              orderDate: 1,
+              year: { $toString: "$year" },
+            },
+          },
+          {
+            $match: {
+              year: date,
+            },
+          },
+          {
+            $lookup: {
+              from: collection.PRODUCT_COLLECTION,
+              localField: "products",
+              foreignField: "_id",
+              as: "productSold",
+            },
+          },
+          {
+            $project: {
+              totalAmount: 1,
+              orderDate: 1,
+              quantity: 1,
+              productSold: { $arrayElemAt: ["$productSold", 0] },
+            },
+          },
+          {
+            $project: {
+              totalAmount: 1,
+              orderDate: 1,
+              productname: "$productSold.name",
+              quantity: 1,
+            },
+          },
+          {
+            $group: {
+              _id: {
+                totalAmount: "$totalAmount",
+                orderDate: "$orderDate",
+                productname: "$productname",
+                quantity: "$quantity",
+              },
+              count: { $count: {} },
+            },
+          },
+          {
+            $project: {
+              prdoductname: "$_id.productname",
+              orderDate: "$_id.orderDate",
+              totalAmount: "$_id.totalAmount",
+              quantity: "$_id.quantity",
+              count: 1,
+              totalSold: { $sum: ["$quantity", "$count"] },
+              _id: 0,
+            },
+          },
+        ])
+        .toArray();
+      resolve(yearReport);
+    });
+  },
+
+  //--------------- add coupen section ----------//
+  addCoupon : (couponDetails)=>{
+    return new Promise(async (resolve,reject)=>{
+      let coupon = await db.get().collection(collection.COUPON_COLLECTION).findOne({couponCode:couponDetails.couponCode})
+      if(coupon){
+        console.log('coupn is already exist')
       }
-      
-    ]).toArray()
-    console.log(monthReport)
+      else{
+        db.get().collection(collection.COUPON_COLLECTION).insertOne(couponDetails).then((response)=>{
+          console.log('coupen is created')
+          resolve(response)
+        })
+      }
+    })
+
+  },
+  // -----------coupon view -----------//
+  copuonView : ()=>{
+    return new Promise(async (resolve,reject)=>{
+      let couponCollection = await db.get().collection(collection.COUPON_COLLECTION).find().toArray()
+      resolve(couponCollection)
+    })
+  },
+
+  //---------------coupon edit view page-------//
+  editCoupon :(couponId)=>{
+    return new Promise(async (resolve,reject)=>{
+      let singleCoupon = await db.get().collection(collection.COUPON_COLLECTION).findOne({_id:objectID(couponId)})
+      resolve(singleCoupon)
+    })
+  },
+  updateCoupon :(couponDetails,couponId) => {
+    return new Promise((resolve,reject) =>{
+      db.get().collection(collection.COUPON_COLLECTION).updateOne({_id:objectID(couponId)},{
+        $set:{
+          couponCode : couponDetails.couponCode,
+          description : couponDetails.description,
+          value : couponDetails.value,
+          date : couponDetails.date,
+          type : couponDetails.type,
+
+
+        }
+      }).then(()=>{
+        resolve()
+      })
+    })
   }
+
 };
