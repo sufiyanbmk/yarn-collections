@@ -151,6 +151,8 @@ module.exports = {
           timeZone: "Asia/Kolkata", year: 'numeric', month: '2-digit', day: '2-digit'
         }),
         orderTime: new Date().getHours() + ":" + new Date().getMinutes(),
+        month:new Date().getFullYear() + "-" +Number( new Date().getMonth()+1,),
+        year:new Date().getFullYear(),
         time: new Date().getTime(),
       };
       db.get()
@@ -595,4 +597,16 @@ module.exports = {
         });
     });
   },
+
+  //-------------apply coupen in user side -----//
+  applyCoupon : (code,total,date)=>{
+    return new Promise(async(resolve,reject)=>{
+      let response = {}
+      let checkCoupon = await db.get().collection(collection.COUPON_COLLECTION).findOne({couponCode : code})
+      if(checkCoupon){
+        
+      }
+    })
+
+  }
 };
