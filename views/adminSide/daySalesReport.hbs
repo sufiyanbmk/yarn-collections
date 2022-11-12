@@ -1,7 +1,7 @@
 {{>adminlinks}}
 
 {{>adminSidebar}}
- <main class="main-wrap">
+<main class="main-wrap">
     {{>adminHeader}}
     <div class="row tm-content-row tm-mt-big">
         <div class="col-xl-12 col-lg-12 tm-md-12 tm-sm-12 tm-col">
@@ -11,9 +11,9 @@
                         <h2 class="tm-block-title d-inline-block">Products</h2>
 
                     </div>
-                   
+
                 </div>
-         
+
 
                 <div class="tm-table-mt tm-table-actions-row">
                     {{!-- <div class="tm-table-actions-col-left">
@@ -38,45 +38,45 @@
             </div>
         </div>
 
-         <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover" id="order-table">
-                            <thead>
-                                <tr>
-                                    <th>no</th>
-                                    <th>Product Name</th>
-                                    <th scope="col">Order Date</th>
-                                    <th scope="col">totalAMount</th>
-                                    <th scope="col">Total Sold</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                 {{#each td}}
-                                 {{#each []}}
-                                <tr>
-                                    <td>{{inc @ index}}</td>
-                                    <td>{{this.prdoductname}}</td>
-                                    <td><b>{{this.orderDate}}</b></td>
-                                    <td>{{this.totalAmount}}</td>
-                                    <td>{{this.totalSold}}</td>
-                                    
-                                    </td>
-                                </tr>
-                                {{/each}}
-                                {{/each}}
-                            </tbody>
-                        </table>
-                    </div> <!-- table-responsive //end -->
-                </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover" id="order-table">
+                    <thead>
+                        <tr>
+                            <th>no</th>
+                            <th>Product Name</th>
+                            <th scope="col">Order Date</th>
+                            <th scope="col">totalAMount</th>
+                            <th scope="col">Total Sold</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each td}}
+                        {{!-- {{#each []}} --}}
+                        <tr>
+                            <td>{{inc @ index}}</td>
+                            <td>{{this._id.name}}</td>
+                            {{!-- <td><b>{{this.orderDate}}</b></td> --}}
+                            <td>{{this._id.price}}</td>
+                            <td>{{this.totalPrice}}</td>
+                            <td>{{this.qtysum}}</td>
+                            </td>
+                        </tr>
+                        {{!-- {{/each}} --}}
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div> <!-- table-responsive //end -->
+        </div>
 </main>
 <script>
-$(document).ready( function () {
-    $('#order-table').DataTable({
-       dom: 'Bfrtip',
-       buttons: [
-             'excel', 'pdf', 'print'
-        ]
+    $(document).ready(function () {
+        $('#order-table').DataTable({
+            dom: 'Bfrtip',
+            buttons: [
+                'excel', 'pdf', 'print'
+            ]
+        });
     });
-} );
 </script>
 {{>adminjs}}

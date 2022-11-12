@@ -117,7 +117,7 @@ exports.backToProducts = (req, res) => {
 };
 
 exports.addProductsPost = (req, res, next) => {
-  const loc = req.files.map(file => file.filename);
+  const loc = req.files.map((file) => file.filename);
   // function filename(file) {
   //   return file.filename;
   // }
@@ -214,15 +214,14 @@ exports.deliveredStatus = (req, res) => {
   });
 };
 
-exports.shippedStatus = (req,res) =>{
-  orderHelper.shipped(req.params.id).then(()=>{})
-  res.redirect("/admin/order-management")
-}
+exports.shippedStatus = (req, res) => {
+  orderHelper.shipped(req.params.id).then(() => {});
+  res.redirect("/admin/order-management");
+};
 
-exports.refund = (req,res) => {
-  console.log(req.params.id)
-
-}
+exports.refund = (req, res) => {
+  console.log(req.params.id);
+};
 //------------------banner mangement ----------//
 
 exports.banners = (req, res) => {
@@ -264,9 +263,11 @@ exports.dailyReport = async (req, res) => {
   var products = await adminHelper.viewProduct();
   let td = [];
   for (let product of products) {
-    var dayReport = await adminHelper.daySalesReport(product._id, date);
-
-    td.push(dayReport);
+    var [dayReport] = await adminHelper.daySalesReport(product._id, date);
+    if (dayReport) {
+      dayReport.totalPrice = Number(dayReport._id.price) * dayReport.qtysum;
+      td.push(dayReport);
+    }
   }
   res.render("adminSide/daySalesReport", { td });
 };
@@ -346,17 +347,16 @@ exports.catagoryOfferPost = (req, res) => {
 
 //------------product offer-----------//
 
-exports.productOffer = (req,res) => {
-  let productId = req.params.id
-  res.render('adminSide/ProductOffer',{productId})
-}
+exports.productOffer = (req, res) => {
+  let productId = req.params.id;
+  res.render("adminSide/ProductOffer", { productId });
+};
 
-exports.productOfferPost = (req,res) =>{
+exports.productOfferPost = (req, res) => {
   let offer = req.body.offer;
   let proId = req.body.proId;
-  console.log(offer)
+  console.log(offer);
   offer = parseInt(offer);
-  adminHelper.productOffer(offer,proId).then((response) =>{})
-  res.redirect("/admin/productmange")
-
-}
+  adminHelper.productOffer(offer, proId).then((response) => {});
+  res.redirect("/admin/productmange");
+};
