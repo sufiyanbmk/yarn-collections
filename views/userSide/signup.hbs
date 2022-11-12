@@ -25,6 +25,9 @@
 	<p class="divider-text">
         <span class="bg-light">OR</span>
     </p> --}}
+	 {{#if error}}
+	 <p style="color: red;">{{error}}</p>
+	 {{/if}}
 	<form onclick="return validation()" action="/signupForm" method="post" >
 	<div class="form-group input-group">
 		<div class="input-group-prepend">
@@ -69,6 +72,13 @@
         <input class="form-control" name="repassword" id="Repassword" onkeyup="validateRepass()" placeholder="Repeat password" type="password">
     </div> 
     <p style="color:red" id="err5"></p>
+	<!--formgroup-->
+	 <div class="form-group input-group">
+    	<div class="input-group-prepend">
+		    <span class="input-group-text"> <i class="fa"></i> </span>
+		</div>
+        <input class="form-control" name="referralCode" placeholder="Referal code">
+    </div> 
     <!-- form-group// -->                                      
     <div class="form-group">
         <button type="submit" id="submit-btn"   class="btn btn-primary btn-block"> Create Account  </button>

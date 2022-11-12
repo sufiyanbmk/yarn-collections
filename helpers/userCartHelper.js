@@ -212,7 +212,7 @@ module.exports = {
                 resolve(total[0].total) 
             }
             else {
-                resolve()
+                reject("user not found")
             }
 
         })

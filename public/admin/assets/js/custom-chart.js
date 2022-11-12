@@ -33,7 +33,7 @@
               "Sep",
               "Oct",
               "Nov",
-              "Dec",
+              
             ],
             datasets: [
               {

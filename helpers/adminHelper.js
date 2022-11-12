@@ -189,6 +189,8 @@ module.exports = {
         )
         .then((response) => {
           resolve(response);
+        }).catch(err => {
+          reject(err)
         });
     });
   },
@@ -595,6 +597,50 @@ module.exports = {
         resolve()
       })
     })
-  }
+  },
+  //-------------delete coupon------------//\
+  deleteCoupon : (couponId)=>{
+    return new Promise((resolve,reject)=>{
+      db.get().collection(collection.COUPON_COLLECTION).deleteOne({_id:objectID(couponId)}).then(()=>{
+        resolve()
+      })
+    })
+  },
+  //----------------catagory offer -----------//
+  catagoryOffer : (catagories,percentage)=>{
+    return new Promise(async (resolve,reject)=>{
+      let products =await db.get().collection(collection.PRODUCT_COLLECTION).find({Category:catagories}).toArray() 
+      for(i=0; i< products.length;i++){
+        let offerPrice = products[i].offerPrice - ((products[i].offerPrice * percentage) / 100)
+        await db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:objectID(products[i]._id)},{
+          $set:{
+            offerPrice :offerPrice
+          }
+        }).then(()=>{
+          resolve()
+        })
+      }
+    })
+    
+  },
+
+  //-----------product offer------//
+  productOffer : (percentage,proId) =>{
+    console.log(proId)
+    return new Promise(async (resolve,reject)=>{
+      let product = await db.get().collection(collection.PRODUCT_COLLECTION).findOne({_id:objectID(proId)})
+      console.log(product)
+      let offerPrice = product.offerPrice - ((product.offerPrice * percentage)/100)
+      await db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:objectID(proId)},
+      {
+        $set:{
+            offerPrice: offerPrice
+        }
+      }).then((response)=>{
+        console.log(response)
+        resolve()
+      })
+    })
+  } 
 
 };

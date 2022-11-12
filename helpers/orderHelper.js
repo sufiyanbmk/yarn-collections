@@ -34,7 +34,7 @@ module.exports = {
         .collection(collection.ADDRESS_COLLECTION)
         .insertOne(addressForm)
         .then(() => {
-          resolve();
+          resolve(response);
         });
     });
   },
@@ -144,6 +144,7 @@ module.exports = {
         userId: objectID(order.userId),
         paymentMethod: order.paymentMethod,
         totalAmount: total,
+        couponAmt : order.couponAmt,
         products: products,
         status: status,
         orderDate: new Date()
@@ -408,7 +409,6 @@ module.exports = {
   },
   //admin delivered status
   delivered: (orderId) => {
-
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.ORDER_COLLECTION)
@@ -424,6 +424,21 @@ module.exports = {
           resolve();
         });
     });
+  },
+  //admin shipped status
+  shipped : (orderId) => {
+    return new Promise((resolve, reject) => {
+      db.get().collection(collection.ORDER_COLLECTION)
+        .updateOne({ _id: objectID(orderId) },
+          {
+            $set: {
+              status: 'Shipped'
+            }
+          });
+    }).then(()=>{
+
+      resolve();
+    })
   },
 
   //razorpay
@@ -465,7 +480,6 @@ module.exports = {
 
   //change payment status
   changePaymentStatus: (orderId) => {
-    console.log(orderId);
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.ORDER_COLLECTION)
@@ -478,7 +492,6 @@ module.exports = {
           }
         )
         .then((response) => {
-          console.log(response);
           resolve();
         });
     });
@@ -592,7 +605,7 @@ module.exports = {
           }
         )
         .then((response) => {
-          console.log(response);
+        
           resolve();
         });
     });
@@ -604,9 +617,97 @@ module.exports = {
       let response = {}
       let checkCoupon = await db.get().collection(collection.COUPON_COLLECTION).findOne({couponCode : code})
       if(checkCoupon){
+        const expireDate = new Date(checkCoupon.date)
         
+        if(expireDate >= date){
+          checkCoupon.dateChecked = true;
+          resolve(checkCoupon)
+          if(total >= checkCoupon.minAmt){
+            checkCoupon.minChecked = true;
+          }
+          else{
+            response.minChecked = false
+            response.maxAmountMsg='your maximum purchase should be'+checkCoupon.minAmt
+            resolve(response)
+
+          }
+        }else{
+          response.dateChecked = false;
+          response.dateInvalidMessage="Date is expired"
+          resolve(response)
+        }
+       
       }
+      else{
+        response.invalidCoupon = true;
+        response.invalidMessage="This coupon code is invalid"
+        resolve(response)
+      }
+
+      if(checkCoupon.dateChecked && checkCoupon.minChecked)
+      {
+        checkCoupon.couponVerified = true;
+        resolve(checkCoupon)
+      }
+
     })
 
-  }
+  },
+  replaceOrder: (Id) => {
+    return new Promise(async (resolve, reject) => {
+      orderHistory = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .aggregate([
+          {
+            $match: {
+              _id: objectID(Id),
+            },
+          },
+          {
+            $unwind: "$products",
+          },
+          {
+            $project: {
+              Amount: 1,
+              Mobile: 1,
+              payment: 1,
+              status: 1,
+              product: "$products.product",
+              quantity: "$products.quantity",
+              orderDate: 1,
+              time: 1,
+            },
+          },
+          {
+            $lookup: {
+              from: collection.PRODUCT_COLLECTION,
+              localField: "product",
+              foreignField: "_id",
+              as: "cartItems",
+            },
+          },
+          {
+            $project: {
+              Amount: 1,
+              Mobile: 1,
+              payment: 1,
+              status: 1,
+              orderDate: 1,
+              time: 1,
+              products: {
+                $arrayElemAt: ["$cartItems", 0],
+              },
+            },
+          },
+          {
+            $sort: {
+              time: -1,
+            },
+          },
+        ])
+        .toArray();
+      resolve(orderHistory);
+    });
+  },
 };

@@ -5,22 +5,63 @@ const { response } = require('../app')
 // const { ObjectID } = require('bson')
 const objectID = require('mongodb').ObjectId
 
+const referalcode =require('referral-codes')
+
 module.exports = {
     dosignup: (userData)=>{
         
         return new Promise(async (resolve, reject) => {
             userData.password = await bcrypt.hash(userData.password, 10)
-            db.get().collection(collection.USER_COLLECTION).findOne({ email: userData.email }).then((response) => {
+            db.get().collection(collection.USER_COLLECTION).findOne({ email: userData.email }).then(async (response) => {
 
                 if (response) {
                     resolve(response)
                 }
                 else {
                         userData.banned = false
-                        userData.address = []
-                         db.get().collection(collection.USER_COLLECTION).insertOne(userData).then((data) => {
-                        resolve(data)
-                    })
+                        userData.Address = [];
+                        if (userData.referralCode) {
+                          let referaluser = await db.get().collection(collection.USER_COLLECTION).findOne({ referralCode: userData.referralCode })
+                          if (referaluser) {
+                            userData.referralCode = referalcode.generate({
+                              prefix: userData.name
+                            })[0].replaceAll(" ", "");
+                            db.get()
+                              .collection(collection.USER_COLLECTION)
+                              .insertOne(userData)
+                              .then((data) => {
+                                console.log(data);
+                                wallet = {
+                                  user: data.insertedId,
+                                  Total: 0,
+                                  History: [{ RefferdFrom: referaluser._id, user: referaluser.name, credited: 10, Time: new Date() }]
+                                }
+                                db.get().collection(collection.WALLET_COLLECTION).insertOne(wallet)
+                                db.get().collection(collection.WALLET_COLLECTION).updateOne({ user: referaluser._id }, { $inc: { Total: 10 }, $push: { History: { RefferdTo: data.insertedId, name: userData.name, credited: 10, Time: new Date() } } })
+                                resolve(data);
+                              });
+                          } else {
+                            reject()
+                          }
+                        } else {
+                          userData.referralCode = referalcode.generate({
+                            prefix: userData.name
+                          })[0].replaceAll(" ", "");
+                          db.get()
+                            .collection(collection.USER_COLLECTION)
+                            .insertOne(userData)
+                            .then((data) => {
+                              console.log(data);
+                              wallet = {
+                                user: data.insertedId,
+                                Total: 0,
+                                History: []
+                              }
+                              db.get().collection(collection.WALLET_COLLECTION).insertOne(wallet)
+                              resolve(data);
+                            });
+                        }
+                    
                 }
             })
         })
@@ -74,6 +115,15 @@ module.exports = {
             })
         })
     },
+
+    //women catagory  product
+    getCatagoryProducts :(catagory)=>{
+        return new Promise(async(resolve,reject)=>{
+            let product = await db.get().collection(collection.PRODUCT_COLLECTION).find({Category:catagory}).toArray()
+       
+            resolve(product)
+        })
+    },
     //user profile
     userProfile :(userId)=>{
         return new Promise((resolve,reject)=>{
@@ -123,6 +173,18 @@ module.exports = {
                 })
             }
         })
+    },
+    
+    //--------wallet showing in user side ------//
+    getWallet : (userId)=>{
+        return new Promise((resolve,reject)=>{
+            let walletDetails = db.get().collection(collection.WALLET_COLLECTION).findOne({user:objectID(userId)})
+            resolve(walletDetails) 
+        })
+
     }
+
+    //--------user replace product----//
+    
 
 }        

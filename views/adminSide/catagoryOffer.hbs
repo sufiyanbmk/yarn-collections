@@ -1,0 +1,60 @@
+{{>adminlinks}}
+
+{{>adminSidebar}}
+<main class="main-wrap">
+    {{>adminHeader}}
+    <form action="/admin/catagroy-offer" method="post" onclick="return valid()">
+    <div class="card-body">
+        <div class="row gx-2">
+            <div class="col-sm-6 mb-3">
+                <label class="form-label">Category</label>
+                <select class="form-select" name="catagory">
+                {{#each catagoryList}}
+                    <option>{{this.categories}}</option>
+                {{/each}}
+
+                </select>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="mb-4">
+                    <label class="form-label">Offer Percentage</label>
+                    <div class="row gx-2">
+                        <input placeholder="%" name="offer" onkeyup="offerPercentage()" id="percentage" type="number" min="1" max="100" class="form-control" required>
+                    </div>
+                    <p id="error" style="color: red;"></p>
+                </div>
+            </div>
+            <button type="submit" on class="btn btn-primary">Add Offer</button>
+        </form>
+
+</main>
+
+<script>
+    function offerPercentage(){
+        let price = document.getElementById("percentage").value;
+  let error4 = document.getElementById("error");
+  if (price == "") {
+    error4.innerHTML = "Enter the price";
+    return false;
+  } else if (price.match(/^[A-Za-z]+$/)) {
+    error4.innerHTML = "Please Enter valid number";
+    return false;
+  } else {
+    error4.innerHTML = "";
+    return true;
+  }
+    }
+
+    function valid(){
+        offerPercentage();
+        if(offerPercentage === true){
+            return true
+        }
+        else{
+            return false
+        }
+    }
+</script>
+
+{{>adminjs}}

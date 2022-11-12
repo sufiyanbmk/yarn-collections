@@ -3,7 +3,9 @@ function whislistAdd(prodId) {
     url: "/addWhislist/" + prodId,
     type: "post",
     success: (response) => {
+
         swal("Good job!", "Added to Whislist!", "success");
+        document.getElementsByClassName('whislistbtn').style.color = "#ff0000";
     },
   });
 }

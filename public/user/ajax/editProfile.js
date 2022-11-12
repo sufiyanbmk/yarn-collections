@@ -5,7 +5,6 @@ $("#editProfile").submit((e) => {
     method: "put",
     data: $("#editProfile").serialize(),
     success: (response) => {
-      alert();
       swal("Good job!", "Added to Cart! You Can Check There", "success");
       location.reload();
     },

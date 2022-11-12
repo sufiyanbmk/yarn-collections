@@ -46,8 +46,11 @@
 								<td>{{this.paymentMethod}}</td>
 								<td>{{this.paymentStatus}}</td>
 								<td>{{this.orderDate}}</td>
+								{{#if this.cancelled}}
+								{{else}}
 								<td ><button onclick="orderCanceled('{{this._id}}')" class="btn btn-primary">Cancel order</button></td>
 						      </tr><!-- END TR-->
+							  {{/if}}
 						     {{/each}}
 							
 

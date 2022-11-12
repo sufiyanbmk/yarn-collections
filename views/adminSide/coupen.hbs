@@ -13,12 +13,16 @@
                             <div class="card card-product-grid">
                                 
                                 <div class="info-wrap">
-                                    <a href="#" class="title text-truncate">Just another product name</a>
-                                    <div class="price mb-2">$179.00</div> <!-- price.// --> 
+                                    <a href="#" class="title text-truncate"><span>Coupon Code :</span>{{this.couponCode}}</a>
+                                    <div class="price mb-2">Description :{{this.description}}</div> <!-- price.// --> 
+                                    <div class="price mb-2">Value :{{this.value}} %</div> <!-- price.// --> 
+                                    <div class="price mb-2">Expire Date :{{this.date}}</div> <!-- price.// --> 
+                                    <div class="price mb-2">MinMun Amount :${{this.minAmt}}</div> <!-- price.// --> 
+                                    
                                     <a href="/admin/edit-coupon/{{this._id}}" class="btn btn-sm font-sm rounded btn-brand">
                                         <i class="material-icons md-edit"></i> Edit
                                     </a>
-                                    <a href="#" class="btn btn-sm font-sm btn-light rounded">
+                                    <a href="/admin/delete-coupon/{{this._id}}" class="btn btn-sm font-sm btn-light rounded">
                                         <i class="material-icons md-delete_forever"></i> Delete
                                     </a>
                                 </div>

@@ -164,6 +164,16 @@
 									<span>Total</span>
 									<span>{{total}}</span>
 								</p>
+								<p class="d-flex total-price">
+									<span >Sub Total</span>
+									<span>{{subTotal}}</span>
+									<input type="text" name="subtotal" value="{{subTotal}}" hidden>
+								</p>
+								<p class="d-flex total-price">
+									<span>Final Amount</span>
+									<span>{{couponAmt}}</span>
+									<input type="text" name="couponAmt" value="{{couponAmt}}" hidden>
+								</p>
 							</div>
 						</div>
 						<div class="col-md-6">
@@ -228,13 +238,17 @@
 		var addressId = $('input[name="address"]:checked').val();
 		var userID = $('input[name="userId"]').val();
 		var paymentMethod = $('input[name="paymentMethod"]:checked').val();
+		var subtotal = $('input[name="subtotal"]').val();
+		var couponAmt = $('input[name = "couponAmt"]').val()
 		$.ajax({
 			url: '/placeOrder',
 			method: 'post',
 			data: {
 				addressID: addressId,
 				userId: userID,
-				paymentMethod: paymentMethod
+				paymentMethod: paymentMethod,
+				subtotal:subtotal,
+				couponAmt:couponAmt
 			},
 			success: (response) => {
 				console.log(response)

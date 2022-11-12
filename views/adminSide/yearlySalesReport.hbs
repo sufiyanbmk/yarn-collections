@@ -44,39 +44,24 @@
                             <thead>
                                 <tr>
                                     <th>no</th>
-                                    <th>Order #ID</th>
-                                    <th scope="col">Name</th>
-                                    <th scope="col">Email</th>
-                                    <th scope="col">Total</th>
-                                    <th scope="col">Status</th>
-                                    <th scope="col">Date</th>
-                                     <th scope="col">Payment</th>
-                                    <th scope="col" class="text-end"> Action </th>
+                                    <th>Product Name</th>
+                                    <th scope="col">Order Date</th>
+                                    <th scope="col">totalAMount</th>
+                                    <th scope="col">Total Sold</th>
                                 </tr>
                             </thead>
                             <tbody>
                                  {{#each year}}
                                  {{#each []}}
                                 <tr>
+            
                                     <td>{{inc @ index}}</td>
-                                    <td>{{this.count}}</td>
-                                    <td><b>{{this.address.name}}</b></td>
-                                    <td>{{this.address.phone}}</td>
+                                    <td>{{this.prdoductname}}</td>
+                                    <td><b>{{this.orderDate}}</b></td>
                                     <td>{{this.totalAmount}}</td>
-                                    <td><span class="badge rounded-pill alert-warning">{{this.status}}</span></td>
-                                    <td>{{this.orderDate}}</td>
-                                     <td>{{this.paymentMethod}}</td>
-                                    <td class="text-end">
-                                        <a href="/admin/order-details/{{this._id}}" class="btn btn-md rounded font-sm">Detail</a>
-                                        <div class="dropdown">
-                                            <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i class="material-icons md-more_horiz"></i> </a>
-                                            <div class="dropdown-menu">
-                                                <a class="dropdown-item" href="#">shipped</a>
-                                                <a class="dropdown-item" href="/admin/delivered/{{this._id}}">Delivered</a>
-                                                <a class="dropdown-item text-danger" href="/admin/cancel-order/{{this._id}}">Cancel</a>
-                                            </div>
-                                        </div> <!-- dropdown //end -->
-                                    </td>
+                                    <td>{{this.totalSold}}</td>
+                                    
+                                
                                 </tr>
                                 {{/each}}
                                 {{/each}}

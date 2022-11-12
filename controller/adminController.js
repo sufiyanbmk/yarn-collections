@@ -1,0 +1,362 @@
+const { response } = require("../app");
+const adminHelper = require("../helpers/adminHelper");
+const orderHelper = require("../helpers/orderHelper");
+const store = require("../middleware/multer");
+const adminDb = "admin";
+const passwordDb = "123";
+
+exports.home = (req, res, next) => {
+  if (req.session.adminlogedIn) {
+    res.render("adminSide/adminPannel");
+  } else {
+    res.render("adminSide/adminlogin", { error: req.session.validation });
+    req.session.validation = false;
+  }
+};
+exports.loginPost = (req, res, next) => {
+  var admin = req.body.admin;
+  var password = req.body.password;
+  if (admin === adminDb && password === passwordDb) {
+    req.session.adminlogedIn = true;
+    res.redirect("/admin/dashboard");
+  } else {
+    console.log("incoore");
+    req.session.validation = "Invalid username or password";
+    res.redirect("/admin");
+  }
+};
+
+exports.signOut = (req, res) => {
+  req.session.adminlogedIn = null;
+  res.redirect("/admin");
+};
+
+//----------dash board -------------//
+
+exports.dashboard = (req, res) => {
+  res.render("adminSide/adminPannel");
+};
+
+exports.graphData = async (req, res) => {
+  var gdata = await adminHelper.getGraphData();
+  var orderCounts = Array(12).fill(0);
+  for (let date of gdata) {
+    orderCounts[date._id.month - 1] = date.count;
+  }
+  res.json({ data: orderCounts });
+};
+
+exports.pieChartData = async (req, res) => {
+  let piechart = await adminHelper.getPieData();
+
+  value = piechart.map((value, index, array) => {
+    return value.sum;
+  });
+  let pay = piechart.map((value, index, array) => {
+    return value._id;
+  });
+
+  res.json({ value: value, pay: pay });
+};
+
+//-----------------catagory-------------//
+
+exports.catagory = (req, res) => {
+  adminHelper.viewCategories().then((Category) => {
+    res.render("adminSide/categoryManagement", { Category });
+  });
+};
+
+exports.addCatagory = (req, res) => {
+  res.render("adminSide/addCategory");
+};
+
+exports.addCatagoryPost = (req, res) => {
+  adminHelper.addCategories(req.body).then((Categorylist) => {
+    res.redirect("/admin/categorymange");
+  });
+};
+
+exports.backCatagory = (req, res) => {
+  res.redirect("/admin/categorymange");
+};
+
+exports.editCatagory = async (req, res) => {
+  let catagorydetail = await adminHelper.getCategoryDetails(req.params.id);
+  res.render("adminSide/editCategory", { catagorydetail });
+};
+
+exports.editCatagoryPost = (req, res) => {
+  adminHelper.updatedCategory(req.params.id, req.body).then((updatedlist) => {
+    res.redirect("/admin/categorymange");
+  });
+};
+
+exports.deleteCatagory = (req, res) => {
+  adminHelper.deletecategory(req.params.id).then((deletelist) => {
+    res.redirect("/admin/categorymange");
+  });
+};
+
+//--------------products----------//
+
+exports.products = (req, res) => {
+  adminHelper.viewProduct().then((product) => {
+    res.render("adminSide/productManagement", { product });
+  });
+};
+
+exports.addProducts = (req, res) => {
+  adminHelper.viewCategories().then((Categorylist) => {
+    res.render("adminside/addProduct", { Categorylist });
+  });
+};
+
+exports.backToProducts = (req, res) => {
+  res.redirect("/admin/productmange");
+};
+
+exports.addProductsPost = (req, res, next) => {
+  const loc = req.files.map(file => file.filename);
+  // function filename(file) {
+  //   return file.filename;
+  // }
+  let productDetails = req.body;
+  productDetails.imagefileName = loc;
+  adminHelper.addProduct(productDetails).then((productDetails) => {
+    res.redirect("/admin/productmange");
+  });
+};
+
+exports.editProducts = async (req, res) => {
+  await adminHelper.getProduct(req.params.id).then((product) => {
+    adminHelper.viewCategories().then((Categorylist) => {
+      res.render("adminSide/editProduct", { product, Categorylist });
+    });
+  });
+};
+
+exports.editProductsPost = (req, res) => {
+  const loc = req.files.map(filename);
+  function filename(file) {
+    return file.filename;
+  }
+  let productDetails = req.body;
+  productDetails.imagefileName = loc;
+  adminHelper
+    .updateProduct(req.params.id, productDetails)
+    .then((productDetails) => {
+      res.redirect("/admin/productmange");
+    });
+};
+
+exports.deleteProducts = (req, res) => {
+  adminHelper.deleteProduct(req.params.id).then((response) => {
+    res.redirect("/admin/productmange");
+  });
+};
+
+//-------------customer-----------//
+
+exports.customer = (req, res) => {
+  adminHelper.viewUser().then((users) => {
+    res.render("adminSide/userMangement", {
+      users,
+      activated: req.session.active,
+    });
+  });
+};
+
+exports.blockCustomer = (req, res) => {
+  adminHelper.banUser(req.params.id).then((response) => {
+    if (response) {
+      res.redirect("/admin/usermange");
+    }
+  });
+};
+
+exports.unBlockCustomer = (req, res) => {
+  adminHelper.unbanUser(req.params.id).then((response) => {
+    if (response) {
+      res.redirect("/admin/usermange");
+    }
+  });
+};
+
+//-----------orders --------//
+
+exports.orders = (req, res) => {
+  orderHelper.adminorderlist().then((order) => {
+    let value = order.forEach((order, index) => {
+      if (order.status === "order cancelled") {
+        order.cancelled = true;
+      }
+    });
+    res.render("adminSide/orderMangement", { order });
+  });
+};
+
+exports.orderDetailsView = async (req, res) => {
+  let productlist = await orderHelper.adminViewDetails(req.params.id);
+  let orderlist = await orderHelper.adminorderlist();
+  res.render("adminSide/orderDetails", { productlist, orderlist });
+};
+
+exports.cancelOrder = (req, res) => {
+  orderHelper.cancelAdminOrder(req.params.id).then(() => {
+    res.redirect("/admin/order-management");
+  });
+};
+
+exports.deliveredStatus = (req, res) => {
+  orderHelper.delivered(req.params.id).then(() => {
+    res.redirect("/admin/order-management");
+  });
+};
+
+exports.shippedStatus = (req,res) =>{
+  orderHelper.shipped(req.params.id).then(()=>{})
+  res.redirect("/admin/order-management")
+}
+
+exports.refund = (req,res) => {
+  console.log(req.params.id)
+
+}
+//------------------banner mangement ----------//
+
+exports.banners = (req, res) => {
+  adminHelper.viewBanner().then((banner) => {
+    res.render("adminSide/bannerMangement", { banner });
+  });
+};
+
+exports.addBanners = (req, res) => {
+  res.render("adminSide/addBanners");
+};
+
+exports.addBannersPost = (req, res) => {
+  const loc = req.files.map(filename);
+  function filename(file) {
+    return file.filename;
+  }
+  let bannerDetails = req.body;
+  bannerDetails.imagefileName = loc;
+  adminHelper.addBanner(bannerDetails).then((bannerDetails) => {
+    res.redirect("/admin/banner");
+  });
+};
+
+exports.deleteBanner = (req, res) => {
+  adminHelper.deleteBanner(req.params.id).then((deletelist) => {
+    res.redirect("/admin/banner");
+  });
+};
+
+//-------------sales report--------------//
+
+exports.salesReport = (req, res) => {
+  res.render("adminSide/salesReport");
+};
+
+exports.dailyReport = async (req, res) => {
+  let date = req.body.day;
+  var products = await adminHelper.viewProduct();
+  let td = [];
+  for (let product of products) {
+    var dayReport = await adminHelper.daySalesReport(product._id, date);
+
+    td.push(dayReport);
+  }
+  res.render("adminSide/daySalesReport", { td });
+};
+
+exports.monthlyReport = async (req, res) => {
+  let date = req.body.month;
+  let month = [];
+  let products = await adminHelper.viewProduct();
+  for (let product of products) {
+    let monthReport = await adminHelper.monthSalesReport(product._id, date);
+    month.push(monthReport);
+  }
+  res.render("adminSide/monthlySalesReport", { month });
+};
+
+exports.yearlyReport = async (req, res) => {
+  let date = req.body.year;
+  let year = [];
+  let products = await adminHelper.viewProduct();
+  for (let product of products) {
+    let yearReport = await adminHelper.yearSalesReport(product._id, date);
+    year.push(yearReport);
+  }
+  res.render("adminSide/yearlySalesReport", { year });
+};
+
+//-----------coupon section --------------//
+
+exports.coupon = async (req, res) => {
+  let couponCollection = await adminHelper.copuonView();
+  res.render("adminSide/coupen", { couponCollection });
+};
+
+exports.addCoupon = (req, res) => {
+  res.render("adminSide/addCoupon");
+};
+
+exports.addCouponPost = (req, res) => {
+  adminHelper.addCoupon(req.body).then((response) => {
+    res.redirect("/admin/coupon");
+  });
+};
+
+exports.editCoupon = async (req, res) => {
+  let couponId = req.params.id;
+  let singleCoupon = await adminHelper.editCoupon(couponId);
+  res.render("adminSide/editCoupon", { singleCoupon });
+};
+
+exports.editCouponPost = (req, res) => {
+  let couponId = req.params.id;
+  adminHelper.updateCoupon(req.body, couponId).then(() => {
+    res.redirect("/admin/coupon");
+  });
+};
+
+exports.deleteCoupon = (req, res) => {
+  let couponId = req.params.id;
+  adminHelper.deleteCoupon(couponId).then(() => {
+    res.redirect("/admin/coupon");
+  });
+};
+
+//-----------catagory offer---------------//
+
+exports.catagoryOffer = async (req, res) => {
+  let catagoryList = await adminHelper.viewCategories();
+  res.render("adminSide/catagoryOffer", { catagoryList });
+};
+
+exports.catagoryOfferPost = (req, res) => {
+  let { catagory, offer } = req.body;
+  offerPercentage = parseInt(offer);
+  adminHelper.catagoryOffer(catagory, offerPercentage).then((response) => {});
+  res.redirect("/admin/catagory-offer");
+};
+
+//------------product offer-----------//
+
+exports.productOffer = (req,res) => {
+  let productId = req.params.id
+  res.render('adminSide/ProductOffer',{productId})
+}
+
+exports.productOfferPost = (req,res) =>{
+  let offer = req.body.offer;
+  let proId = req.body.proId;
+  console.log(offer)
+  offer = parseInt(offer);
+  adminHelper.productOffer(offer,proId).then((response) =>{})
+  res.redirect("/admin/productmange")
+
+}

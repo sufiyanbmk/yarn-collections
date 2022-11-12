@@ -69,6 +69,11 @@
                                                 href="#account-detail" role="tab" aria-controls="account-detail"
                                                 aria-selected="true"><i class="fi-rs-user mr-10"></i>Change Password</a>
                                         </li>
+                                         <li class="nav-item">
+                                            <a class="nav-link" id="account-detail-tab" data-bs-toggle="tab"
+                                                href="#coupon" role="tab" aria-controls="account-detail"
+                                                aria-selected="true"><i class="fi-rs-star mr-10"></i>Coupon</a>
+                                        </li>
                                         <li class="nav-item">
                                             <a class="nav-link" href="/logout"><i
                                                     class="fi-rs-sign-out mr-10"></i>Logout</a>
@@ -100,7 +105,7 @@
                                                                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS52y5aInsxSm31CvHOFHWujqUx_wWTS9iM6s7BAm21oEN_RiGoog"
                                                                     alt="" />
                                                                 <div class="file btn btn-lg btn-primary">
-                                                                    Change Photo
+                                                                     Photo
                                                                     <input type="file" name="file" multiple />
                                                                 </div>
                                                             </div>
@@ -139,9 +144,9 @@
                                                         <form id="editProfile">
                                                             <input placeholder="Name" name="name"
                                                                 value="{{userDetail.name}}" type="text" required />
-                                                            <input placeholder="Email" name="email"
+                                                            <input placeholder="Email" name="email" 
                                                                 value="{{userDetail.email}}" type="email" required />
-                                                            <input placeholder="Moblie no" name="phone"
+                                                            <input placeholder="Moblie no" name="phone" 
                                                                 value="{{userDetail.phoneNo}}" type="text" required />
 
                                                             <input class="formBtn" type="submit" />
@@ -181,7 +186,7 @@
                                                                         <label>NAME</label>
                                                                     </div>
                                                                     <div class="col-md-6">
-                                                                        <p>{{userDetail.name}}</p>
+                                                                        <p id="profileName">{{userDetail.name}}</p>
                                                                     </div>
                                                                 </div>
 
@@ -190,7 +195,7 @@
                                                                         <label>Email</label>
                                                                     </div>
                                                                     <div class="col-md-6">
-                                                                        <p>{{userDetail.email}}</p>
+                                                                        <p id="profileEmail">{{userDetail.email}}</p>
                                                                     </div>
                                                                 </div>
                                                                 <div class="row">
@@ -198,7 +203,15 @@
                                                                         <label>Phone</label>
                                                                     </div>
                                                                     <div class="col-md-6">
-                                                                        <p>{{userDetail.phoneNo}}</p>
+                                                                        <p id="profilePhone">{{userDetail.phoneNo}}</p>
+                                                                    </div>
+                                                                </div>
+                                                                 <div class="row">
+                                                                    <div class="col-md-6">
+                                                                        <label>Referal Code</label>
+                                                                    </div>
+                                                                    <div class="col-md-6">
+                                                                        <p>{{userDetail.referralCode}}</p>
                                                                     </div>
                                                                 </div>
 
@@ -207,48 +220,17 @@
                                                                 aria-labelledby="profile-tab">
                                                                 <div class="row">
                                                                     <div class="col-md-6">
-                                                                        <label>Experience</label>
+                                                                        <label>Amount</label>
                                                                     </div>
                                                                     <div class="col-md-6">
-                                                                        <p>Expert</p>
+                                                                        <p>{{wallet.Total}}</p>
                                                                     </div>
                                                                 </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        <label>Hourly Rate</label>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <p>10$/hr</p>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        <label>Total Projects</label>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <p>230</p>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        <label>English Level</label>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <p>Expert</p>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="row">
-                                                                    <div class="col-md-6">
-                                                                        <label>Availability</label>
-                                                                    </div>
-                                                                    <div class="col-md-6">
-                                                                        <p>6 months</p>
-                                                                    </div>
-                                                                </div>
+                                                               
                                                                 <div class="row">
                                                                     <div class="col-md-12">
-                                                                        <label>Your Bio</label><br />
-                                                                        <p>Your detail description</p>
+                                                                        <label></label><br />
+                                                                        <p>Full Wallet History</p>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -286,7 +268,12 @@
                                                                 <td>{{this.products.offerPrice}}</td>
                                                                 <td>{{this.status}}</td>
                                                                 <td>{{this.orderDate}}</td>
+                                                                {{#if this.delivered}}
+                                                                <td><a href="/replace/{{this._id}}" class="btn-small d-block">Replace</a></td>
+                                                                {{else}}
                                                                 <td><a href="#" class="btn-small d-block">View</a></td>
+
+                                                                {{/if}}
                                                             </tr>
                                                             {{/each}}
                                                         </tbody>
@@ -788,7 +775,34 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        {{#each couponCollection}}
+                                        <div class="tab-pane fade" id="coupon" role="tabpanel"
+                                        aria-labelledby="address-tab">
+                                                  <div class="col-lg-12">
+                                                <div class="card1">
+                                                    <div class="card-header">
+                                                        <h5 class="mb-0">Coupon</h5>
+                                                    </div>
+                                                    <div class="card-body">
+                                                      
+                                                        <address>
+                                                            {{this.couponCode}}<br>
+                                                            India<br>
+                                                            {{this.description}} <br>{{this.value}}%
+                                                            <br>Expire date {{this.date}}
+                                                        </address>
+                                                        <p>{{this.details.email}}</p>
+                                                        <a href="/delete-address/{{this._id}}" class="btn btn-small"
+                                                            onclick="return confirm('Are you sure you want to delete {{this.Category}}?')">Delete
+                                                        </a>
+                                                        <div>
+                                                        <a href="/default-address/{{this._id}}" class="btn btn-small">Set as Default Address</a>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                     </div>
+                                    {{/each}}
                                 </div>
                             </div>
                         </div>

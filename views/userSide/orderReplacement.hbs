@@ -1,0 +1,168 @@
+{{>userhead}}
+{{>userHeader}}
+
+<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css">
+<div >
+    <div class="col-md-9 col-sm-8 content">
+       
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-info panel-shadow">
+                   
+                    <div class="panel-body"> 
+                        <div class="table-responsive">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Product</th>
+                                <th>Description</th>
+                                <th></th>
+                                <th>Price</th>
+                                <th>Order date</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                                {{#each replaceProduct}}
+                                <tr>
+                                    <td><img  src='/uploads/{{this.products.imagefileName.[0]}}' class="img-cart"></td>
+                                    <td><strong>{{this.products.name}}</strong><p>{{this.products.Category}}</p></td>
+                                    <td>
+                                       
+                                        
+                                    
+                                    </td>
+                                    <td>{{this.products.offerPrice}}</td>
+                                    <td>{{this.orderDate}}</td>
+                                </tr>
+                                {{/each}}
+                               
+                                {{!-- <tr>
+                                    <td colspan="6">&nbsp;</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="text-right">Total Product</td>
+                                    <td>$86.00</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="text-right">Total Shipping</td>
+                                    <td>$2.00</td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="text-right"><strong>Total</strong></td>
+                                    <td>$88.00</td>
+                                </tr> --}}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                </div>
+                {{!-- <a href="#" class="btn btn-success"><span class="glyphicon glyphicon-arrow-left"></span>&nbsp;Continue Shopping</a>
+                <a href="#" class="btn btn-primary pull-right">Next<span class="glyphicon glyphicon-chevron-right"></span></a> --}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="ftco-section">
+	<div class="container">
+		<div class="row justify-content-center">
+			<div class="col-xl-8 ftco-animate">
+				<form id="replace">
+					<h3 class="mb-4 billing-heading">Billing Details</h3>
+
+					<div class="row align-items-end">
+						
+						{{!-- <div class="col-md-6">
+							<div class="form-group">
+								<label for="lastname">Last Name</label>
+								<input type="text" class="form-control" name="lname" placeholder="">
+							</div>
+						</div> --}}
+						<div class="w-100"></div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="country">Reason for return</label>
+								<div class="select-wrap">
+									<div class="icon"><span class="ion-ios-arrow-down"></span></div>
+									<select name="country" id="" class="form-control">
+										<option value="">size </option>
+										<option value="">color</option>
+										<option value="">Damaged</option>
+										<option value="">Not worthy</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="w-100"></div>
+						<div class="col-md-12">
+							<div class="form-group">
+								<label for="streetaddress">More Details </label>
+								<input type="text" name="state" class="form-control"
+									placeholder="" onkeyup="state()" id="state" required>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="country">Chose One</label>
+								<div class="select-wrap">
+									<div class="icon"><span class="ion-ios-arrow-down"></span></div>
+									<select name="country" id="" class="form-control">
+										<option value="">Replacement</option>
+										<option value="">Refund</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						
+						<div class="w-100"></div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="phone">Phone</label>
+								<input type="text" name="phone" class="form-control" placeholder="" onkeyup="phone()" id="phone" required>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="emailaddress">Email Address</label>
+								<input type="text" name="email" class="form-control" placeholder="" onkeyup="email()" id="email" required>
+							</div>
+						</div>
+						<div class="w-100"></div>
+						<div class="col-md-12">
+							{{!-- <div class="form-group mt-4">
+								<div class="radio">
+									<label class="mr-3"><input type="radio" name="optradio"> Create an Account? </label>
+									<label><input type="radio" name="optradio"> Ship to different address</label>
+								</div>
+							</div> --}}
+							<button type="submit" class="btn btn-primary">Next</button>
+						</div>
+					</div>
+				</form><!-- END -->
+			</div> <!-- .col-md-8 -->
+		</div>
+	</div>
+</section> <!-- .section -->
+  {{!-- <style>
+.img-cart {
+    display: block;
+    max-width: 50px;
+    height: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+table tr td{
+    border:1px solid #FFFFFF;    
+}
+
+table tr th {
+    background:#eee;    
+}
+
+.panel-shadow {
+    box-shadow: rgba(0, 0, 0, 0.3) 7px 7px 7px;
+}
+  </style> --}}
+
+
+{{>userfooter}}
