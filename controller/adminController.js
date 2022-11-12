@@ -221,7 +221,7 @@ exports.shippedStatus = (req, res) => {
 
 exports.refund = (req, res) => {
   console.log(req.query.orderID);
-  res.send("test")
+  res.send("test");
 };
 //------------------banner mangement ----------//
 
@@ -264,7 +264,7 @@ exports.dailyReport = async (req, res) => {
   var products = await adminHelper.viewProduct();
   let td = [];
   for (let product of products) {
-    var [dayReport] = await adminHelper.daySalesReport(product._id, date);
+    let [dayReport] = await adminHelper.daySalesReport(product._id, date);
     if (dayReport) {
       dayReport.totalPrice = Number(dayReport._id.price) * dayReport.qtysum;
       td.push(dayReport);
@@ -278,8 +278,12 @@ exports.monthlyReport = async (req, res) => {
   let month = [];
   let products = await adminHelper.viewProduct();
   for (let product of products) {
-    let monthReport = await adminHelper.monthSalesReport(product._id, date);
-    month.push(monthReport);
+    let [monthReport] = await adminHelper.monthSalesReport(product._id, date);
+    if (monthReport) {
+      monthReport.totalPrice =
+        Number(monthReport._id.price) * monthReport.qtysum;
+      month.push(monthReport);
+    }
   }
   res.render("adminSide/monthlySalesReport", { month });
 };
@@ -289,8 +293,11 @@ exports.yearlyReport = async (req, res) => {
   let year = [];
   let products = await adminHelper.viewProduct();
   for (let product of products) {
-    let yearReport = await adminHelper.yearSalesReport(product._id, date);
-    year.push(yearReport);
+    let [yearReport] = await adminHelper.yearSalesReport(product._id, date);
+    if (yearReport) {
+      yearReport.totalPrice = Number(yearReport._id.price) * yearReport.qtysum;
+      year.push(yearReport);
+    }
   }
   res.render("adminSide/yearlySalesReport", { year });
 };

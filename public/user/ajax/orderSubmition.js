@@ -8,7 +8,7 @@ $("#applyCoupon").submit((e) => {
       if (response.couponVerified) {
         document.getElementById("subTotalValue").innerHTML = response.subtotal;
         document.getElementById("finalAmount").innerHTML = response.amount;
-        document.getElementById('errMsg').innerHTML=''  
+        document.getElementById("errMsg").innerHTML = "";
         //---send values-- to checkout ---=--//
 
         document.getElementById("sendSubTotal").value = response.subtotal;
@@ -16,7 +16,7 @@ $("#applyCoupon").submit((e) => {
       } else {
         if (response.dateChecked) {
           document.getElementById("errMsg").innerHTML = dateInvalidMessage;
-            response.dateInvalidMessage;
+          response.dateInvalidMessage;
         } else if (response.minChecked) {
           document.getElementById("errMsg").innerHTML = response.minAmoutMsg;
         } else {

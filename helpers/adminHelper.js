@@ -367,74 +367,55 @@ module.exports = {
         .aggregate([
           {
             $match: {
-              products: {
-                $elemMatch: {
-                  product: proId,
-                  paymentStatus: { $ne: "Order Cancelled" },
-                },
+              month: date,
+              "products.paymentStatus": {
+                $ne: "order cancelled",
               },
+              "products.product": proId,
             },
           },
           {
             $unwind: "$products",
           },
           {
-            $project: {
-              totalAmount: 1,
-              products: "$products.product",
-              quantity: "$products.quantity",
-              month: 1,
-            },
-          },
-          {
             $match: {
-              month: date,
+              "products.product": {
+                $eq: proId,
+              },
             },
           },
           {
             $lookup: {
-              from: collection.PRODUCT_COLLECTION,
-              localField: "products",
+              from: "products",
+              localField: "products.product",
               foreignField: "_id",
-              as: "productSold",
+              as: "soldItem",
             },
           },
           {
-            $project: {
-              totalAmount: 1,
-              orderDate: 1,
-              quantity: 1,
-              productSold: { $arrayElemAt: ["$productSold", 0] },
-            },
+            $unwind: "$soldItem",
           },
           {
             $project: {
-              totalAmount: 1,
-              orderDate: 1,
-              productname: "$productSold.name",
-              quantity: 1,
+              _id: 1,
+              name: "$soldItem.name",
+              description: "$soldItem.Description",
+              price: "$soldItem.offerPrice",
+              quantity: "$products.quantity",
             },
           },
           {
             $group: {
               _id: {
-                totalAmount: "$totalAmount",
-                orderDate: "$orderDate",
-                productname: "$productname",
-                quantity: "$quantity",
+                price: "$price",
+                name: "$name",
               },
-              count: { $count: {} },
-            },
-          },
-          {
-            $project: {
-              prdoductname: "$_id.productname",
-              orderDate: "$_id.orderDate",
-              totalAmount: "$_id.totalAmount",
-              quantity: "$_id.quantity",
-              count: 1,
-              totalSold: { $sum: ["$quantity", "$count"] },
-              _id: 0,
+              qtysum: {
+                $sum: "$quantity",
+              },
+              itemcount: {
+                $count: {},
+              },
             },
           },
         ])
@@ -445,6 +426,7 @@ module.exports = {
 
   //yearly sales report
   yearSalesReport: (proId, date) => {
+    year = parseInt(date);
     return new Promise(async (resolve, reject) => {
       let yearReport = await db
         .get()
@@ -452,75 +434,55 @@ module.exports = {
         .aggregate([
           {
             $match: {
-              products: {
-                $elemMatch: {
-                  product: proId,
-                  paymentStatus: { $ne: "Order Cancelled" },
-                },
+              year: year,
+              "products.paymentStatus": {
+                $ne: "order cancelled",
               },
+              "products.product": proId,
             },
           },
           {
             $unwind: "$products",
           },
           {
-            $project: {
-              totalAmount: 1,
-              products: "$products.product",
-              quantity: "$products.quantity",
-              orderDate: 1,
-              year: { $toString: "$year" },
-            },
-          },
-          {
             $match: {
-              year: date,
+              "products.product": {
+                $eq: proId,
+              },
             },
           },
           {
             $lookup: {
-              from: collection.PRODUCT_COLLECTION,
-              localField: "products",
+              from: "products",
+              localField: "products.product",
               foreignField: "_id",
-              as: "productSold",
+              as: "soldItem",
             },
           },
           {
-            $project: {
-              totalAmount: 1,
-              orderDate: 1,
-              quantity: 1,
-              productSold: { $arrayElemAt: ["$productSold", 0] },
-            },
+            $unwind: "$soldItem",
           },
           {
             $project: {
-              totalAmount: 1,
-              orderDate: 1,
-              productname: "$productSold.name",
-              quantity: 1,
+              _id: 1,
+              name: "$soldItem.name",
+              description: "$soldItem.Description",
+              price: "$soldItem.offerPrice",
+              quantity: "$products.quantity",
             },
           },
           {
             $group: {
               _id: {
-                totalAmount: "$totalAmount",
-                orderDate: "$orderDate",
-                productname: "$productname",
-                quantity: "$quantity",
+                price: "$price",
+                name: "$name",
               },
-              count: { $count: {} },
-            },
-          },
-          {
-            $project: {
-              prdoductname: "$_id.productname",
-              orderDate: "$_id.orderDate",
-              totalAmount: "$_id.totalAmount",
-              quantity: "$_id.quantity",
-              count: 1,
-              totalSold: { $sum: ["$quantity", "$count"] },
-              _id: 0,
+              qtysum: {
+                $sum: "$quantity",
+              },
+              itemcount: {
+                $count: {},
+              },
             },
           },
         ])
