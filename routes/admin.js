@@ -87,7 +87,7 @@ router.get("/delivered/:id", controller.deliveredStatus);
 
 router.get("/shipped/:id", controller.shippedStatus)
 
-router.get("/refund/:id", controller.refund)
+router.get("/refund", controller.refund)
 
 //banner mangement
 

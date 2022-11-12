@@ -644,10 +644,12 @@ module.exports = {
         resolve(response)
       }
 
-      if(checkCoupon.dateChecked && checkCoupon.minChecked)
+      if(checkCoupon && checkCoupon.dateChecked && checkCoupon.minChecked)
       {
         checkCoupon.couponVerified = true;
         resolve(checkCoupon)
+      } else  {
+        reject("coupon not found")
       }
 
     })

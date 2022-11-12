@@ -220,7 +220,8 @@ exports.shippedStatus = (req, res) => {
 };
 
 exports.refund = (req, res) => {
-  console.log(req.params.id);
+  console.log(req.query.orderID);
+  res.send("test")
 };
 //------------------banner mangement ----------//
 

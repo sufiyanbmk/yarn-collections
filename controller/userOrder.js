@@ -1,4 +1,5 @@
 const orderHelper = require("../helpers/orderHelper");
+const userCartHelper = require("../helpers/userCartHelper");
 
 module.exports = {
   order: (req, res) => {
@@ -50,7 +51,7 @@ module.exports = {
       applyCoupon.amount = Math.round(couponAmount);
       res.json(applyCoupon);
     } else {
-      res.json(response);
+      res.json(applyCoupon);
     }
   },
 };

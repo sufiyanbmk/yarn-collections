@@ -76,7 +76,7 @@
                                     <td class="text-end">
                                         <a href="/admin/order-details/{{this._id}}" class="btn btn-md rounded font-sm">Detail</a>
                                         {{#if this.cancelled}}
-                                        <a class="btn btn-danger" onclick="refund('{{this._id}}')">Refund</a>
+                                        <button id="refundBtn" class="btn btn-danger" onclick="refund('{{this._id}}')">Refund</button>
 
                                         {{else}}
                                         <div class="dropdown">
@@ -103,10 +103,13 @@ $(document).ready( function () {
 
 function refund(orderId){
     $.ajax({
-        url : '/refund',
+        url : 'refund',
         type :'get',
-        data :{
+        data : {
             orderID : orderId
+        },
+        success: () => {
+            $("#refundBtn").hide(500);
         }
     })
 }
