@@ -51,7 +51,7 @@
                                         <li class="nav-item">
                                             <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders"
                                                 role="tab" aria-controls="orders" aria-selected="false"><i
-                                                    class="fi-rs-shopping-bag mr-10"></i>Orders</a>
+                                                    class="fi-rs-shopping-bag mr-10"></i>OrderHistory</a>
                                         </li>
                                         {{!-- <li class="nav-item">
                                             <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab"
@@ -248,7 +248,7 @@
                                             </div>
                                             <div class="card-body">
                                                 <div class="table-responsive">
-                                                    <table class="table">
+                                                    <table id="orderhistory" >
                                                         <thead>
                                                             <tr>
                                                                 <th>Image</th>
@@ -256,6 +256,7 @@
                                                                 <th>Price</th>
                                                                 <th>Status</th>
                                                                 <th>orderDate</th>
+                                                                <th></th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -269,9 +270,9 @@
                                                                 <td>{{this.status}}</td>
                                                                 <td>{{this.orderDate}}</td>
                                                                 {{#if this.delivered}}
-                                                                <td><a href="/replace/{{this._id}}" class="btn-small d-block">Replace</a></td>
-                                                                {{else}}
-                                                                <td><a href="#" class="btn-small d-block">View</a></td>
+                                                                <td><a href="/replace/{{this._id}}/{{this.product}}" class="btn-small d-block">Return</a></td>
+                                                                {{else }}
+                                                                <td><a href="#" class="btn-small d-block"></a></td>
 
                                                                 {{/if}}
                                                             </tr>

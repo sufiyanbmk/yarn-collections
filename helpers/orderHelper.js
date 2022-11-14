@@ -144,16 +144,19 @@ module.exports = {
         userId: objectID(order.userId),
         paymentMethod: order.paymentMethod,
         totalAmount: total,
-        couponAmt : order.couponAmt,
+        couponAmt: order.couponAmt,
         products: products,
         status: status,
-        orderDate: new Date()
-        .toLocaleDateString("en-US", {
-          timeZone: "Asia/Kolkata", year: 'numeric', month: '2-digit', day: '2-digit'
+        orderDate: new Date().toLocaleDateString("en-US", {
+          timeZone: "Asia/Kolkata",
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
         }),
         orderTime: new Date().getHours() + ":" + new Date().getMinutes(),
-        month:new Date().getFullYear() + "-" +Number( new Date().getMonth()+1,),
-        year:new Date().getFullYear(),
+        month:
+          new Date().getFullYear() + "-" + Number(new Date().getMonth() + 1),
+        year: new Date().getFullYear(),
         time: new Date().getTime(),
       };
       db.get()
@@ -179,13 +182,13 @@ module.exports = {
             $match: {
               $and: [
                 { userId: objectID(userId) },
-                // {
-                //   products: {
-                //     $elemMatch: {
-                //       paymentStatus: "order placed",
-                //     },
-                //   },
-                // },
+                {
+                  products: {
+                    $elemMatch: {
+                      paymentStatus: "order placed",
+                    },
+                  },
+                },
               ],
             },
           },
@@ -260,7 +263,7 @@ module.exports = {
               Amount: 1,
               Mobile: 1,
               payment: 1,
-              status: 1,
+              status: "$products.paymentStatus",
               product: "$products.product",
               quantity: "$products.quantity",
               orderDate: 1,
@@ -283,6 +286,7 @@ module.exports = {
               status: 1,
               orderDate: 1,
               time: 1,
+              product: 1,
               products: {
                 $arrayElemAt: ["$cartItems", 0],
               },
@@ -359,9 +363,18 @@ module.exports = {
           {
             $project: {
               product: "$products.product",
-              status: "$products.status",
+              userId: 1,
+              status: "$products.paymentStatus",
               quantity: "$products.quantity",
+              paymentMethod: 1,
+              totalAmount: 1,
               productTotal: "$products.Total",
+              addressName: "$address.name",
+              addressCountru: "$address.country",
+              addressState: "$address.state",
+              addressPincode: "$address.pincode",
+              addressPhone: "$address.phone",
+              adddressEmail: "$address.email",
             },
           },
           {
@@ -375,9 +388,19 @@ module.exports = {
           {
             $project: {
               product: 1,
+              userId: 1,
+              product: 1,
               status: 1,
               quantity: 1,
+              paymentMethod: 1,
+              totalAmount: 1,
               productTotal: 1,
+              addressName: 1,
+              addressCountru: 1,
+              addressState: 1,
+              addressPincode: 1,
+              addressPhone: 1,
+              adddressEmail: 1,
               products: {
                 $arrayElemAt: ["$cartItems", 0],
               },
@@ -385,17 +408,38 @@ module.exports = {
           },
         ])
         .toArray();
-
       resolve(singleItems);
     });
   },
+  //admin status change
+  changeStatus: (details) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.ORDER_COLLECTION)
+        .updateOne(
+          {
+            _id: objectID(details.orderId),
+            "products.product": objectID(details.proId),
+          },
+          {
+            $set: {
+              "products.$.paymentStatus": details.action,
+            },
+          }
+        )
+        .then((response) => {
+          resolve(response);
+        });
+    });
+  },
+
   //admin order cancel
   cancelAdminOrder: (orderId) => {
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.ORDER_COLLECTION)
         .updateOne(
-          { _id: objectID(orderId) },
+          { _id: objectID(orderId), "products.product": objectID(p) },
           {
             $set: {
               status: "order cancelled",
@@ -426,19 +470,21 @@ module.exports = {
     });
   },
   //admin shipped status
-  shipped : (orderId) => {
+  shipped: (orderId) => {
     return new Promise((resolve, reject) => {
-      db.get().collection(collection.ORDER_COLLECTION)
-        .updateOne({ _id: objectID(orderId) },
+      db.get()
+        .collection(collection.ORDER_COLLECTION)
+        .updateOne(
+          { _id: objectID(orderId) },
           {
             $set: {
-              status: 'Shipped'
-            }
-          });
-    }).then(()=>{
-
+              status: "Shipped",
+            },
+          }
+        );
+    }).then(() => {
       resolve();
-    })
+    });
   },
 
   //razorpay
@@ -498,7 +544,7 @@ module.exports = {
   },
 
   //paypal
-  generatePaypal: (orderId, total,products) => {
+  generatePaypal: (orderId, total, products) => {
     return new Promise((resolve, reject) => {
       var create_payment_json = {
         intent: "sale",
@@ -605,56 +651,53 @@ module.exports = {
           }
         )
         .then((response) => {
-        
           resolve();
         });
     });
   },
 
   //-------------apply coupen in user side -----//
-  applyCoupon : (code,total,date)=>{
-    return new Promise(async(resolve,reject)=>{
-      let response = {}
-      let checkCoupon = await db.get().collection(collection.COUPON_COLLECTION).findOne({couponCode : code})
-      if(checkCoupon){
-        const expireDate = new Date(checkCoupon.date)
-        
-        if(expireDate >= date){
+  applyCoupon: (code, total, date) => {
+    return new Promise(async (resolve, reject) => {
+      let response = {};
+      let checkCoupon = await db
+        .get()
+        .collection(collection.COUPON_COLLECTION)
+        .findOne({ couponCode: code });
+      if (checkCoupon) {
+        const expireDate = new Date(checkCoupon.date);
+
+        if (expireDate >= date) {
           checkCoupon.dateChecked = true;
-          resolve(checkCoupon)
-          if(total >= checkCoupon.minAmt){
+          resolve(checkCoupon);
+          if (total >= checkCoupon.minAmt) {
             checkCoupon.minChecked = true;
+          } else {
+            response.minChecked = false;
+            response.maxAmountMsg =
+              "your maximum purchase should be" + checkCoupon.minAmt;
+            resolve(response);
           }
-          else{
-            response.minChecked = false
-            response.maxAmountMsg='your maximum purchase should be'+checkCoupon.minAmt
-            resolve(response)
-
-          }
-        }else{
+        } else {
           response.dateChecked = false;
-          response.dateInvalidMessage="Date is expired"
-          resolve(response)
+          response.dateInvalidMessage = "Date is expired";
+          resolve(response);
         }
-       
-      }
-      else{
+      } else {
         response.invalidCoupon = true;
-        response.invalidMessage="This coupon code is invalid"
-        resolve(response)
+        response.invalidMessage = "This coupon code is invalid";
+        resolve(response);
       }
 
-      if(checkCoupon && checkCoupon.dateChecked && checkCoupon.minChecked)
-      {
+      if (checkCoupon && checkCoupon.dateChecked && checkCoupon.minChecked) {
         checkCoupon.couponVerified = true;
-        resolve(checkCoupon)
-      } else  {
-        reject("coupon not found")
+        resolve(checkCoupon);
+      } else {
+        reject("coupon not found");
       }
-
-    })
-
+    });
   },
+  //--return in user side
   replaceOrder: (Id) => {
     return new Promise(async (resolve, reject) => {
       orderHistory = await db
@@ -691,6 +734,7 @@ module.exports = {
           },
           {
             $project: {
+              product: 1,
               Amount: 1,
               Mobile: 1,
               payment: 1,
@@ -710,6 +754,80 @@ module.exports = {
         ])
         .toArray();
       resolve(orderHistory);
+    });
+  },
+  //return status changing in user side
+  returnStatus: (orderId, proId) => {
+    console.log(orderId);
+    console.log(proId);
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.ORDER_COLLECTION)
+        .updateOne(
+          { _id: objectID(orderId), "products.product": objectID(proId) },
+          {
+            $set: {
+              "products.$.paymentStatus": "Requested Return",
+            },
+          }
+        )
+        .then((response) => {
+          console.log(response);
+          resolve(response);
+        });
+    });
+  },
+
+  //refund to get orderid and userid
+  orderIduserId: (orderId, proId) => {
+    return new Promise(async (resolve, reject) => {
+      const orderDetail = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .findOne({
+          _id: objectID(orderId),
+          "products.product": objectID(proId),
+        });
+      resolve(orderDetail);
+    }).catch(() => {
+      reject();
+    });
+  },
+
+  //refund
+  refund: (amount, userId) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.WALLET_COLLECTION)
+        .updateOne(
+          { user: objectID(userId) },
+          {
+            $inc: {
+              Total: amount,
+            },
+          }
+        )
+        .then((response) => {
+          resolve(response);
+        });
+    });
+  },
+  //refund return succes status change
+  returnStatusChange: (orderId, proId) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.ORDER_COLLECTION)
+        .updateOne(
+          { _id: objectID(orderId), "products.product": objectID(proId) },
+          {
+            $set: {
+              "products.$.paymentStatus": "Returned",
+            },
+          }
+        ).then((response)=>{
+          console.log(response)
+          resolve()
+        })
     });
   },
 };

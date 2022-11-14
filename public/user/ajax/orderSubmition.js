@@ -35,13 +35,6 @@ $("#replace").submit((e) => {
     type: "post",
     data: $("#replace").serialize(),
     success: (response) => {
-      Swal.fire({
-        position: "top-end",
-        icon: "success",
-        title: "Your work has been saved",
-        showConfirmButton: false,
-        timer: 1500,
-      });
       location.href = "/my-account";
     },
   });

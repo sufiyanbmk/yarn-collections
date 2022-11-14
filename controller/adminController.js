@@ -198,8 +198,15 @@ exports.orders = (req, res) => {
 
 exports.orderDetailsView = async (req, res) => {
   let productlist = await orderHelper.adminViewDetails(req.params.id);
-  let orderlist = await orderHelper.adminorderlist();
-  res.render("adminSide/orderDetails", { productlist, orderlist });
+  productlist.forEach(e =>{
+    if(e.status == 'Requested Return'){
+      e.return = true
+    }
+    else if(e.status == 'Delivered'|| e.status == 'Order Cancelled'|| e.status == 'Returned'){
+      e.displayNone = true
+    }
+  })
+  res.render("adminSide/orderDetails", { productlist});
 };
 
 exports.cancelOrder = (req, res) => {
@@ -214,15 +221,36 @@ exports.deliveredStatus = (req, res) => {
   });
 };
 
-exports.shippedStatus = (req, res) => {
+exports.shippedStatus = (req,res) => {
   orderHelper.shipped(req.params.id).then(() => {});
   res.redirect("/admin/order-management");
 };
 
-exports.refund = (req, res) => {
-  console.log(req.query.orderID);
-  res.send("test");
+exports.orderStatus = (req,res) => {
+  orderHelper.changeStatus(req.body).then(()=>{
+    res.json({status:true})
+  })
+}
+
+exports.refund =async (req, res) => {
+  const orderDetail =await orderHelper.orderIduserId(req.query.orderID,req.query.proId)
+  const orderId = orderDetail._id
+  const proId = orderDetail.products[0].product
+  const amount = orderDetail.products[0].price;
+  const userId = orderDetail.userId
+  const paymentMethod  = orderDetail.paymentMethod
+
+  if(paymentMethod != 'COD'){
+    orderHelper.refund(amount,userId).then(async (response)=>{
+      await orderHelper.returnStatusChange(orderId,proId)
+      res.json(response)
+    })
+  }
+  else{
+    res.json({status:false})
+  }
 };
+
 //------------------banner mangement ----------//
 
 exports.banners = (req, res) => {

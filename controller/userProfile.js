@@ -14,6 +14,9 @@ module.exports = {
       if (orderhistory.status === "Delivered") {
         orderhistory.delivered = true;
       }
+      else if(orderhistory.status === 'order cancelled'){
+        orderhistory.cancelled = true;
+      }
     });
     res.render("userSide/userAccount", {
       user: req.session.user,
@@ -64,15 +67,20 @@ module.exports = {
     });
   },
 
-  replaceOrder: async (req, res) => {
-    let replaceProduct = await orderHelper.replaceOrder(req.params.id);
+  returnOrder: async (req, res) => {
+    let returnProduct = await orderHelper.replaceOrder(req.params.id);
+    console.log(returnProduct)
     res.render("userSide/orderReplacement", {
-      replaceProduct,
+      returnProduct,
       user: req.session.user,
     });
   },
 
-  replaceOrderPost: (req, res) => {
-    res.json({ status: true });
+  returnOrderPost: (req, res) => {
+    orderHelper.returnStatus(req.body.orderId,req.body.proId).then((response)=>{
+
+      res.json(response);
+    })
+    
   },
 };

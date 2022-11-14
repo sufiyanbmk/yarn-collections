@@ -124,8 +124,8 @@ router.post("/account-address/:id", userauth, profile.profileAddress);
 
 router.get("/default-address/:id", profile.defaultAddress);
 
-router.get("/replace/:id", profile.replaceOrder);
+router.get("/replace/:id/:proId", profile.returnOrder);
 
-router.post("/replace-check", profile.replaceOrderPost);
+router.post("/replace-check", profile.returnOrderPost);
 
 module.exports = router;

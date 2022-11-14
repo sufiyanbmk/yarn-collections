@@ -22,7 +22,7 @@
                             </tr>
                             </thead>
                             <tbody>
-                                {{#each replaceProduct}}
+                                {{#each returnProduct}}
                                 <tr>
                                     <td><img  src='/uploads/{{this.products.imagefileName.[0]}}' class="img-cart"></td>
                                     <td><strong>{{this.products.name}}</strong><p>{{this.products.Category}}</p></td>
@@ -129,6 +129,8 @@
 						</div>
 						<div class="w-100"></div>
 						<div class="col-md-12">
+							<input value="{{returnProduct.[0]._id}}" name="orderId" hidden>
+							<input value="{{returnProduct.[0].product}}" name="proId" hidden>
 							{{!-- <div class="form-group mt-4">
 								<div class="radio">
 									<label class="mr-3"><input type="radio" name="optradio"> Create an Account? </label>
