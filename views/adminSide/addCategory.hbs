@@ -1,36 +1,54 @@
-<link href="https://cdn.jsdrelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
-  integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+
 {{>adminlinks}}
 
 {{>adminSidebar}}
- <main class="main-wrap">
+<main class="main-wrap">
     {{>adminHeader}}
-  <div class="container m-5">
-    <form onclick="return valid()" action="/admin/addCategory" method="post">
+    <div class="container m-5">
+        <form  action="/admin/addCategory" method="post" enctype="multipart/form-data">
 
-      <div class="form-group col-md-6">
-        <label for="exampleFormControlInput1">Catagory</label>
-        <input type="text" class="form-control form-control-sm" onkeyup="categoryvalidation()" name="categories"
-          id="catagory" required>
-      </div>
-    
-      <p style="color:red" id="error1"></p>
-      <div class="form-group">
-        <label for="exampleFormControlTextarea1">Description</label>
-        <input class="form-control" name="Description" id="description" style="width: 50rem;"
-          onkeyup="descriptionvalidation()" rows="3" required></input>
-      </div>
-      <p style="color:red" id="error2"></p>
-      <button class="btn btn-primary offset-8 my-5" type="submit">Add</button>
+            <div class="form-group col-md-6">
+                <label for="exampleFormControlInput1">Catagory</label>
+                <input type="text" class="form-control form-control-sm" onkeyup="categoryvalidation()" name="categories"
+                    id="catagory" required>
+            </div>
+            {{!-- <div class="form-group col-md-6">
+                <label for="exampleFormControlInput1">Catagory</label>
+                <input type="text" class="form-control form-control-sm" onkeyup="categoryvalidation()"
+                    name="subCategories" id="catagory" required>
+            </div> --}}
 
-    </form>
-    <a class="btn btn-warning  my-5" href="/admin/backCategory">Back to Catagory</a>
-  </div>
+            <p style="color:red" id="error1"></p>
+            <div class="form-group">
+                <label for="exampleFormControlTextarea1">Description</label>
+                <input class="form-control" name="Description" id="description" style="width: 50rem;"
+                    onkeyup="descriptionvalidation()" rows="3" required></input>
+            </div>
+            <p style="color:red" id="error2"></p>
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header ">
+                        <h4>Image</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="input-upload">
+                            <img src="assets/imgs/theme/upload.svg" alt="">
+                            <input class="form-control" type="file" name="catagoryimage" multiple required>
+                        </div>
+                    </div>
+                </div>
+                <button class="btn btn-primary offset-8 my-5" type="submit">Add</button>
+
+        </form>
+        <a class="btn btn-warning  my-5" href="/admin/backCategory">Back to Catagory</a>
+    </div>
 </main>
-{{>adminSidebar}}
+
+{{>adminjs}}
 
 
 <!-- JavaScript Bundle with Popper -->
-<script src="/admin/adminFormValidation/addCatagory.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
-  integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+{{!-- <script src="/admin/adminFormValidation/validation.js"></script> --}}
+{{!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3"
+    crossorigin="anonymous"></script> --}}

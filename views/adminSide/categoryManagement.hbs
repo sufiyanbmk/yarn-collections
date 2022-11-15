@@ -15,7 +15,9 @@
                 <thead>
                     <tr>
                         <th style="width: 10px">#</th>
+                        <th>image</th>
                         <th>catagory</th>
+                        {{!-- <th>Sub Catagories</th> --}}
                         <th>Description</th>
                         <th style="width: 150px">Action</th>
                     </tr>
@@ -25,7 +27,14 @@
 
                     <tr>
                         <td>{{inc @index }}</td>
-                        <td>{{this.Subcategorie}}</td>
+                         <td>
+                                    <div>
+                                        <img style="width:70px; height:70px border-radius: 0;!important"
+                                            src='/uploads/{{this.imagefileName.[0]}}'>
+                                    </div>
+                                </td>
+                        <td>{{this.categories}}</td>
+                        {{!-- <td>{{this.Subcategorie}}</td> --}}
                         <td>
                             <div class="">
                                 <div style="width: 55%">{{this.Description}}

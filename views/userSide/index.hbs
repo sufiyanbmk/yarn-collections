@@ -50,38 +50,21 @@
 	      </div>
 	    </div>
     </section>
+
+
 <section class="hero-section">
   <div class="container card-grid offset-3">
-    {{!-- <a class="card" href="#">
-      <div class="card__background" style="background-image: url(https://images.unsplash.com/photo-1557177324-56c542165309?ixlib=rb-1.2.1&auto=format&fit=crop&w=1950&q=80)"></div>
+{{#each Category}}
+<a class="card" href="/catagory-wise/{{this.categories}}">
+      <div class="card__background" style="background-image: url(/uploads/{{this.imagefileName.[0]}})"></div>
       <div class="card__content">
-        <p class="card__category">Category</p>
-        <h3 class="card__heading">Example Card Heading</h3>
-      </div>
-    </a> --}}
-    <a class="card" href="/womenProducts/Women">
-      <div class="card__background" style="background-image: url(/images/about-1.jpg)"></div>
-      <div class="card__content">
-        <p class="card__category">Category</p>
-        <h3 class="card__heading">WOMEN</h3>
+        <p class="card__category">{{this.Description}}</p>
+        <h3 class="card__heading">{{this.categories}}</h3>
       </div>
     </a>
-    <a class="card" href="/kidsProducts/Kids">
-      <div class="card__background" style="background-image: url(/images/children.jpg)"></div>
-      <div class="card__content">
-        <p class="card__category">Category</p>
-        <h3 class="card__heading">KIDS</h3>
-      </div>
-    </li>
-    <a class="card" href="/menProducts/Men">
-      <div class="card__background" style="background-image: url(/images/positive-emotions-beautiful-young-joyful-dark-skinned-african-guy-with-curly-hair-fashionable-black-leather-jacket-tan-glasses-smiling-with-teeth-gesticulating-with-hand-after-seeing.webp)"></div>
-      <div class="card__content">
-        <p class="card__category">Category</p>
-        <h3 class="card__heading">MEN</h3>
-      </div>
-    </a>
-  <div>
-   </section>
+{{/each}}
+  </div>
+</section>
 
 
 
