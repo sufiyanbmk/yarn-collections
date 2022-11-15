@@ -1,20 +1,41 @@
 const userHelper = require("../helpers/userHelper");
 const adminHelper = require("../helpers/adminHelper");
+const whislistHelper = require("../helpers/whislistHelper");
 
 module.exports = {
-  getWomenProduct: async (req, res) => {
-    let products = await userHelper.getCatagoryProducts(req.params.catagory);
-    res.render("userSide/women", { products, user: req.session.user });
-  },
-  
-  getKidsProduct: async (req, res) => {
-    let products = await userHelper.getCatagoryProducts(req.params.catagory);
-    res.render("userSide/kidsProduct", { products, user: req.session.user });
-  },
-  
-  getMensProduct: async (req, res) => {
-    let products = await userHelper.getCatagoryProducts(req.params.catagory);
-    res.render("userSide/menProduct", { products, user: req.session.user });
+  getCatagoryProducts : async(req,res) =>{
+    const pageNum = req.query.page;
+    const perPage = 2;
+    let products = await userHelper.getCatagoryProducts(req.params.catagory, pageNum, perPage);
+    let count = await userHelper.getCatagoryProductsCount(req.params.catagory);
+    let pages = Math.ceil(count/perPage);
+    let pagesArray = Array.from({length: pages}, (_, i) => i + 1);
+    if(req.session.user ){
+      let [whislist] = await whislistHelper.getuserWhislist(req.session.user._id)
+          if(whislist){
+
+            for (i = 0; i < products.length; i++) {
+              // products[i].cart_id = cart._id
+              for (j = 0; j < whislist.product.length; j++) {
+                  let a = '' + products[i]._id
+                  let b = '' + whislist.product[j]
+                  if (a == b) {
+                      products[i].wishlist = true
+                      break;
+                  } else {
+                      products[i].wishlist = false
+                  }
+                  
+              }
+            }
+          }
+          
+        }
+    let banner = await adminHelper.viewBanner()
+    console.log(banner)
+
+    res.render("userSide/women", { products, user: req.session.user, 
+      pagesArray,banner});
   },
 
   singleProduct: (req, res) => {

@@ -31,13 +31,14 @@ router.get("/graphData", controller.graphData);
 
 router.get("/piechart", controller.pieChartData);
 
+router.get("/payment-graph", controller.paymentGraph)
 //category
 
 router.get("/categorymange", controller.catagory);
 
 router.get("/addCategory", controller.addCatagory);
 
-router.post("/addCategory", controller.addCatagoryPost);
+router.post("/addCategory", store.array("catagoryimage", 2), controller.addCatagoryPost);
 
 router.get("/backCategory", controller.backCatagory);
 

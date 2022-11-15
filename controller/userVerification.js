@@ -18,7 +18,9 @@ module.exports = {
       if (response.status) {
         req.session.userLogin = true;
         req.session.user = response.user;
-        res.redirect("/");
+        const redirect = req.session.returnUrl || '/'
+        delete req.session.returnUrl
+        res.redirect(redirect);
       } else if (response.ban) {
         req.session.error = "Sorry ! You cant access ";
         res.redirect("/login");

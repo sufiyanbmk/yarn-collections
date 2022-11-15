@@ -41,7 +41,7 @@
                         <div class="row">
                             <div class="col-md-4">
                                 <div class="dashboard-menu">
-                                    <ul class="nav flex-column" role="tablist">
+                                    <ul class="nav flex-column" role="tablist" id="myTab">
                                         <li class="nav-item">
                                             <a class="nav-link active" id="dashboard-tab" data-bs-toggle="tab"
                                                 href="#dashboard" role="tab" aria-controls="dashboard"
@@ -787,7 +787,7 @@
                                                     <div class="card-body">
                                                       
                                                         <address>
-                                                            {{this.couponCode}}<br>
+                                                            {{this.codeGeneraor}}<br>
                                                             {{this.description}} <br>{{this.value}}%
                                                             <br>Expire date {{this.date}}
                                                         </address>
@@ -848,6 +848,8 @@
 
     <script>
         $(function () {
+            var hash = window.location.hash;
+            $('#myTab a[href="' + hash + '"]').tab('show');
 
             // contact form animations
             $('#contact').click(function () {

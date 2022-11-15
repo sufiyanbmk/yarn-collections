@@ -2,12 +2,16 @@ const { response } = require("../app");
 const adminHelper = require("../helpers/adminHelper");
 const orderHelper = require("../helpers/orderHelper");
 const store = require("../middleware/multer");
+const Couponcodes = require('voucher-code-generator');
 const adminDb = "admin";
 const passwordDb = "123";
 
-exports.home = (req, res, next) => {
+exports.home = async (req, res, next) => {
   if (req.session.adminlogedIn) {
-    res.render("adminSide/adminPannel");
+    let profit = await adminHelper.revenue();
+    let total = await adminHelper.totalOrder();
+   
+    res.render("adminSide/adminPannel",{profit,total});
   } else {
     res.render("adminSide/adminlogin", { error: req.session.validation });
     req.session.validation = false;
@@ -18,7 +22,7 @@ exports.loginPost = (req, res, next) => {
   var password = req.body.password;
   if (admin === adminDb && password === passwordDb) {
     req.session.adminlogedIn = true;
-    res.redirect("/admin/dashboard");
+    res.redirect("/admin");
   } else {
     console.log("incoore");
     req.session.validation = "Invalid username or password";
@@ -33,8 +37,8 @@ exports.signOut = (req, res) => {
 
 //----------dash board -------------//
 
-exports.dashboard = (req, res) => {
-  res.render("adminSide/adminPannel");
+exports.dashboard =async (req, res) => {
+  res.redirect("/admin/");
 };
 
 exports.graphData = async (req, res) => {
@@ -59,6 +63,17 @@ exports.pieChartData = async (req, res) => {
   res.json({ value: value, pay: pay });
 };
 
+exports.paymentGraph = async (req,res) => {
+  let paymentGraph = await adminHelper.paymenttotal();
+  value = paymentGraph.map((value,index,array) => {
+    return value.totalAmount;
+  });
+  let method = paymentGraph.map((value,index,array) => {
+    return value._id
+  })
+  res.json({value:value, pay:method})
+}
+
 //-----------------catagory-------------//
 
 exports.catagory = (req, res) => {
@@ -72,7 +87,14 @@ exports.addCatagory = (req, res) => {
 };
 
 exports.addCatagoryPost = (req, res) => {
-  adminHelper.addCategories(req.body).then((Categorylist) => {
+  console.log(req.body)
+  const loc = req.files.map(filename);
+  function filename(file) {
+    return file.filename;
+  }
+  let CatagoryDetails = req.body;
+  CatagoryDetails.imagefileName = loc;
+  adminHelper.addCategories(CatagoryDetails).then((Categorylist) => {
     res.redirect("/admin/categorymange");
   });
 };

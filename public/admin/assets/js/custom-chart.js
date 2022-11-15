@@ -32,7 +32,6 @@
               "Sep",
               "Oct",
               "Nov",
-              
             ],
             datasets: [
               {
@@ -45,7 +44,7 @@
               },
               {
                 label: "Products",
-                 tension: 0.3,
+                tension: 0.3,
                 // fill: true,
                 // backgroundColor: "rgba(4, 209, 130, 0.2)",
                 // borderColor: "rgb(4, 209, 130)",
@@ -120,37 +119,86 @@
 
   //pie chart
   if ($("#myChart1").length) {
-  $.ajax({
-    url:'piechart',
-    success:(res)=>{
+    $.ajax({
+      url: "piechart",
+      success: (res) => {
         var xValues = res.value;
         var yValues = res.pay;
-        var barColors = [
-          "#b91d47",
-          "#00aba9",
-          "#2b5797",
-        
-        ];
-        
+        var barColors = ["#b91d47", "#00aba9", "#2b5797"];
+
         new Chart("myChart1", {
           type: "pie",
           data: {
             labels: res.pay,
-            datasets: [{
-              backgroundColor: barColors,
-              data: res.value
-            }]
+            datasets: [
+              {
+                backgroundColor: barColors,
+                data: res.value,
+              },
+            ],
           },
           options: {
             title: {
               display: true,
-              text: "World Wide Wine Production 2018"
-            }
-          }
+              text: "World Wide Wine Production 2018",
+            },
+          },
         });
-        
-    }
-  })
-}
+      },
+    });
+  }
+  //payment graph
+  if ($("#myChart3").length) {
+    $.ajax({
+      url: "payment-graph",
+      success: (res) => {
+        var ctx = document.getElementById("myChart3").getContext("2d");
+        var chart = new Chart(ctx, {
+          // The type of chart we want to create
+          type: "bar",
+          options: {
+            scales: {
+              xAxes: [
+                {
+                  type: "time",
+                },
+              ],
+            },
+          },
+          // The data for our dataset
+          data: {
+            labels: res.pay,
+            datasets: [
+              {
+                label: "Sales",
+                tension: 0.3,
+                fill: true,
+                backgroundColor: "rgba(44, 120, 220, 0.2)",
+                borderColor: "rgba(44, 120, 220)",
+                data: res.value,
+              },
+              {
+                label: "Products",
+                tension: 0.3,
+                // fill: true,
+                // backgroundColor: "rgba(4, 209, 130, 0.2)",
+                // borderColor: "rgb(4, 209, 130)",
+                data: [30, 10, 27, 19, 33, 15, 19, 20, 24, 15, 37, 6],
+              },
+            ],
+          },
+          options: {
+            plugins: {
+              legend: {
+                labels: {
+                  usePointStyle: true,
+                },
+              },
+            },
+          },
+        });
+      },
+    });
+  } //End if
 })(jQuery);
 

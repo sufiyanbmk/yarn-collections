@@ -63,13 +63,18 @@
                                    
                                 </select>
                             </div>
-                            <div class="input-group mb-3">
-                                <label for="name" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">
-                                    Sub Catagory
-                                </label>
-                                <input id="name" name="SubCatagory" type="text" onkeyup="fname()"
-                                    class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" required>
-                            </div>
+                             {{!-- <div class="input-group mb-3">
+                                <label for="category"
+                                    class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Category</label>
+                                <select name="Category" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7" id="category" onkeyup="category()" required>
+                                    <option >selectone</option>
+                                    {{#each subCatagories}}
+                                    <option >{{this.subCategories}}</option>
+                                    {{/each}}
+                                   
+                                </select>
+                            </div> --}}
+                         
 
                               <p id="error3" style="color: red;"></p>
                             <div class="input-group mb-3">

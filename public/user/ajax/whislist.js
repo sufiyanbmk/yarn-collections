@@ -1,11 +1,12 @@
+const { response } = require("../../../app");
+
 function whislistAdd(prodId) {
   $.ajax({
     url: "/addWhislist/" + prodId,
     type: "post",
     success: (response) => {
-
         swal("Good job!", "Added to Whislist!", "success");
-        document.getElementsByClassName('whislistbtn').style.color = "#ff0000";
+        document.getElementById('whislistbtn').style.color = '#ff0000';
     },
   });
 }
@@ -16,7 +17,25 @@ function deleteWhislist(prodId) {
     url: "/whislistDelete/" + prodId,
     type: "delete",
     success: (response) => {
-      location.reload();
+      // location.reload();
+      $("#whislistTable").load(location.href + " #whislistTable");
+
     },
   });
+}
+
+//whislist remove
+
+function whislistRemove(proId){
+  $.ajax({
+    url:"/whislistDelete/" + proId,
+    type:"delete",
+    success: (response) =>{
+      swal("Bad job!", "Remove From Whislist!", "success" );
+      // $("#productCard").load();
+      // $("#productCard").load(location.href + " #productCard");
+      // document.getElementById('removeWhislist').style.color = '#FFFFFF';
+
+    }
+  })
 }

@@ -25,7 +25,6 @@ function cpassword(){
         error4.innerHTML=''
         return true
     }
-    
 }
 function newpassword(){
     var newpass=document.getElementById('new').value

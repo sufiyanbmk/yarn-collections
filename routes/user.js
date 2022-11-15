@@ -21,6 +21,7 @@ const order = require("../controller/userOrder");
 const profile = require("../controller/userProfile");
 
 let userauth = function (req, res, next) {
+  req.session.returnUrl = req.originalUrl
   if (req.session.userLogin) {
     next();
   } else {
@@ -60,11 +61,7 @@ router.get("/logout", verifications.logout);
 
 //-----------------products view-------------------//
 
-router.get("/womenProducts/:catagory", products.getWomenProduct);
-
-router.get("/kidsProducts/:catagory", products.getKidsProduct);
-
-router.get("/menProducts/:catagory", products.getMensProduct);
+router.get("/catagory-wise/:catagory",userauth, products.getCatagoryProducts)
 
 router.get("/productview/:id", products.singleProduct);
 
@@ -114,7 +111,7 @@ router.post("/apply-coupon", order.applyCoupon);
 
 //---------------user profile account---------//
 
-router.get("/my-account", profile.profile);
+router.get("/my-account",userauth, profile.profile);
 
 router.put("/edit-profile", profile.editProfile);
 

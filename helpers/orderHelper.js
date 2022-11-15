@@ -663,7 +663,7 @@ module.exports = {
       let checkCoupon = await db
         .get()
         .collection(collection.COUPON_COLLECTION)
-        .findOne({ couponCode: code });
+        .findOne({ codeGeneraor: code });
       if (checkCoupon) {
         const expireDate = new Date(checkCoupon.date);
 
