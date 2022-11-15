@@ -3,7 +3,10 @@ const userCartHelper = require("../helpers/userCartHelper");
 
 module.exports = {
   order: (req, res) => {
-    res.render("userSide/orderplaced");
+    userCartHelper.orderRemoveCart(req.session.user._id).then((response)=>{
+
+      res.render("userSide/orderplaced");
+    })
   },
 
   viewOrder: async (req, res) => {
@@ -33,9 +36,13 @@ module.exports = {
   paypalVerify: (req, res) => {
     const payerId = req.query.PayerID;
     const paymentId = req.query.paymentId;
-    orderHelper.verifyPaypal(payerId, paymentId).then(() => {
+    orderHelper.verifyPaypal(payerId, paymentId,req.session.paypalTotal).then(() => {
       res.redirect("/orderplaced");
     });
+  },
+
+  cancelPaypal:() => {
+    res.redirect("/cart")
   },
 
   applyCoupon: async (req, res) => {

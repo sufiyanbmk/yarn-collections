@@ -1,5 +1,6 @@
 var db = require('../config/connection')
 var collection = require('../config/collection')
+const { response } = require('../app')
 const objectID = require('mongodb').ObjectId
 
 
@@ -216,5 +217,16 @@ module.exports = {
             }
 
         })
-    }    
+    },    
+  //removing cart when ordered 
+  orderRemoveCart: (userId) =>{
+    return new Promise(async(resolve,reject) => {
+       await db.get()
+        .collection(collection.CART_COLLECTION)
+        .deleteOne({ user: objectID(userId) }).then((response)=>{
+
+            resolve(response)
+        })
+    })
+  }
 }    

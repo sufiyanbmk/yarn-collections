@@ -107,6 +107,8 @@ router.post("/verify-payment", order.razorPayVerify);
 
 router.get("/verify-paypal", order.paypalVerify);
 
+router.get("/cancel-paypal",order.cancelPaypal)
+
 router.post("/apply-coupon", order.applyCoupon);
 
 //---------------user profile account---------//

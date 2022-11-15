@@ -83,19 +83,26 @@ exports.catagory = (req, res) => {
 };
 
 exports.addCatagory = (req, res) => {
-  res.render("adminSide/addCategory");
+  res.render("adminSide/addCategory",{invalidCatagory : req.session.invalidCatagory});
+  req.session.invalidCatagory = false;
 };
 
 exports.addCatagoryPost = (req, res) => {
-  console.log(req.body)
   const loc = req.files.map(filename);
   function filename(file) {
     return file.filename;
   }
   let CatagoryDetails = req.body;
   CatagoryDetails.imagefileName = loc;
-  adminHelper.addCategories(CatagoryDetails).then((Categorylist) => {
-    res.redirect("/admin/categorymange");
+  adminHelper.addCategories(CatagoryDetails).then((response) => {
+    if(response.catagoryExist){
+      req.session.invalidCatagory = "This Catagory name is already exist"
+      res.redirect("/admin/addCategory")
+    }
+    else{
+
+      res.redirect("/admin/categorymange");
+    }
   });
 };
 

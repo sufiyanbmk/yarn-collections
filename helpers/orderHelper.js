@@ -130,7 +130,7 @@ module.exports = {
       products.forEach((Element) => {
         Element.paymentStatus = "order placed";
       });
-      let status = order.paymentMethod === "COD" ? "Order Placed" : "pending";
+      let status = order.paymentMethod === "COD" ? "Success" : "pending";
       let orderObj = {
         address: {
           name: address.details.fname,
@@ -163,9 +163,9 @@ module.exports = {
         .collection(collection.ORDER_COLLECTION)
         .insertOne(orderObj)
         .then((response) => {
-          db.get()
-            .collection(collection.CART_COLLECTION)
-            .deleteOne({ user: objectID(order.userId) });
+          // db.get()
+          //   .collection(collection.CART_COLLECTION)
+          //   .deleteOne({ user: objectID(order.userId) });
 
           resolve(response.insertedId);
         });
@@ -542,9 +542,76 @@ module.exports = {
         });
     });
   },
+//paypal items taking 
+paypalItems :(user,orderId)=>{
+
+  
+      return new Promise(async(resolve, reject) => {
+        let OrderItems= await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+          {
+            $match:{
+              _id:orderId
+            }
+          },{
+            $unwind:'$products'
+          },
+          {
+            $lookup: {
+              from: collection.PRODUCT_COLLECTION,
+              localField: "products.product",
+              foreignField: "_id",
+              as: "orderitem",
+            },
+          },
+          {
+            $project: {
+              proid: "$products.product",
+              orderlist: {
+                $arrayElemAt: ["$orderitem", 0],
+              },
+              quantity: "$products.quantity",
+            },
+          },
+          {
+            $project: {
+              _id:0,
+              name: "$orderlist.name",
+              total: "$orderlist.offerPrice",
+              quantity: 1,
+            },
+          },
+          {
+            $addFields: {
+              price: {
+                $toInt: ["$total"],
+              },
+            },
+          },
+          {
+            $project: {
+              name: "$name",
+              sku: "item",
+              price: {
+                $round: [
+                  {
+                    $multiply: ["$price", 0.012],
+                  },
+                  0,
+                ],
+              },
+              currency: "USD",
+              quantity: "$quantity",
+            },
+          }
+        ]).toArray()
+        resolve(OrderItems)
+      })
+    
+
+},
 
   //paypal
-  generatePaypal: (orderId, total, products) => {
+  generatePaypal: (items,total) => {
     return new Promise((resolve, reject) => {
       var create_payment_json = {
         intent: "sale",
@@ -553,24 +620,16 @@ module.exports = {
         },
         redirect_urls: {
           return_url: "http://localhost:3000/verify-paypal",
-          cancel_url: "http://cancel.url",
+          cancel_url: "http://localhost:3000/cancel-paypal",
         },
         transactions: [
           {
             item_list: {
-              items: [
-                {
-                  name: "item",
-                  sku: "item",
-                  price: "1.00",
-                  currency: "USD",
-                  quantity: 1,
-                },
-              ],
+              items: items
             },
             amount: {
               currency: "USD",
-              total: "1.00",
+              total: total,
             },
             description: "This is the payment description.",
           },
@@ -581,14 +640,13 @@ module.exports = {
         if (error) {
           throw error;
         } else {
-          console.log("Create Payment Response");
-          console.log(payment);
+          console.log("Create Payment Response");    
           resolve(payment);
         }
       });
     });
   },
-  verifyPaypal: (payerId, paymentId) => {
+  verifyPaypal: (payerId, paymentId,total) => {
     return new Promise((resolve, reject) => {
       const execute_payment_json = {
         payer_id: payerId,
@@ -596,7 +654,7 @@ module.exports = {
           {
             amount: {
               currency: "USD",
-              total: "1.00",
+              total: total ,
             },
           },
         ],
@@ -617,6 +675,18 @@ module.exports = {
       );
     });
   },
+  // wallet purchase
+  walletPurchase : (userId,price) =>{
+    return new Promise((resolve,reject) => {
+      db.get().collection(collection.WALLET_COLLECTION).updateOne({user :objectID(userId)},
+      {
+        $inc: {Total: parseInt(-price)}
+      }).then(()=>{
+        resolve();
+      })
+    })
+  },
+
   //my account address
   addAccountAddress: (userId, details, addressID) => {
     addressForm = {

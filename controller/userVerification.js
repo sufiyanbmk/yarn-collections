@@ -65,7 +65,9 @@ module.exports = {
 
   otpValidPost: (req, res) => {
     userhelpers.otp(req.body.mobilenumber).then((response) => {
-      if (response) {
+        
+      if (response.status) {
+        // req.session.otpuser = response.user
         client.verify
           .services(config.serviceID)
           .verifications.create({
@@ -74,6 +76,7 @@ module.exports = {
           })
           .then((data) => {
             req.session.mobilenumber = data.to;
+            // req.session.otpuser = response.user
             res.redirect("/otpValid");
           });
       } else {
@@ -116,6 +119,7 @@ module.exports = {
       .then((data) => {
         if (data.valid) {
           req.session.userLogin = true;
+          // req.session.user = response.user;
           res.redirect("/");
         } else {
           req.session.otpfail = "wrong";

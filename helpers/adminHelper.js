@@ -10,13 +10,22 @@ var objectID = require("mongodb").ObjectId;
 
 module.exports = {
   addCategories: (Categorylist) => {
-    return new Promise((resolve, reject) => {
-      db.get()
-        .collection(collection.CATEGORY_COLLECTION)
-        .insertOne(Categorylist)
-        .then((data) => {
-          resolve(data);
-        });
+    return new Promise(async (resolve, reject) => {
+      let catagoryExist = await db.get().collection(collection.CATEGORY_COLLECTION).findOne({categories : Categorylist.categories})
+      if(catagoryExist){
+        data = {};
+        data.catagoryExist = true;
+        resolve(data)
+      } 
+      else{
+        
+        db.get()
+          .collection(collection.CATEGORY_COLLECTION)
+          .insertOne(Categorylist)
+          .then((data) => {
+            resolve(data);
+          });
+      }
     });
   },
   viewCategories: () => {

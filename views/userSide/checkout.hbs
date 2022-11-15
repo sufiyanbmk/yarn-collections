@@ -215,8 +215,8 @@
 									<div class="form-group">
 									<div class="col-md-12">
 										<div class="radio">
-											<label><input type="radio" name="paymentMethod" value="paypal" class="mr-2">
-												Paypal</label>
+											<label><input type="radio" name="paymentMethod" value="wallet" class="mr-2">
+												Wallet</label>
 										</div>
 									</div>
 								</div>
@@ -259,13 +259,15 @@
 				couponAmt:couponAmt
 			},
 			success: (response) => {
-				console.log(response)
 				if (response.codSuccess) {
-
+					
 					document.location.href = '/orderplaced'
 				} else if(response.unknown)  {
 					
 					razorpayPayment(response)
+				}
+				else if(response.walletSucces){
+					document.location.href = '/orderplaced'
 				}
 				else{
 				    

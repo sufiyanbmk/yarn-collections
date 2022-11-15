@@ -1,6 +1,7 @@
 const orderHelper = require("../helpers/orderHelper");
 const userCartHelper = require("../helpers/userCartHelper");
 const { v4: uuidv4 } = require("uuid");
+const userHelper = require("../helpers/userHelper");
 
 module.exports = {
   checkoutPage: async (req, res) => {
@@ -54,7 +55,7 @@ module.exports = {
     let totalPrice = await userCartHelper.getTotalAmount(req.session.user._id);
     orderHelper
       .placeOrder(req.body, products, address, totalPrice)
-      .then((orderId) => {
+      .then(async (orderId) => {
         if (req.body["paymentMethod"] == "COD") {
           res.json({ codSuccess: true });
         } else if (req.body["paymentMethod"] == "Razorpay") {
@@ -62,9 +63,25 @@ module.exports = {
             response.unknown = true;
             res.json(response);
           });
-        } else {
+        }
+        else if(req.body["paymentMethod"] == "wallet"){
+          let wallet = await userHelper.getWallet(req.session.user._id);
+          if(wallet.Total >= totalPrice){
+            orderHelper.walletPurchase(req.session.user._id,totalPrice).then(() =>{
+              console.log('jidjfskdfjslkdfjsdlfjosdlf')
+              res.json({walletSucces:true})
+            })
+          }
+        } 
+        
+        else {
+          let items = await orderHelper.paypalItems(req.session.user._id,orderId)
+          total = items.reduce(function (accumulator, items) {
+            return accumulator + items.price * items.quantity;
+          }, 0);
+          req.session.paypalTotal = total;
           orderHelper
-            .generatePaypal(orderId, totalPrice, products)
+            .generatePaypal(items,total)
             .then((payment) => {
               for (let i = 0; i < payment.links.length; i++) {
                 if (payment.links[i].rel === "approval_url") {

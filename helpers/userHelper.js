@@ -136,14 +136,22 @@ module.exports = {
         .collection(collection.USER_COLLECTION)
         .findOne({ phoneNo: userNum })
         .then((response) => {
+          console.log(response)
           if (response) {
-            response.status = true;
-            response.user = response;
-            console.log(response);
-            resolve(response);
+            if(response.banned == false){
+
+              response.status = true;
+              response.user = response;
+              resolve(response);
+            }
+            else{
+              console.log('blocked user')
+              response.status = false
+              resolve(response)
+            }
           } else {
             console.log("failed");
-            resolve(response);
+            // resolve(response);
           }
         });
     });
