@@ -1,9 +1,13 @@
 const whislistHelper = require("../helpers/whislistHelper");
 
 module.exports = {
-  whislist: async (req, res) => {
-    let products = await whislistHelper.viewWhislist(req.session.user._id);
-    res.render("userSide/whislist", { user: req.session.user, products });
+  whislist: async (req, res, next) => {
+    try {
+      let products = await whislistHelper.viewWhislist(req.session.user._id);
+      res.render("userSide/whislist", { user: req.session.user, products });
+    } catch (error) {
+      next(error);
+    }
   },
 
   addToWhislist: (req, res) => {
@@ -21,5 +25,4 @@ module.exports = {
         res.json({ status: true });
       });
   },
-
 };

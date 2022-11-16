@@ -1,79 +1,83 @@
 {{>userhead}}
 {{>userHeader}}
 
-	
+
 <section class="ftco-section ftco-cart">
-			<div class="container">
-				<div class="row">
-    			<div class="col-md-12 ftco-animate">
-    				<div class="cart-list">
-	    				<table class="table">
-						    <thead class="thead-primary">
-						      <tr class="text-center">
-						        <th>Image</th>
-						        <th>Product</th>
-						    
-						        <th>Quantity</th>
-						        <th>Total</th>
-						        <th>Payment</th>
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12 ftco-animate">
+				<div class="cart-list">
+					<table class="table">
+						<thead class="thead-primary">
+							<tr class="text-center">
+								<th>Image</th>
+								<th>Product</th>
+
+								<th>Quantity</th>
+								<th>Total</th>
+								<th>Payment</th>
 								<th>status</th>
 								<th>orderDate</th>
 								<th></th>
-						      </tr>
-						    </thead>
-						    <tbody>
-								{{#each orderList}}
-							
-						      <tr class="text-center">
-						        <td class="image-prod"><img class="img" src='/uploads/{{this.products.imagefileName.[0]}}'></img></td>
-						        {{!-- <td class="product-remove"><a href="#"><span class="ion-ios-close"></span></a></td> --}}
-						        
-						        
-						        <td class="product-name">
-						        	<h3>{{this.products.name}}</h3>
-						        	<p>{{this.products.Description}}</p>
-						        </td>
-						        
-						        
-						        
-						        <td class="quantity">
-						        	<div class="input-group mb-3">
-					             	<input type="text" name="quantity" class="quantity form-control input-number" value="{{this.quantity}}" min="1" max="100">
-					          	</div>
-					          </td>
-						        
-						        <td class="total">${{this.productTotal}}</td>
+							</tr>
+						</thead>
+						<tbody>
+							{{#each orderList}}
+
+							<tr class="text-center">
+								<td class="image-prod"><img class="img"
+										src='/uploads/{{this.products.imagefileName.[0]}}'></img></td>
+								{{!-- <td class="product-remove"><a href="#"><span class="ion-ios-close"></span></a>
+								</td> --}}
+
+
+								<td class="product-name">
+									<h3>{{this.products.name}}</h3>
+									<p>{{this.products.Description}}</p>
+								</td>
+
+
+
+								<td class="quantity">
+									<div class="input-group mb-3">
+										<input type="text" name="quantity" class="quantity form-control input-number"
+											value="{{this.quantity}}" min="1" max="100">
+									</div>
+								</td>
+
+								<td class="total">${{this.productTotal}}</td>
 								<td>{{this.paymentMethod}}</td>
 								<td>{{this.paymentStatus}}</td>
 								<td>{{this.orderDate}}</td>
 								{{#if this.cancelled}}
 								{{else}}
-								<td ><button onclick="orderCanceled('{{this._id}}')" class="btn btn-primary">Cancel order</button></td>
-						      </tr><!-- END TR-->
-							  {{/if}}
-						     {{/each}}
-							
+								<td><button onclick="orderCanceled('{{this._id}}')" class="btn btn-primary">Cancel
+										order</button></td>
+							</tr><!-- END TR-->
+							{{/if}}
+							{{/each}}
 
-						    </tbody>
-						  </table>
-					  </div>
-    			</div>
-    		</div>
-    		
+
+						</tbody>
+					</table>
+				</div>
 			</div>
-		</section>
+		</div>
+
+	</div>
+</section>
 {{>userfooter}}
 <script>
-	function orderCanceled(userId){
-		
-	$.ajax({
-    url: "/order-cancel/" + userId,
-    type: "get",
-    success: (response) => {
-      location.reload();
-    },
-  });
-}
+	function orderCanceled(userId) {
 
-	
+		$.ajax({
+			url: "/order-cancel/" + userId,
+			type: "get",
+			success: (response) => {
+				location.reload();
+			},
+		});
+	}
+
+
 </script>

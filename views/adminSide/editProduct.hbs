@@ -21,11 +21,11 @@
     {{>adminlinks}}
 </head>
 
-<body >
-  {{>adminSidebar}}
-  
+<body>
+    {{>adminSidebar}}
 
- <main class="main-wrap"> 
+
+    <main class="main-wrap">
 
         <div class="row tm-mt-big">
             <div class="col-xl-8 col-lg-10 col-md-12 col-sm-12">
@@ -108,7 +108,7 @@
                                     <img id='imgView2' style="width: 200px; height:'300px'"
                                         src='/uploads/{{product.imagefileName.[1]}}'>
                                 </div>
-                                 <div class="tm-product-img-dummy mx-auto">
+                                <div class="tm-product-img-dummy mx-auto">
                                     <i class="fas fa-5x fa-cloud-upload-alt"></i>
                                     {{!-- onclick="document.getElementById('fileInput').click();"></i> --}}
                                     <img id='imgView2' style="width: 200px; height:'300px'"
@@ -118,7 +118,7 @@
                                 <div class="custom-file mt-3 mb-3">
 
                                     <input id="fileInput" name="image" type="file" class='imgView'
-                                        onchange="viewImageEdit(event)" style="display:none;" multiple required >
+                                        onchange="viewImageEdit(event)" style="display:none;" multiple required>
                                     <input type="button" name="images" class="btn btn-primary d-block mx-auto"
                                         value="Upload ..." onclick="document.getElementById('fileInput').click();" />
                                 </div>
@@ -130,7 +130,7 @@
         </div>
         </div>
         </div>
-   <script defer src="https://cdn.crop.guide/loader/l.js?c=FMLTXQ"></script>
+        <script defer src="https://cdn.crop.guide/loader/l.js?c=FMLTXQ"></script>
         <script src="js/jquery-3.3.1.min.js"></script>
         <!-- https://jquery.com/download/ -->
         <script src="jquery-ui-datepicker/jquery-ui.min.js"></script>
@@ -145,10 +145,10 @@
             function viewImageEdit(event) {
                 document.getElementById('imgView1').src = URL.createObjectURL(event.target.files[0])
             }
-              function viewImageEdit(event) {
+            function viewImageEdit(event) {
                 document.getElementById('imgView1').src = URL.createObjectURL(event.target.files[0])
             }
-              function viewImageEdit(event) {
+            function viewImageEdit(event) {
                 document.getElementById('imgView1').src = URL.createObjectURL(event.target.files[0])
             }
         </script>

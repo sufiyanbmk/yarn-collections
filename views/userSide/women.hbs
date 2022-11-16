@@ -13,10 +13,10 @@
 	</div>
 </div>
 
-<section class="ftco-section bg-light">
+<section class="ftco-section bg-light" id="productCard">
 	<div class="container">
 		<div class="row">
-			<div class="col-md-8 col-lg-10 order-md-last" id="productCard">
+			<div class="col-md-8 col-lg-10 order-md-last">
 				<div class="row">
 					{{#each products}}
 					<div class="col-sm-6 col-md-6 col-lg-4 ftco-animate">
@@ -37,11 +37,11 @@
 									<div class="rating">
 										<p class="text-right">
 											{{#if this.wishlist}}
-											<Button onclick="whislistRemove('{{this._id}}')"  id="removeWhislist"
-												><i style="color: red;" class="fas fa-heart"></i></Button>
+											<Button onclick="whislistRemove('{{this._id}}')" id="removeWhislist"><i
+													style="color: red;" class="fas fa-heart"></i></Button>
 											{{else}}
-												<Button onclick="whislistAdd('{{this._id}}')"  id="whislistbtn"
-												><i  class="fas fa-heart"></i></Button>
+											<Button onclick="whislistAdd('{{this._id}}')" id="whislistbtn"><i
+													class="fas fa-heart"></i></Button>
 											{{/if}}
 											{{!-- <a><img style="width: 20px; height:20px " src="/images/eye.png"></a>
 											--}}
@@ -74,7 +74,7 @@
 							<ul>
 								{{!-- <li><a href="#">&lt;</a></li> --}}
 								{{#each pagesArray}}
-									<li class="active"><a href="?page={{this}}">{{this}}</a></li>
+								<li class="active"><a href="?page={{this}}">{{this}}</a></li>
 								{{/each}}
 								{{!-- <li><a href="#">&gt;</a></li> --}}
 							</ul>
@@ -130,7 +130,7 @@
 				</div>
 			</div>
 		</div>
-	</div> 
+	</div>
 
 
 </section>

@@ -136,22 +136,19 @@ module.exports = {
         .collection(collection.USER_COLLECTION)
         .findOne({ phoneNo: userNum })
         .then((response) => {
-          console.log(response)
           if (response) {
-            if(response.banned == false){
-
+            if (response.banned == false) {
               response.status = true;
-              response.user = response;
+              response.user = response.name;
               resolve(response);
-            }
-            else{
-              console.log('blocked user')
-              response.status = false
-              resolve(response)
+            } else {
+              console.log("blocked user");
+              response.status = false;
+              resolve(response);
             }
           } else {
             console.log("failed");
-            // resolve(response);
+            resolve(response);
           }
         });
     });
@@ -261,5 +258,32 @@ module.exports = {
     });
   },
 
-  //--------user replace product----//
+  //-------cart count--------------//
+  getCartCount: (userId) => {
+    let count = 0;
+    return new Promise(async (resolve, reject) => {
+      let cartCount = await db
+        .get()
+        .collection(collection.CART_COLLECTION)
+        .findOne({ user: objectID(userId) });
+      if (cartCount) {
+        count = cartCount.products.length;
+      }
+      resolve(count);
+    });
+  },
+  //-------whislist count------//
+  getWhislistCount: (userId) => {
+    return new Promise(async (resolve, reject) => {
+      let count = 0;
+      let wishlist = await db
+        .get()
+        .collection(collection.WHISLIST_COLLECTION)
+        .findOne({ user: objectID(userId) });
+      if (wishlist) {
+        count = wishlist.product.length;
+      }
+      resolve(count);
+    });
+  },
 };

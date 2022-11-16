@@ -5,44 +5,49 @@ const userCartHelper = require("../helpers/userCartHelper");
 const { render } = require("../app");
 
 module.exports = {
-  getCatagoryProducts: async (req, res) => {
-    const cartExist = false;
-    const pageNum = req.query.page;
-    const perPage = 3;
-    let products = await userHelper.getCatagoryProducts(
-      req.params.catagory,
-      pageNum,
-      perPage
-    );
-    let count = await userHelper.getCatagoryProductsCount(req.params.catagory);
-    let pages = Math.ceil(count / perPage);
-    let pagesArray = Array.from({ length: pages }, (_, i) => i + 1);
-    if (req.session.user) {
-      let [whislist] = await whislistHelper.getuserWhislist(
-        req.session.user._id
+  getCatagoryProducts: async (req, res, next) => {
+    try {
+      const cartExist = false;
+      const pageNum = req.query.page;
+      const perPage = 3;
+      let products = await userHelper.getCatagoryProducts(
+        req.params.catagory,
+        pageNum,
+        perPage
       );
-      if (whislist) {
-        for (i = 0; i < products.length; i++) {
-          // products[i].cart_id = cart._id
-          for (j = 0; j < whislist.product.length; j++) {
-            let a = "" + products[i]._id;
-            let b = "" + whislist.product[j];
-            if (a == b) {
-              products[i].wishlist = true;
-              break;
-            } else {
-              products[i].wishlist = false;
+      let count = await userHelper.getCatagoryProductsCount(
+        req.params.catagory
+      );
+      let pages = Math.ceil(count / perPage);
+      let pagesArray = Array.from({ length: pages }, (_, i) => i + 1);
+      if (req.session.user) {
+        let [whislist] = await whislistHelper.getuserWhislist(
+          req.session.user._id
+        );
+        if (whislist) {
+          for (i = 0; i < products.length; i++) {
+            // products[i].cart_id = cart._id
+            for (j = 0; j < whislist.product.length; j++) {
+              let a = "" + products[i]._id;
+              let b = "" + whislist.product[j];
+              if (a == b) {
+                products[i].wishlist = true;
+                break;
+              } else {
+                products[i].wishlist = false;
+              }
             }
           }
         }
       }
+      res.render("userSide/women", {
+        products,
+        user: req.session.user,
+        pagesArray,
+      });
+    } catch (error) {
+      next(error);
     }
-    // let banner = await adminHelper.viewBanner();
-    res.render("userSide/women", {
-      products,
-      user: req.session.user,
-      pagesArray,
-    });
   },
 
   singleProduct: (req, res, next) => {

@@ -3,10 +3,9 @@ const userCartHelper = require("../helpers/userCartHelper");
 
 module.exports = {
   order: (req, res) => {
-    userCartHelper.orderRemoveCart(req.session.user._id).then((response)=>{
-
+    userCartHelper.orderRemoveCart(req.session.user._id).then((response) => {
       res.render("userSide/orderplaced");
-    })
+    });
   },
 
   viewOrder: async (req, res) => {
@@ -15,7 +14,7 @@ module.exports = {
   },
 
   cancelOrder: (req, res) => {
-    orderHelper.orderCancel(req.params.id,req.session.user._id).then(() => {
+    orderHelper.orderCancel(req.params.id, req.session.user._id).then(() => {
       res.redirect("/view-order");
     });
   },
@@ -36,29 +35,35 @@ module.exports = {
   paypalVerify: (req, res) => {
     const payerId = req.query.PayerID;
     const paymentId = req.query.paymentId;
-    orderHelper.verifyPaypal(payerId, paymentId,req.session.paypalTotal).then(() => {
-      res.redirect("/orderplaced");
-    });
+    orderHelper
+      .verifyPaypal(payerId, paymentId, req.session.paypalTotal)
+      .then(() => {
+        res.redirect("/orderplaced");
+      });
   },
 
-  cancelPaypal:() => {
-    res.redirect("/cart")
+  cancelPaypal: () => {
+    res.redirect("/cart");
   },
 
-  applyCoupon: async (req, res) => {
-    let code = req.body.couponCode;
-    let user = req.session.user._id;
-    const date = new Date();
-    let total = await userCartHelper.getTotalAmount(user);
-    let applyCoupon = await orderHelper.applyCoupon(code, total, date);
-    if (applyCoupon.couponVerified) {
-      let discountAmount = (total * parseInt(applyCoupon.value)) / 100;
-      let couponAmount = total - discountAmount;
-      applyCoupon.subtotal = Math.round(discountAmount);
-      applyCoupon.amount = Math.round(couponAmount);
-      res.json(applyCoupon);
-    } else {
-      res.json(applyCoupon);
+  applyCoupon: async (req, res, next) => {
+    try {
+      let code = req.body.couponCode;
+      let user = req.session.user._id;
+      const date = new Date();
+      let total = await userCartHelper.getTotalAmount(user);
+      let applyCoupon = await orderHelper.applyCoupon(code, total, date);
+      if (applyCoupon.couponVerified) {
+        let discountAmount = (total * parseInt(applyCoupon.value)) / 100;
+        let couponAmount = total - discountAmount;
+        applyCoupon.subtotal = Math.round(discountAmount);
+        applyCoupon.amount = Math.round(couponAmount);
+        res.json(applyCoupon);
+      } else {
+        res.json(applyCoupon);
+      }
+    } catch (error) {
+      next(error);
     }
   },
 };

@@ -58,7 +58,8 @@
                     <td class="text-end">${{this.products.offerPrice}}</td>
                     <td>{{this.status}}</td>
                     <td>{{#if this.displayNone}}
-                    {{!-- <button id="refundBtn" class="btn btn-danger" onclick="refund('{{this._id}}')">Refund</button> --}}
+                      {{!-- <button id="refundBtn" class="btn btn-danger"
+                        onclick="refund('{{this._id}}')">Refund</button> --}}
 
                       {{else}}
                       <div class="dropdown">
@@ -66,13 +67,19 @@
                         <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm"> <i
                             class="material-icons md-more_horiz"></i> </a>
                         <div class="dropdown-menu">
-                        {{#if this.return}}
-                           <button id="refundBtn" class="btn btn-warning" onclick="refund('{{this._id}}','{{this.product}}')">Refund</button>
-                           <button class="btn btn-danger" onclick = "changeStatus('{{this._id}}','{{this.product}}','Return Rejected')">Return Rejected</button> 
+                          {{#if this.return}}
+                          <button id="refundBtn" class="btn btn-warning"
+                            onclick="refund('{{this._id}}','{{this.product}}')">Refund</button>
+                          <button class="btn btn-danger"
+                            onclick="changeStatus('{{this._id}}','{{this.product}}','Return Rejected')">Return
+                            Rejected</button>
                           {{else}}
-                          <button class="dropdown-item" onclick = "changeStatus('{{this._id}}','{{this.product}}','Shipped')">shipped</button>
-                          <button class="dropdown-item" onclick = "changeStatus('{{this._id}}','{{this.product}}','Delivered')">Delivered</button>
-                          <button class="dropdown-item text-danger" onclick = "changeStatus('{{this._id}}','{{this.product}}','order cancelled')">Cancel</button>
+                          <button class="dropdown-item"
+                            onclick="changeStatus('{{this._id}}','{{this.product}}','Shipped')">shipped</button>
+                          <button class="dropdown-item"
+                            onclick="changeStatus('{{this._id}}','{{this.product}}','Delivered')">Delivered</button>
+                          <button class="dropdown-item text-danger"
+                            onclick="changeStatus('{{this._id}}','{{this.product}}','order cancelled')">Cancel</button>
                         </div>
                       </div>
                       {{/if}}
@@ -158,46 +165,45 @@
     </div>
   </div>
 
-<script>
-  function changeStatus(orderId,proId,action){
-    $.ajax({
-      url: '/admin/orderStatus',
-      data:{
-         orderId: orderId,
-        proId: proId,
-        action: action,
-      },
-      method : 'post',
-      success : (response) => {
-        location.reload()
-      }
-    })
-  }
+  <script>
+    function changeStatus(orderId, proId, action) {
+      $.ajax({
+        url: '/admin/orderStatus',
+        data: {
+          orderId: orderId,
+          proId: proId,
+          action: action,
+        },
+        method: 'post',
+        success: (response) => {
+          location.reload()
+        }
+      })
+    }
 
-  function refund(orderId,proId){
-    $.ajax({
-        url : '/admin/refund',
-        type :'get',
-        data : {
-            orderID : orderId,
-            proId : proId
+    function refund(orderId, proId) {
+      $.ajax({
+        url: '/admin/refund',
+        type: 'get',
+        data: {
+          orderID: orderId,
+          proId: proId
         },
         success: (response) => {
-            if(response){
-              
-            }
-            else{
-                alert('it is in the cash on delevery')
+          if (response) {
+
+          }
+          else {
+            alert('it is in the cash on delevery')
             swal("Good job!", "Added to Cart! You Can Check There", "success");
-            }
-            
+          }
+
         }
-    })
-}
-</script>
+      })
+    }
+  </script>
 
 </main>
 
 
 {{>adminjs}}
-

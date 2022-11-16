@@ -2,7 +2,7 @@ const { response } = require("../app");
 const adminHelper = require("../helpers/adminHelper");
 const orderHelper = require("../helpers/orderHelper");
 const store = require("../middleware/multer");
-const Couponcodes = require('voucher-code-generator');
+const Couponcodes = require("voucher-code-generator");
 const adminDb = "admin";
 const passwordDb = "123";
 
@@ -10,8 +10,8 @@ exports.home = async (req, res, next) => {
   if (req.session.adminlogedIn) {
     let profit = await adminHelper.revenue();
     let total = await adminHelper.totalOrder();
-   
-    res.render("adminSide/adminPannel",{profit,total});
+
+    res.render("adminSide/adminPannel", { profit, total });
   } else {
     res.render("adminSide/adminlogin", { error: req.session.validation });
     req.session.validation = false;
@@ -37,7 +37,7 @@ exports.signOut = (req, res) => {
 
 //----------dash board -------------//
 
-exports.dashboard =async (req, res) => {
+exports.dashboard = async (req, res) => {
   res.redirect("/admin/");
 };
 
@@ -63,16 +63,16 @@ exports.pieChartData = async (req, res) => {
   res.json({ value: value, pay: pay });
 };
 
-exports.paymentGraph = async (req,res) => {
+exports.paymentGraph = async (req, res) => {
   let paymentGraph = await adminHelper.paymenttotal();
-  value = paymentGraph.map((value,index,array) => {
+  value = paymentGraph.map((value, index, array) => {
     return value.totalAmount;
   });
-  let method = paymentGraph.map((value,index,array) => {
-    return value._id
-  })
-  res.json({value:value, pay:method})
-}
+  let method = paymentGraph.map((value, index, array) => {
+    return value._id;
+  });
+  res.json({ value: value, pay: method });
+};
 
 //-----------------catagory-------------//
 
@@ -83,7 +83,9 @@ exports.catagory = (req, res) => {
 };
 
 exports.addCatagory = (req, res) => {
-  res.render("adminSide/addCategory",{invalidCatagory : req.session.invalidCatagory});
+  res.render("adminSide/addCategory", {
+    invalidCatagory: req.session.invalidCatagory,
+  });
   req.session.invalidCatagory = false;
 };
 
@@ -95,12 +97,10 @@ exports.addCatagoryPost = (req, res) => {
   let CatagoryDetails = req.body;
   CatagoryDetails.imagefileName = loc;
   adminHelper.addCategories(CatagoryDetails).then((response) => {
-    if(response.catagoryExist){
-      req.session.invalidCatagory = "This Catagory name is already exist"
-      res.redirect("/admin/addCategory")
-    }
-    else{
-
+    if (response.catagoryExist) {
+      req.session.invalidCatagory = "This Catagory name is already exist";
+      res.redirect("/admin/addCategory");
+    } else {
       res.redirect("/admin/categorymange");
     }
   });
@@ -227,15 +227,18 @@ exports.orders = (req, res) => {
 
 exports.orderDetailsView = async (req, res) => {
   let productlist = await orderHelper.adminViewDetails(req.params.id);
-  productlist.forEach(e =>{
-    if(e.status == 'Requested Return'){
-      e.return = true
+  productlist.forEach((e) => {
+    if (e.status == "Requested Return") {
+      e.return = true;
+    } else if (
+      e.status == "Delivered" ||
+      e.status == "Order Cancelled" ||
+      e.status == "Returned"
+    ) {
+      e.displayNone = true;
     }
-    else if(e.status == 'Delivered'|| e.status == 'Order Cancelled'|| e.status == 'Returned'){
-      e.displayNone = true
-    }
-  })
-  res.render("adminSide/orderDetails", { productlist});
+  });
+  res.render("adminSide/orderDetails", { productlist });
 };
 
 exports.cancelOrder = (req, res) => {
@@ -250,33 +253,35 @@ exports.deliveredStatus = (req, res) => {
   });
 };
 
-exports.shippedStatus = (req,res) => {
+exports.shippedStatus = (req, res) => {
   orderHelper.shipped(req.params.id).then(() => {});
   res.redirect("/admin/order-management");
 };
 
-exports.orderStatus = (req,res) => {
-  orderHelper.changeStatus(req.body).then(()=>{
-    res.json({status:true})
-  })
-}
+exports.orderStatus = (req, res) => {
+  orderHelper.changeStatus(req.body).then(() => {
+    res.json({ status: true });
+  });
+};
 
-exports.refund =async (req, res) => {
-  const orderDetail =await orderHelper.orderIduserId(req.query.orderID,req.query.proId)
-  const orderId = orderDetail._id
-  const proId = orderDetail.products[0].product
+exports.refund = async (req, res) => {
+  const orderDetail = await orderHelper.orderIduserId(
+    req.query.orderID,
+    req.query.proId
+  );
+  const orderId = orderDetail._id;
+  const proId = orderDetail.products[0].product;
   const amount = orderDetail.products[0].price;
-  const userId = orderDetail.userId
-  const paymentMethod  = orderDetail.paymentMethod
+  const userId = orderDetail.userId;
+  const paymentMethod = orderDetail.paymentMethod;
 
-  if(paymentMethod != 'COD'){
-    orderHelper.refund(amount,userId).then(async (response)=>{
-      await orderHelper.returnStatusChange(orderId,proId)
-      res.json(response)
-    })
-  }
-  else{
-    res.json({status:false})
+  if (paymentMethod != "COD") {
+    orderHelper.refund(amount, userId).then(async (response) => {
+      await orderHelper.returnStatusChange(orderId, proId);
+      res.json(response);
+    });
+  } else {
+    res.json({ status: false });
   }
 };
 

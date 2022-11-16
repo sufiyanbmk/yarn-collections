@@ -6,6 +6,7 @@ function whislistAdd(prodId) {
     type: "post",
     success: (response) => {
         swal("Good job!", "Added to Whislist!", "success");
+        $("#productCard").load(location.href + " #productCard");
         document.getElementById('whislistbtn').style.color = '#ff0000';
     },
   });
@@ -17,8 +18,8 @@ function deleteWhislist(prodId) {
     url: "/whislistDelete/" + prodId,
     type: "delete",
     success: (response) => {
-      // location.reload();
-      $("#whislistTable").load(location.href + " #whislistTable");
+      location.reload();
+      // $("#whislistTable").load(location.href + " #whislistTable");
 
     },
   });
@@ -33,7 +34,7 @@ function whislistRemove(proId){
     success: (response) =>{
       swal("Bad job!", "Remove From Whislist!", "success" );
       // $("#productCard").load();
-      // $("#productCard").load(location.href + " #productCard");
+      $("#productCard").load(location.href + " #productCard");
       // document.getElementById('removeWhislist').style.color = '#FFFFFF';
 
     }

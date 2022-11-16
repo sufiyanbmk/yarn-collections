@@ -4,47 +4,48 @@
 <main class="main-wrap">
     {{>adminHeader}}
     <form action="/admin//product-offer" method="post">
-    <div class="card-body">
-        <div class="row gx-2">
-           
+        <div class="card-body">
+            <div class="row gx-2">
 
-            <div class="col-lg-4">
-                <div class="mb-4">
-                    <label class="form-label">Offer Percentage</label>
-                    <div class="row gx-2">
-                        <input placeholder="%" name="offer" onkeyup="offerPercentage()" id="percentage" type="number" min="1" max="100" class="form-control" required>
+
+                <div class="col-lg-4">
+                    <div class="mb-4">
+                        <label class="form-label">Offer Percentage</label>
+                        <div class="row gx-2">
+                            <input placeholder="%" name="offer" onkeyup="offerPercentage()" id="percentage"
+                                type="number" min="1" max="100" class="form-control" required>
+                        </div>
+                        <p id="error" style="color: red;"></p>
                     </div>
-                    <p id="error" style="color: red;"></p>
                 </div>
-            </div>
-            <input  value="{{productId}}" name="proId" hidden>
-            <button type="submit" class="btn btn-primary">Add Offer</button>
-        </form>
+                <input value="{{productId}}" name="proId" hidden>
+                <button type="submit" class="btn btn-primary">Add Offer</button>
+    </form>
 
 </main>
 
 <script>
-    function offerPercentage(){
+    function offerPercentage() {
         let price = document.getElementById("percentage").value;
-  let error4 = document.getElementById("error");
-  if (price == "") {
-    error4.innerHTML = "Enter the price";
-    return false;
-  } else if (price.match(/^[A-Za-z]+$/)) {
-    error4.innerHTML = "Please Enter valid number";
-    return false;
-  } else {
-    error4.innerHTML = "";
-    return true;
-  }
+        let error4 = document.getElementById("error");
+        if (price == "") {
+            error4.innerHTML = "Enter the price";
+            return false;
+        } else if (price.match(/^[A-Za-z]+$/)) {
+            error4.innerHTML = "Please Enter valid number";
+            return false;
+        } else {
+            error4.innerHTML = "";
+            return true;
+        }
     }
 
-    function valid(){
+    function valid() {
         offerPercentage();
-        if(offerPercentage === true){
+        if (offerPercentage === true) {
             return true
         }
-        else{
+        else {
             return false
         }
     }

@@ -2,7 +2,7 @@ var db = require("../config/connection");
 var collection = require("../config/collection");
 const { response } = require("express");
 const { format } = require("morgan");
-const Couponcodes = require('voucher-code-generator');
+const Couponcodes = require("voucher-code-generator");
 const { NetworkContext } = require("twilio/lib/rest/supersim/v1/network");
 // const bcrypt = require('bcrypt')
 var objectID = require("mongodb").ObjectId;
@@ -12,14 +12,15 @@ var objectID = require("mongodb").ObjectId;
 module.exports = {
   addCategories: (Categorylist) => {
     return new Promise(async (resolve, reject) => {
-      let catagoryExist = await db.get().collection(collection.CATEGORY_COLLECTION).findOne({categories : Categorylist.categories})
-      if(catagoryExist){
+      let catagoryExist = await db
+        .get()
+        .collection(collection.CATEGORY_COLLECTION)
+        .findOne({ categories: Categorylist.categories });
+      if (catagoryExist) {
         data = {};
         data.catagoryExist = true;
-        resolve(data)
-      } 
-      else{
-        
+        resolve(data);
+      } else {
         db.get()
           .collection(collection.CATEGORY_COLLECTION)
           .insertOne(Categorylist)
@@ -79,8 +80,8 @@ module.exports = {
   },
   //products
   addProduct: (products) => {
-    products.stock = parseInt(products.stock)
-    console.log(products)
+    products.stock = parseInt(products.stock);
+    console.log(products);
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.PRODUCT_COLLECTION)
@@ -305,50 +306,63 @@ module.exports = {
   },
 
   //card revenue result
-  revenue :() =>{
-    return new Promise(async (resolve,reject) => {
-      let revenue = await db.get().collection(collection.ORDER_COLLECTION)
-      .aggregate([{
-        $group: {
-          _id: 0 ,sum:{$sum: "$totalAmount"}
-        }
-      }]).toArray()
-      resolve(revenue)
-    })
+  revenue: () => {
+    return new Promise(async (resolve, reject) => {
+      let revenue = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .aggregate([
+          {
+            $group: {
+              _id: 0,
+              sum: { $sum: "$totalAmount" },
+            },
+          },
+        ])
+        .toArray();
+      resolve(revenue);
+    });
   },
 
   //card total order result
   totalOrder: () => {
-    return new Promise(async (resolve,reject) => {
-      let total = await db.get().collection(collection.ORDER_COLLECTION)
-      .aggregate([
-        {$unwind: '$products'},
-        {$group:{_id:'products',sum: {$sum : 1}}}
-      ]).toArray()
-      console.log(total)
-      resolve(total)
-    })
+    return new Promise(async (resolve, reject) => {
+      let total = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .aggregate([
+          { $unwind: "$products" },
+          { $group: { _id: "products", sum: { $sum: 1 } } },
+        ])
+        .toArray();
+      console.log(total);
+      resolve(total);
+    });
   },
 
   //payment graph result
-  paymenttotal:() =>{
-    return new Promise(async (resolve,reject) => {
-      let paymentGraph = await db.get().collection(collection.ORDER_COLLECTION)
-      .aggregate([{
-        $project:{
-          totalAmount:1,
-          paymentMethod:1,
-        }
-      },
-      {
-        $group:{
-          _id:'$paymentMethod',
-          totalAmount:{$sum:'$totalAmount'}
-        }
-      }
-    ]).toArray()
-    resolve(paymentGraph)
-    })
+  paymenttotal: () => {
+    return new Promise(async (resolve, reject) => {
+      let paymentGraph = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .aggregate([
+          {
+            $project: {
+              totalAmount: 1,
+              paymentMethod: 1,
+            },
+          },
+          {
+            $group: {
+              _id: "$paymentMethod",
+              totalAmount: { $sum: "$totalAmount" },
+            },
+          },
+        ])
+        .toArray();
+      resolve(paymentGraph);
+    });
   },
 
   //sales report day
@@ -563,7 +577,7 @@ module.exports = {
       } else {
         couponDetails.codeGeneraor = Couponcodes.generate({
           length: 8,
-      });
+        });
         db.get()
           .collection(collection.COUPON_COLLECTION)
           .insertOne(couponDetails)
@@ -576,7 +590,6 @@ module.exports = {
   },
   // -----------coupon view -----------//
   copuonView: () => {
-
     return new Promise(async (resolve, reject) => {
       let couponCollection = await db
         .get()
@@ -683,8 +696,9 @@ module.exports = {
         .then((response) => {
           console.log(response);
           resolve();
-        }).catch(err => {
-          reject(err)
+        })
+        .catch((err) => {
+          reject(err);
         });
     });
   },

@@ -18,8 +18,8 @@ module.exports = {
       if (response.status) {
         req.session.userLogin = true;
         req.session.user = response.user;
-        const redirect = req.session.returnUrl || '/'
-        delete req.session.returnUrl
+        const redirect = req.session.returnUrl || "/";
+        delete req.session.returnUrl;
         res.redirect(redirect);
       } else if (response.ban) {
         req.session.error = "Sorry ! You cant access ";
@@ -65,9 +65,8 @@ module.exports = {
 
   otpValidPost: (req, res) => {
     userhelpers.otp(req.body.mobilenumber).then((response) => {
-        
       if (response.status) {
-        // req.session.otpuser = response.user
+        req.session.user = response.user;
         client.verify
           .services(config.serviceID)
           .verifications.create({
@@ -76,7 +75,6 @@ module.exports = {
           })
           .then((data) => {
             req.session.mobilenumber = data.to;
-            // req.session.otpuser = response.user
             res.redirect("/otpValid");
           });
       } else {

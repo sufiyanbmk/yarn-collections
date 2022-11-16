@@ -2,48 +2,50 @@
 {{> userHeader}}
 
 <section class="ftco-section ftco-cart">
-			<div class="container" id="whislistTable">
-				<div class="row">
-    			<div class="col-md-12 ftco-animate">
-    				<div class="cart-list">
-	    				<table class="table">
-						    <thead class="thead-primary">
-						      <tr class="text-center">
-						        <th>&nbsp;</th>
-						        <th>&nbsp;</th>
-						        <th>Product</th>
-						        <th>Catagory</th>
-						        <th>Price</th>
+	<div class="container" id="whislistTable">
+		<div class="row">
+			<div class="col-md-12 ftco-animate">
+				<div class="cart-list">
+					<table class="table">
+						<thead class="thead-primary">
+							<tr class="text-center">
+								<th>&nbsp;</th>
+								<th>&nbsp;</th>
+								<th>Product</th>
+								<th>Catagory</th>
+								<th>Price</th>
 								<th>Remove</th>
-						      </tr>
-						    </thead>
-						    <tbody>
-								{{#each products}}
-								{{#each whislistItems}}
-						      <tr class="text-center">
-						        <td class="product-remove"><a href="#"><span class="ion-ios-close"></span></a></td>
-						        
-						        <td class="image-prod"><img style="width: 110px; height= 60px" class="img" src='/uploads/{{this.imagefileName.[0]}}'></img></td>
-						        
-						        <td class="product-name">
-						        	<h3>{{this.name}}</h3>
-						        	<p>{{this.Description}}</p>
-						        </td>
-						        
-						     	<td>{{this.Category}}</td>
-						        <td class="price">${{this.offerPrice}}</td>
-								<td ><button onclick="deleteWhislist('{{this._id}}')" class="btn btn-primary">__X__</button></td>
-						      </tr><!-- END TR-->
-						     {{/each}}
-							 {{/each}}
+							</tr>
+						</thead>
+						<tbody>
+							{{#each products}}
+							{{#each whislistItems}}
+							<tr class="text-center">
+								<td class="product-remove"><a href="#"><span class="ion-ios-close"></span></a></td>
 
-						    </tbody>
-						  </table>
-					  </div>
-    			</div>
-    		</div>
-    		
+								<td class="image-prod"><img style="width: 110px; height= 60px" class="img"
+										src='/uploads/{{this.imagefileName.[0]}}'></img></td>
+
+								<td class="product-name">
+									<h3>{{this.name}}</h3>
+									<p>{{this.Description}}</p>
+								</td>
+
+								<td>{{this.Category}}</td>
+								<td class="price">${{this.offerPrice}}</td>
+								<td><button onclick="deleteWhislist('{{this._id}}')"
+										class="btn btn-primary">__X__</button></td>
+							</tr><!-- END TR-->
+							{{/each}}
+							{{/each}}
+
+						</tbody>
+					</table>
+				</div>
 			</div>
-		</section>
-        
+		</div>
+
+	</div>
+</section>
+
 {{> userfooter}}

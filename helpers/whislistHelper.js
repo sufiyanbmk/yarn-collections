@@ -5,8 +5,8 @@ const objectId = require("mongodb").ObjectId;
 module.exports = {
   addToWhislist: (proId, userId) => {
     objProd = {
-        user: objectId(userId),
-         product: [objectId(proId)],
+      user: objectId(userId),
+      product: [objectId(proId)],
     };
     return new Promise(async (resolve, reject) => {
       let whislist = await db
@@ -73,7 +73,7 @@ module.exports = {
             {
               $unwind: "$product",
             },
-        
+
             {
               $lookup: {
                 from: collection.PRODUCT_COLLECTION,
@@ -81,7 +81,7 @@ module.exports = {
                 foreignField: "_id",
                 as: "whislistItems",
               },
-             },
+            },
             // {
             //   $sort: {
             //     insertionTime: -1,
@@ -107,7 +107,7 @@ module.exports = {
           },
           {
             $pull: {
-              product: objectId(prodId) ,
+              product: objectId(prodId),
             },
           }
         )
