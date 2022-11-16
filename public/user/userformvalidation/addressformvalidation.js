@@ -135,3 +135,8 @@ function validation() {
 }
 
 
+//---proceed checkout address validation
+
+$("#name").keyup(function(){
+    alert()
+})

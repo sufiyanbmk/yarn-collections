@@ -124,7 +124,7 @@
       success: (res) => {
         var xValues = res.value;
         var yValues = res.pay;
-        var barColors = ["#b91d47", "#00aba9", "#2b5797"];
+        var barColors = ["#b91d47", "#00aba9", "#2b5797","#ff9076"];
 
         new Chart("myChart1", {
           type: "pie",

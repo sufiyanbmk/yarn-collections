@@ -2,12 +2,13 @@ const userHelper = require("../helpers/userHelper");
 const adminHelper = require("../helpers/adminHelper");
 const whislistHelper = require("../helpers/whislistHelper");
 const userCartHelper = require("../helpers/userCartHelper");
+const { render } = require("../app");
 
 module.exports = {
   getCatagoryProducts: async (req, res) => {
     const cartExist = false;
     const pageNum = req.query.page;
-    const perPage = 2;
+    const perPage = 3;
     let products = await userHelper.getCatagoryProducts(
       req.params.catagory,
       pageNum,
@@ -44,9 +45,13 @@ module.exports = {
     });
   },
 
-  singleProduct: (req, res) => {
-    adminHelper.findProductDetails(req.params.id).then((data) => {
-      res.render("userSide/singleProduct", { data, user: req.session.user });
-    });
+  singleProduct: (req, res, next) => {
+    try {
+      adminHelper.findProductDetails(req.params.id).then((data) => {
+        res.render("userSide/singleProduct", { data, user: req.session.user });
+      });
+    } catch (error) {
+      next(error);
+    }
   },
 };

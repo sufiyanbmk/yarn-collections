@@ -7,6 +7,7 @@ const Razorpay = require("razorpay");
 const { resolve } = require("path");
 let paypal = require("paypal-rest-sdk");
 const e = require("express");
+const { ObjectID } = require("bson");
 
 var instance = new Razorpay({
   key_id: "rzp_test_oXgNaRuBSLuUSI",
@@ -166,6 +167,17 @@ module.exports = {
           // db.get()
           //   .collection(collection.CART_COLLECTION)
           //   .deleteOne({ user: objectID(order.userId) });
+          products.forEach((element) => {
+            element.quantity = parseInt(element.quantity);
+            db.get()
+              .collection(collection.PRODUCT_COLLECTION)
+              .updateOne(
+                { _id: objectID(element.product) },
+                {
+                  $inc: { stock: -element.quantity },
+                }
+              );
+          });
 
           resolve(response.insertedId);
         });
@@ -244,7 +256,8 @@ module.exports = {
   },
 
   //order history
-  orderhistory: (userId) => {
+  orderhistory: (userId,pageNum,perPage) => {
+    console.log(pageNum)
     return new Promise(async (resolve, reject) => {
       orderHistory = await db
         .get()
@@ -297,14 +310,21 @@ module.exports = {
               time: -1,
             },
           },
+          {
+            $skip : (pageNum - 1) * perPage
+          },
+          {
+            $limit : perPage
+          }
         ])
         .toArray();
+        console.log(orderHistory)
       resolve(orderHistory);
     });
   },
 
-  //cancel order
-  orderCancel: (id) => {
+  // user cancel order
+  orderCancel: (id,userId) => {
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.ORDER_COLLECTION)
@@ -330,6 +350,27 @@ module.exports = {
           }
         )
         .then(() => {
+          db.get().collection(collection.ORDER_COLLECTION).findOne({_id:ObjectID(id)}).then((order)=>{
+            order.products.forEach(element => {
+               db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:ObjectID(element.product)},
+               {
+                  $inc: {stock : element.quantity}
+               }).then((result)=>{ 
+                   db.get().collection(collection.ORDER_COLLECTION).findOne({_id:ObjectID(id)}).then((order)=>{
+                 
+                       db.get().collection(collection.WALLET_COLLECTION).updateOne({user:ObjectID(userId)},
+                       {
+                           $inc:{
+                            Total:order.totalAmount
+                           }
+                       }).then((hai)=>{
+                      
+                       })
+                   })
+               })
+            });
+               
+           })
           resolve();
         });
     });
@@ -542,18 +583,20 @@ module.exports = {
         });
     });
   },
-//paypal items taking 
-paypalItems :(user,orderId)=>{
-
-  
-      return new Promise(async(resolve, reject) => {
-        let OrderItems= await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+  //paypal items taking
+  paypalItems: (user, orderId) => {
+    return new Promise(async (resolve, reject) => {
+      let OrderItems = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .aggregate([
           {
-            $match:{
-              _id:orderId
-            }
-          },{
-            $unwind:'$products'
+            $match: {
+              _id: orderId,
+            },
+          },
+          {
+            $unwind: "$products",
           },
           {
             $lookup: {
@@ -574,7 +617,7 @@ paypalItems :(user,orderId)=>{
           },
           {
             $project: {
-              _id:0,
+              _id: 0,
               name: "$orderlist.name",
               total: "$orderlist.offerPrice",
               quantity: 1,
@@ -602,16 +645,15 @@ paypalItems :(user,orderId)=>{
               currency: "USD",
               quantity: "$quantity",
             },
-          }
-        ]).toArray()
-        resolve(OrderItems)
-      })
-    
-
-},
+          },
+        ])
+        .toArray();
+      resolve(OrderItems);
+    });
+  },
 
   //paypal
-  generatePaypal: (items,total) => {
+  generatePaypal: (items, total) => {
     return new Promise((resolve, reject) => {
       var create_payment_json = {
         intent: "sale",
@@ -625,7 +667,7 @@ paypalItems :(user,orderId)=>{
         transactions: [
           {
             item_list: {
-              items: items
+              items: items,
             },
             amount: {
               currency: "USD",
@@ -640,13 +682,13 @@ paypalItems :(user,orderId)=>{
         if (error) {
           throw error;
         } else {
-          console.log("Create Payment Response");    
+          console.log("Create Payment Response");
           resolve(payment);
         }
       });
     });
   },
-  verifyPaypal: (payerId, paymentId,total) => {
+  verifyPaypal: (payerId, paymentId, total) => {
     return new Promise((resolve, reject) => {
       const execute_payment_json = {
         payer_id: payerId,
@@ -654,7 +696,7 @@ paypalItems :(user,orderId)=>{
           {
             amount: {
               currency: "USD",
-              total: total ,
+              total: total,
             },
           },
         ],
@@ -676,15 +718,20 @@ paypalItems :(user,orderId)=>{
     });
   },
   // wallet purchase
-  walletPurchase : (userId,price) =>{
-    return new Promise((resolve,reject) => {
-      db.get().collection(collection.WALLET_COLLECTION).updateOne({user :objectID(userId)},
-      {
-        $inc: {Total: parseInt(-price)}
-      }).then(()=>{
-        resolve();
-      })
-    })
+  walletPurchase: (userId, price) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collection.WALLET_COLLECTION)
+        .updateOne(
+          { user: objectID(userId) },
+          {
+            $inc: { Total: parseInt(-price) },
+          }
+        )
+        .then(() => {
+          resolve();
+        });
+    });
   },
 
   //my account address
@@ -894,10 +941,22 @@ paypalItems :(user,orderId)=>{
               "products.$.paymentStatus": "Returned",
             },
           }
-        ).then((response)=>{
-          console.log(response)
-          resolve()
-        })
+        )
+        .then((response) => {
+          console.log(response);
+          resolve();
+        });
     });
   },
+
+  //order count 
+  orderCount :(userId) => {
+    return new Promise((resolve,reject) => {
+      let count = db.get().collection(collection.ORDER_COLLECTION).find({userId:objectID(userId)}).count()
+      if(count<0){
+        reject()
+      }
+      resolve(count)
+    })
+  }
 };

@@ -15,7 +15,7 @@ module.exports = {
   },
 
   cancelOrder: (req, res) => {
-    orderHelper.orderCancel(req.params.id).then(() => {
+    orderHelper.orderCancel(req.params.id,req.session.user._id).then(() => {
       res.redirect("/view-order");
     });
   },

@@ -5,9 +5,19 @@ const orderHelper = require("../helpers/orderHelper");
 
 module.exports = {
   profile: async (req, res) => {
+    if(req.query.page){
+
+      var pageNum = req.query.page;
+    }else{
+      var pageNum = 1
+    }
+    const perPage = 6 ;
+    let orderCount = await orderHelper.orderCount(req.session.user._id)
+    let pages = Math.ceil(orderCount / perPage);
+    let pagesArray = Array.from({ length: pages }, (_, i) => i + 1);
     let userDetail = await userhelpers.userProfile(req.session.user._id);
     let address = await orderHelper.getAddress(req.session.user._id);
-    let orderhistory = await orderHelper.orderhistory(req.session.user._id);
+    let orderhistory = await orderHelper.orderhistory(req.session.user._id,pageNum,perPage);
     let couponCollection = await adminHelper.copuonView();
     let wallet = await userhelpers.getWallet(req.session.user._id);
     let value = orderhistory.forEach((orderhistory, index) => {
@@ -25,6 +35,7 @@ module.exports = {
       orderhistory,
       couponCollection,
       wallet,
+      pagesArray
     });
     req.session.pswchangeError = false;
   },

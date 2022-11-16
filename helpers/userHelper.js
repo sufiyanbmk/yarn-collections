@@ -159,7 +159,6 @@ module.exports = {
 
   // catagory wise product
   getCatagoryProducts: (catagory, pageNum, perPage) => {
-    let doCount;
     return new Promise(async (resolve, reject) => {
       let product = await db
         .get()

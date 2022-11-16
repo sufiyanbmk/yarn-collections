@@ -3,6 +3,7 @@ var collection = require("../config/collection");
 const { response } = require("express");
 const { format } = require("morgan");
 const Couponcodes = require('voucher-code-generator');
+const { NetworkContext } = require("twilio/lib/rest/supersim/v1/network");
 // const bcrypt = require('bcrypt')
 var objectID = require("mongodb").ObjectId;
 
@@ -78,6 +79,8 @@ module.exports = {
   },
   //products
   addProduct: (products) => {
+    products.stock = parseInt(products.stock)
+    console.log(products)
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.PRODUCT_COLLECTION)
@@ -680,6 +683,8 @@ module.exports = {
         .then((response) => {
           console.log(response);
           resolve();
+        }).catch(err => {
+          reject(err)
         });
     });
   },
