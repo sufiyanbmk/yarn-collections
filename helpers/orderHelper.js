@@ -256,8 +256,8 @@ module.exports = {
   },
 
   //order history
-  orderhistory: (userId, pageNum, perPage) => {
-    console.log(pageNum);
+  orderhistory: (userId,pageNum,perPage) => {
+    console.log(pageNum)
     return new Promise(async (resolve, reject) => {
       orderHistory = await db
         .get()
@@ -311,20 +311,20 @@ module.exports = {
             },
           },
           {
-            $skip: (pageNum - 1) * perPage,
+            $skip : (pageNum - 1) * perPage
           },
           {
-            $limit: perPage,
-          },
+            $limit : perPage
+          }
         ])
         .toArray();
-      console.log(orderHistory);
+        console.log(orderHistory)
       resolve(orderHistory);
     });
   },
 
   // user cancel order
-  orderCancel: (id, userId) => {
+  orderCancel: (id,userId) => {
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.ORDER_COLLECTION)
@@ -350,39 +350,27 @@ module.exports = {
           }
         )
         .then(() => {
-          db.get()
-            .collection(collection.ORDER_COLLECTION)
-            .findOne({ _id: ObjectID(id) })
-            .then((order) => {
-              order.products.forEach((element) => {
-                db.get()
-                  .collection(collection.PRODUCT_COLLECTION)
-                  .updateOne(
-                    { _id: ObjectID(element.product) },
-                    {
-                      $inc: { stock: element.quantity },
-                    }
-                  )
-                  .then((result) => {
-                    db.get()
-                      .collection(collection.ORDER_COLLECTION)
-                      .findOne({ _id: ObjectID(id) })
-                      .then((order) => {
-                        db.get()
-                          .collection(collection.WALLET_COLLECTION)
-                          .updateOne(
-                            { user: ObjectID(userId) },
-                            {
-                              $inc: {
-                                Total: order.totalAmount,
-                              },
-                            }
-                          )
-                          .then((hai) => {});
-                      });
-                  });
-              });
+          db.get().collection(collection.ORDER_COLLECTION).findOne({_id:ObjectID(id)}).then((order)=>{
+            order.products.forEach(element => {
+               db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:ObjectID(element.product)},
+               {
+                  $inc: {stock : element.quantity}
+               }).then((result)=>{ 
+                   db.get().collection(collection.ORDER_COLLECTION).findOne({_id:ObjectID(id)}).then((order)=>{
+                 
+                       db.get().collection(collection.WALLET_COLLECTION).updateOne({user:ObjectID(userId)},
+                       {
+                           $inc:{
+                            Total:order.totalAmount
+                           }
+                       }).then((hai)=>{
+                      
+                       })
+                   })
+               })
             });
+               
+           })
           resolve();
         });
     });
@@ -961,29 +949,22 @@ module.exports = {
     });
   },
 
-  //order count
-  orderCount: (userId) => {
-    return new Promise((resolve, reject) => {
-      let count = db
-        .get()
-        .collection(collection.ORDER_COLLECTION)
-        .find({ userId: objectID(userId) })
-        .count();
-      if (count < 0) {
-        reject();
+  //order count 
+  orderCount :(userId) => {
+    return new Promise((resolve,reject) => {
+      let count = db.get().collection(collection.ORDER_COLLECTION).find({userId:objectID(userId)}).count()
+      if(count<0){
+        reject()
       }
-      resolve(count);
-    });
+      resolve(count)
+    })
   },
 
   //wallet amount showing in order submit
   walletAmount: (userId) => {
-    return new Promise(async (resolve, reject) => {
-      let wallet = db
-        .get()
-        .collection(collection.WALLET_COLLECTION)
-        .findOne({ user: objectID(userId) });
-      resolve(wallet);
-    });
-  },
+    return new Promise( async(resolve,reject) => {
+      let wallet = db.get().collection(collection.WALLET_COLLECTION).findOne({user: objectID(userId)})
+      resolve(wallet)
+    })
+  }
 };
