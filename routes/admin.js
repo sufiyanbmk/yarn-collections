@@ -1,7 +1,6 @@
 const { compareSync } = require("bcrypt");
 var express = require("express");
-const {
-  RecordingRulesInstance,
+const {RecordingRulesInstance,
 } = require("twilio/lib/rest/video/v1/room/roomRecordingRule");
 const { response, off } = require("../app");
 const { Category } = require("../config/collection");

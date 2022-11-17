@@ -91,15 +91,24 @@ module.exports = {
         });
     });
   },
-  viewProduct: () => {
+  viewProduct: (pageNum,perPage) => {
     return new Promise(async (resolve, reject) => {
       let product = await db
         .get()
         .collection(collection.PRODUCT_COLLECTION)
         .find()
+        .skip((pageNum - 1) * perPage)
+        .limit(perPage)
         .toArray();
       resolve(product);
     });
+  },
+
+  productsCount : () =>{
+    return new Promise(async (resolve,reject) => {
+      let proCount = await db.get().collection(collection.PRODUCT_COLLECTION).count()
+      resolve(proCount)
+    })
   },
 
   getProduct: (proId) => {

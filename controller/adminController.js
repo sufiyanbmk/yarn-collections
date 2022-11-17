@@ -129,9 +129,14 @@ exports.deleteCatagory = (req, res) => {
 
 //--------------products----------//
 
-exports.products = (req, res) => {
-  adminHelper.viewProduct().then((product) => {
-    res.render("adminSide/productManagement", { product });
+exports.products =async (req, res) => {
+  const pageNum = req.query.page;
+  const perPage = 5;
+  const proCount = await adminHelper.productsCount()
+  let pages = Math.ceil(proCount / perPage);
+  let pagesArray = Array.from({ length: pages }, (_, i) => i + 1);
+  adminHelper.viewProduct(pageNum,perPage).then((product) => {
+    res.render("adminSide/productManagement", { product,pagesArray });
   });
 };
 
@@ -147,9 +152,6 @@ exports.backToProducts = (req, res) => {
 
 exports.addProductsPost = (req, res, next) => {
   const loc = req.files.map((file) => file.filename);
-  // function filename(file) {
-  //   return file.filename;
-  // }
   let productDetails = req.body;
   productDetails.imagefileName = loc;
   adminHelper.addProduct(productDetails).then((productDetails) => {

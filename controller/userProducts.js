@@ -7,7 +7,6 @@ const { render } = require("../app");
 module.exports = {
   getCatagoryProducts: async (req, res, next) => {
     try {
-      const cartExist = false;
       const pageNum = req.query.page;
       const perPage = 3;
       let products = await userHelper.getCatagoryProducts(
@@ -26,7 +25,6 @@ module.exports = {
         );
         if (whislist) {
           for (i = 0; i < products.length; i++) {
-            // products[i].cart_id = cart._id
             for (j = 0; j < whislist.product.length; j++) {
               let a = "" + products[i]._id;
               let b = "" + whislist.product[j];

@@ -1,18 +1,15 @@
 {{>adminlinks}}
-
 {{>adminSidebar}}
 <main class="main-wrap">
     {{>adminHeader}}
-
     <div class="container row tm-content-row tm-mt-big">
         <div class="col-xl-12 col-lg-12 tm-md-12 tm-sm-12 tm-col">
             <div class="bg-white tm-block h-100">
                 <div class="row">
                     <div class="col-md-8 col-sm-12">
                         <h2 class="tm-block-title d-inline-block">Products</h2>
-
                     </div>
-                    <div class="col-md-4 col-sm-12 text-right">
+                    <div class="col-md-4 col-sm-12 text-right m-3">
                         <a href="/admin/addProduct" class="btn btn-small btn-primary">Add New Product</a>
                     </div>
                 </div>
@@ -73,52 +70,29 @@
                                                     <path fill-rule="evenodd"
                                                         d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
                                                 </svg></a>
-
-                                            <a class="dropdown-item btn btn-secondary" style="width: 100px;"
-                                                href="/admin/product-offer/{{this._id}}">Offer</a>
+                                                <a class="dropdown-item btn btn-secondary" style="width: 100px;"
+                                                  href="/admin/product-offer/{{this._id}}">Offer</a>
                                         </div>
                                     </div> <!-- dropdown //end -->
                                 </td>
-
-
                             </tr>
                             {{/each}}
-
                         </tbody>
                     </table>
                 </div>
-
-                <div class="tm-table-mt tm-table-actions-row">
-                    {{!-- <div class="tm-table-actions-col-left">
-                        <button class="btn btn-danger">Delete Selected Items</button>
-                    </div> --}}
-                    {{!-- <div class="tm-table-actions-col-right offset-9">
+                <div class="tm-table-mt tm-table-actions-row m-4">
+                     <div class="tm-table-actions-col-right offset-10">
                         <span class="tm-pagination-label">Page</span>
                         <nav aria-label="Page navigation" class="d-inline-block">
                             <ul class="pagination tm-pagination">
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <span class="tm-dots d-block">...</span>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">13</a></li>
-                                <li class="page-item"><a class="page-link" href="#">14</a></li>
+                                {{#each pagesArray}}
+                                <li class="page-item active"><a class="page-link" href="?page={{this}}">{{this}}</a></li>
+                                {{/each}}
                             </ul>
                         </nav>
-                    </div> --}}
+                    </div> 
                 </div>
             </div>
         </div>
 </main>
-
-
-<script>
-    $(document).ready(function () {
-        $('#product-table').DataTable();
-    });
-</script>
-
-
-
 {{>adminjs}}
