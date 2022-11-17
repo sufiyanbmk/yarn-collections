@@ -42,14 +42,7 @@
                 borderColor: "rgba(44, 120, 220)",
                 data: res.data,
               },
-              {
-                label: "Products",
-                tension: 0.3,
-                // fill: true,
-                // backgroundColor: "rgba(4, 209, 130, 0.2)",
-                // borderColor: "rgb(4, 209, 130)",
-                data: [30, 10, 27, 19, 33, 15, 19, 20, 24, 15, 37, 6],
-              },
+             
             ],
           },
           options: {
