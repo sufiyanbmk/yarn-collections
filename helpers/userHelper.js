@@ -35,7 +35,6 @@ module.exports = {
                   .collection(collection.USER_COLLECTION)
                   .insertOne(userData)
                   .then((data) => {
-                    console.log(data);
                     wallet = {
                       user: data.insertedId,
                       Total: 0,
@@ -85,7 +84,7 @@ module.exports = {
                   console.log(data);
                   wallet = {
                     user: data.insertedId,
-                    Total: 0,
+                    Total: 10,
                     History: [],
                   };
                   db.get()
@@ -154,16 +153,78 @@ module.exports = {
     });
   },
 
+  //get banners in user side
+  getBanner : () =>{
+    return new Promise(async (resolve, reject) => {
+      let banner = await db
+        .get()
+        .collection(collection.BANNER_COLLECTION)
+        .find()
+        .toArray()
+        resolve(banner)
+    })
+  },
+
+  //top selling products
+  topProducts : ()=>{
+    return new Promise(async(resolve,reject) => {
+      let topSellingProduct = await db.get().collection(collection.ORDER_COLLECTION)
+      .aggregate([
+        {
+          $match:{
+            status:"Success"
+          }
+        },
+        {
+          $unwind:'$products'
+        },
+        {
+          $group:{
+            _id: "$products.product",
+            total :{$sum:"$products.quantity"}
+          }
+        },
+        {
+          $sort:{total:-1}
+        },
+        {
+          $limit:4
+        },
+        {
+          $lookup:{
+            from:collection.PRODUCT_COLLECTION,
+            localField:"_id",
+            foreignField:"_id",
+            as:"product"
+          }
+        },
+        {
+          $addFields:{
+            products:{$arrayElemAt:["$product",0]}
+          }
+        },
+        {
+          $project:{
+            _id:0,
+            total:1,
+            products:1
+          }
+        }
+      ]).toArray()
+      resolve(topSellingProduct)
+    })
+  },
+
   // catagory wise product
-  getCatagoryProducts: (catagory, pageNum, perPage) => {
+  getCatagoryProducts: (catagory) => {
     return new Promise(async (resolve, reject) => {
       let product = await db
         .get()
         .collection(collection.PRODUCT_COLLECTION)
         .find({ Category: catagory })
 
-        .skip((pageNum - 1) * perPage)
-        .limit(perPage)
+        // .skip((pageNum - 1) * perPage)
+        // .limit(perPage)
         .toArray();
 
       resolve(product);
@@ -247,6 +308,18 @@ module.exports = {
     });
   },
 
+  //user product sub catagory
+  subCatagoryProd:(catagories)=>{
+    return new Promise(async (resolve, reject) => {
+      let catagory = await db
+        .get()
+        .collection(collection.CATEGORY_COLLECTION)
+        .find({ categories: catagories })
+        .toArray();
+      resolve(catagory);
+    });
+  },
+
   //--------wallet showing in user side ------//
   getWallet: (userId) => {
     return new Promise((resolve, reject) => {
@@ -286,4 +359,11 @@ module.exports = {
       resolve(count);
     });
   },
+  //-----wallet history----//
+  userWalletHistory:(walletId)=>{
+    return new Promise(async(resolve,reject) => {
+      let history = await db.get().collection(collection.WALLET_COLLECTION).findOne({_id:objectID(walletId)})
+      resolve(history)
+    })
+  }
 };

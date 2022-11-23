@@ -1,5 +1,4 @@
 {{>adminlinks}}
-
 {{>adminSidebar}}
 <main class="main-wrap">
     {{>adminHeader}}
@@ -8,36 +7,11 @@
             <div class="bg-white tm-block h-100">
                 <div class="row">
                     <div class="col-md-8 col-sm-12">
-                        <h2 class="tm-block-title d-inline-block">Products</h2>
-
+                        <h2 class="tm-block-title d-inline-block">Orders</h2>
                     </div>
-
-                </div>
-
-
-                <div class="tm-table-mt tm-table-actions-row">
-                    {{!-- <div class="tm-table-actions-col-left">
-                        <button class="btn btn-danger">Delete Selected Items</button>
-                    </div> --}}
-                    {{!-- <div class="tm-table-actions-col-right offset-9">
-                        <span class="tm-pagination-label">Page</span>
-                        <nav aria-label="Page navigation" class="d-inline-block">
-                            <ul class="pagination tm-pagination">
-                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item">
-                                    <span class="tm-dots d-block">...</span>
-                                </li>
-                                <li class="page-item"><a class="page-link" href="#">13</a></li>
-                                <li class="page-item"><a class="page-link" href="#">14</a></li>
-                            </ul>
-                        </nav>
-                    </div> --}}
                 </div>
             </div>
         </div>
-
         <div class="card-body">
             <div class="table-responsive">
                 <table class="table table-hover" id="order-table">
@@ -61,8 +35,8 @@
                             <td><b>{{this.address.name}}</b></td>
                             <td>{{this.address.phone}}</td>
                             <td>{{this.totalAmount}}</td>
-                            {{!-- <td> --}}
-                                {{!-- {{#if this.cancelled}}
+                            {{!-- <td>
+                                {{#if this.pending}}
                                 <span class="badge rounded-pill alert-danger">{{this.status}}</span>
 
                                 {{else}}
@@ -75,22 +49,6 @@
                             <td class="text-end">
                                 <a href="/admin/order-details/{{this._id}}"
                                     class="btn btn-md rounded font-sm">Detail</a>
-                                {{!-- {{#if this.cancelled}}
-                                <button id="refundBtn" class="btn btn-danger"
-                                    onclick="refund('{{this._id}}')">Refund</button>
-
-                                {{else}}
-                                <div class="dropdown">
-                                    <a href="#" data-bs-toggle="dropdown" class="btn btn-light rounded btn-sm font-sm">
-                                        <i class="material-icons md-more_horiz"></i> </a>
-                                    <div class="dropdown-menu">
-                                        <a class="dropdown-item" href="/admin/shipped/{{this._id}}">shipped</a>
-                                        <a class="dropdown-item" href="/admin/delivered/{{this._id}}">Delivered</a>
-                                        <a class="dropdown-item text-danger"
-                                            href="/admin/cancel-order/{{this._id}}">Cancel</a>
-                                    </div> --}}
-                                </div> <!-- dropdown //end -->
-
                             </td>
                         </tr>
                         {{/each}}
@@ -98,11 +56,17 @@
                 </table>
             </div> <!-- table-responsive //end -->
         </div>
+        <div class="tm-table-mt tm-table-actions-row m-4">
+            <div class="tm-table-actions-col-right offset-10">
+                <span class="tm-pagination-label">Page</span>
+                <nav aria-label="Page navigation" class="d-inline-block">
+                    <ul class="pagination tm-pagination">
+                        {{#each pagesArray}}
+                        <li class="page-item active"><a class="page-link" href="?page={{this}}">{{this}}</a></li>
+                        {{/each}}
+                    </ul>
+                </nav>
+            </div>
+        </div>
 </main>
-<script>
-    $(document).ready(function () {
-        $('#order-table').DataTable();
-    });
-
-</script>
 {{>adminjs}}

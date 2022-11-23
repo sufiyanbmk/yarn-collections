@@ -11,14 +11,15 @@ module.exports = {
       const perPage = 3;
       let products = await userHelper.getCatagoryProducts(
         req.params.catagory,
-        pageNum,
-        perPage
+        // pageNum,
+        // perPage
       );
       let count = await userHelper.getCatagoryProductsCount(
         req.params.catagory
       );
-      let pages = Math.ceil(count / perPage);
-      let pagesArray = Array.from({ length: pages }, (_, i) => i + 1);
+      // let pages = Math.ceil(count / perPage);
+      // let pagesArray = Array.from({ length: pages }, (_, i) => i + 1);
+      let subCatagoryProduct = await userHelper.subCatagoryProd(req.params.catagory)
       if (req.session.user) {
         let [whislist] = await whislistHelper.getuserWhislist(
           req.session.user._id
@@ -37,21 +38,63 @@ module.exports = {
             }
           }
         }
+  
+        // let cartItem = await userCartHelper.gotoCart(req.session.user._id) 
+        // console.log(cartItem)
+        // products.forEach((element)=>{
+        //   cartItem.forEach((item)=>{
+        //     console.log(item.products.product)
+        //     if(element._id.equals(item.products.product)){
+        //       element.cartList = true;
+        //       console.log('iiiiiiiiiiiiiiiiiiiiiiiiiiiiii')
+        //     }
+        //   })
+        // })
+      }
+      console.log(products)
+      let cartCount = null;
+      let whislistCount = null;
+      let bracket;
+      if (req.session.userLogin) {
+        cartCount = await userHelper.getCartCount(req.session.user._id);
+        whislistCount = await userHelper.getWhislistCount(req.session.user._id);
+         bracket = true
+
       }
       res.render("userSide/women", {
         products,
         user: req.session.user,
-        pagesArray,
+        // pagesArray,
+        cartCount,
+        whislistCount,
+        bracket,
+        subCatagoryProduct
       });
     } catch (error) {
       next(error);
     }
   },
 
-  singleProduct: (req, res, next) => {
+  singleProduct: async (req, res, next) => {
     try {
+      let cartCount = null;
+      let whislistCount = null;
+      let bracket;
+      let existCart = false;
+      if (req.session.userLogin) {
+        cartCount = await userHelper.getCartCount(req.session.user._id);
+        whislistCount = await userHelper.getWhislistCount(req.session.user._id);
+         bracket = true
+         existCart = await userCartHelper.cartThere(req.session.user._id,req.params.id)
+         console.log(existCart)
+      }
       adminHelper.findProductDetails(req.params.id).then((data) => {
-        res.render("userSide/singleProduct", { data, user: req.session.user });
+        if(data.stock == 0){
+          data.noStock = true;
+           }else if(data.stock <= 5){
+          data.stockExist = true;
+        }
+        res.render("userSide/singleProduct", { data, user: req.session.user ,cartCount,whislistCount,bracket,existCart});
       });
     } catch (error) {
       next(error);

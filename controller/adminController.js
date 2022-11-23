@@ -76,9 +76,14 @@ exports.paymentGraph = async (req, res) => {
 
 //-----------------catagory-------------//
 
-exports.catagory = (req, res) => {
-  adminHelper.viewCategories().then((Category) => {
-    res.render("adminSide/categoryManagement", { Category });
+exports.catagory =async (req, res) => {
+  const pageNum = req.query.page;
+  const perPage = 3;
+  const countCatagory =await adminHelper.getCatagoryCount()
+  let pages = Math.ceil(countCatagory / perPage);
+  let pagesArray = Array.from({ length: pages }, (_, i) => i + 1);
+  adminHelper.viewCategories(pageNum,perPage).then((Category) => {
+    res.render("adminSide/categoryManagement", { Category ,pagesArray });
   });
 };
 
@@ -126,7 +131,24 @@ exports.deleteCatagory = (req, res) => {
     res.redirect("/admin/categorymange");
   });
 };
+//-----------sub catagory---------//
 
+exports.subCatagory = async (req,res) => {
+  let catagory = await adminHelper.getCatagory()
+  res.render("adminSide/subCatagory",{catagory})
+}
+
+exports.postSubCatagory = (req,res) => {
+  adminHelper.addSubCatagory(req.body).then(()=>{
+    res.json({status:true})
+  })
+}
+
+exports.deleteSubCatagory = (req,res) => {
+  adminHelper.deleteSubCatagory(req.body).then(()=>{
+    res.json({status:true})
+  })
+},
 //--------------products----------//
 
 exports.products =async (req, res) => {
@@ -134,17 +156,25 @@ exports.products =async (req, res) => {
   const perPage = 5;
   const proCount = await adminHelper.productsCount()
   let pages = Math.ceil(proCount / perPage);
-  let pagesArray = Array.from({ length: pages }, (_, i) => i + 1);
-  adminHelper.viewProduct(pageNum,perPage).then((product) => {
-    res.render("adminSide/productManagement", { product,pagesArray });
+  let pagesArray = Array.from({ length: pages }, (_, i) =>  {
+    return {page: i + 1, current: Number(pageNum)}
+  });
+  adminHelper.viewProduct(pageNum, perPage).then((product) => {
+    res.render("adminSide/productManagement", { product, pagesArray, pageNum});
   });
 };
 
 exports.addProducts = (req, res) => {
-  adminHelper.viewCategories().then((Categorylist) => {
+  adminHelper.getCatagory().then((Categorylist) => {
     res.render("adminside/addProduct", { Categorylist });
   });
 };
+
+exports.catagorySelectionOption =async (req,res) => {
+  subCatagory = await adminHelper.catagorySelection(req.body.catagoryName)
+  console.log(subCatagory)
+  res.json(subCatagory)
+}
 
 exports.backToProducts = (req, res) => {
   res.redirect("/admin/productmange");
@@ -161,7 +191,7 @@ exports.addProductsPost = (req, res, next) => {
 
 exports.editProducts = async (req, res) => {
   await adminHelper.getProduct(req.params.id).then((product) => {
-    adminHelper.viewCategories().then((Categorylist) => {
+    adminHelper.getCatagory().then((Categorylist) => {
       res.render("adminSide/editProduct", { product, Categorylist });
     });
   });
@@ -174,6 +204,7 @@ exports.editProductsPost = (req, res) => {
   }
   let productDetails = req.body;
   productDetails.imagefileName = loc;
+  productDetails.stock = parseInt(productDetails.stock)
   adminHelper
     .updateProduct(req.params.id, productDetails)
     .then((productDetails) => {
@@ -189,11 +220,16 @@ exports.deleteProducts = (req, res) => {
 
 //-------------customer-----------//
 
-exports.customer = (req, res) => {
-  adminHelper.viewUser().then((users) => {
+exports.customer = async (req, res) => {
+  const pageNum = req.query.page;
+  const perPage = 10;
+  const userCount = await adminHelper.getCountUser()
+  let pages = Math.ceil(userCount / perPage);
+  let pagesArray = Array.from({ length: pages }, (_, i) => i + 1);
+  adminHelper.viewUser(pageNum,perPage).then((users) => {
     res.render("adminSide/userMangement", {
       users,
-      activated: req.session.active,
+      pagesArray
     });
   });
 };
@@ -216,14 +252,19 @@ exports.unBlockCustomer = (req, res) => {
 
 //-----------orders --------//
 
-exports.orders = (req, res) => {
-  orderHelper.adminorderlist().then((order) => {
+exports.orders = async (req, res) => {
+  const pageNum = req.query.page;
+  const perPage = 10;
+  const orderCount =await orderHelper.adminOrderCount()
+  let pages = Math.ceil(orderCount / perPage);
+  let pagesArray = Array.from({ length: pages }, (_, i) => i + 1);
+  orderHelper.adminorderlist(pageNum,perPage).then((order) => {
     let value = order.forEach((order, index) => {
-      if (order.status === "order cancelled") {
-        order.cancelled = true;
+      if (order.status === "pending") {
+        order.pending = true;
       }
     });
-    res.render("adminSide/orderMangement", { order });
+    res.render("adminSide/orderMangement", { order ,pagesArray});
   });
 };
 
@@ -232,14 +273,11 @@ exports.orderDetailsView = async (req, res) => {
   productlist.forEach((e) => {
     if (e.status == "Requested Return") {
       e.return = true;
-    } else if (
-      e.status == "Delivered" ||
-      e.status == "Order Cancelled" ||
-      e.status == "Returned"
-    ) {
+    } else if (e.status == "Delivered"|| e.status=="Order Cancelled" || e.status == "Returned" || e.status=="Return Rejected") {
       e.displayNone = true;
     }
   });
+
   res.render("adminSide/orderDetails", { productlist });
 };
 
@@ -289,9 +327,15 @@ exports.refund = async (req, res) => {
 
 //------------------banner mangement ----------//
 
-exports.banners = (req, res) => {
-  adminHelper.viewBanner().then((banner) => {
-    res.render("adminSide/bannerMangement", { banner });
+exports.banners = async (req, res) => {
+  const pageNum = req.query.page;
+  const perPage = 3;
+  const bannerCount =await adminHelper.bannerCount()
+  console.log(bannerCount)
+  let pages = Math.ceil(bannerCount / perPage);
+  let pagesArray = Array.from({ length: pages }, (_, i) => i + 1);
+  adminHelper.viewBanner(pageNum,perPage).then((banner) => {
+    res.render("adminSide/bannerMangement", { banner,pagesArray });
   });
 };
 
@@ -325,7 +369,7 @@ exports.salesReport = (req, res) => {
 
 exports.dailyReport = async (req, res) => {
   let date = req.body.day;
-  var products = await adminHelper.viewProduct();
+  let products = await adminHelper.getproductsForReport();
   let td = [];
   for (let product of products) {
     let [dayReport] = await adminHelper.daySalesReport(product._id, date);
@@ -340,7 +384,7 @@ exports.dailyReport = async (req, res) => {
 exports.monthlyReport = async (req, res) => {
   let date = req.body.month;
   let month = [];
-  let products = await adminHelper.viewProduct();
+  let products = await adminHelper.getproductsForReport();
   for (let product of products) {
     let [monthReport] = await adminHelper.monthSalesReport(product._id, date);
     if (monthReport) {
@@ -355,7 +399,7 @@ exports.monthlyReport = async (req, res) => {
 exports.yearlyReport = async (req, res) => {
   let date = req.body.year;
   let year = [];
-  let products = await adminHelper.viewProduct();
+  let products = await adminHelper.getproductsForReport();
   for (let product of products) {
     let [yearReport] = await adminHelper.yearSalesReport(product._id, date);
     if (yearReport) {
@@ -406,7 +450,7 @@ exports.deleteCoupon = (req, res) => {
 //-----------catagory offer---------------//
 
 exports.catagoryOffer = async (req, res) => {
-  let catagoryList = await adminHelper.viewCategories();
+  let catagoryList = await adminHelper.getCatagory();
   res.render("adminSide/catagoryOffer", { catagoryList });
 };
 

@@ -1,12 +1,13 @@
-const { response } = require("../../../app");
+// const { response } = require("../../../app");
 
 function whislistAdd(prodId) {
   $.ajax({
     url: "/addWhislist/" + prodId,
     type: "post",
     success: (response) => {
-        swal("Good job!", "Added to Whislist!", "success");
-        $("#productCard").load(location.href + " #productCard");
+        // swal("Good job!", "Added to Whislist!", "success");
+      
+        // $("#productCard").load(location.href + " #productCard");
         document.getElementById('whislistbtn').style.color = '#ff0000';
     },
   });
@@ -18,9 +19,9 @@ function deleteWhislist(prodId) {
     url: "/whislistDelete/" + prodId,
     type: "delete",
     success: (response) => {
-      location.reload();
+      // location.reload();
       // $("#whislistTable").load(location.href + " #whislistTable");
-
+      $("#whislistTable").load(location.href+" #whislistTable>*",""); 
     },
   });
 }
@@ -32,11 +33,11 @@ function whislistRemove(proId){
     url:"/whislistDelete/" + proId,
     type:"delete",
     success: (response) =>{
-      swal("Bad job!", "Remove From Whislist!", "success" );
+      // swal("Bad job!", "Remove From Whislist!", "success" );
       // $("#productCard").load();
-      $("#productCard").load(location.href + " #productCard");
+      // $("#productCard").load(location.href + " #productCard");
       // document.getElementById('removeWhislist').style.color = '#FFFFFF';
-
+      location.reload()
     }
   })
 }

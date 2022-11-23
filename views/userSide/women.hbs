@@ -2,7 +2,7 @@
 {{>userHeader}}
 
 
-<div class="hero-wrap hero-bread" style="background-image: url('images/bg_6.jpg');">
+{{!-- <div class="hero-wrap hero-bread" style="background-image: url('images/bg_6.jpg');">
 	<div class="container">
 		<div class="row no-gutters slider-text align-items-center justify-content-center">
 			<div class="col-md-9 ftco-animate text-center">
@@ -11,24 +11,47 @@
 			</div>
 		</div>
 	</div>
+</div> --}}
+<div class="row">
+	<div class="col-lg-12">
+		<div style="float: right; padding-right: 50px;">
+				<div class="searchbar">
+					<input class="search_input" id="search" type="text" oninput="searchh()" name="" placeholder="Search...">
+					<a href="#" class="search_icon"><i class="fas fa-search"></i></a>
+				</div>
+			</div>
+	</div>
 </div>
 
-<section class="ftco-section bg-light" id="productCard">
+<section class="ftco-section bg-muted">
 	<div class="container">
 		<div class="row">
-			<div class="col-md-8 col-lg-10 order-md-last">
-				<div class="row">
+			
+			<div class="col-md-4 col-lg-2 sidebar">
+				<div class="sidebar-box-2">
+					<h2 class="heading mb-4"><a href="#">Clothing</a></h2>
+					<ul>
+						<li class="subCat" data-filter="{{this.subCategory}}"><a href="">ALL</a></li>
+						{{#each subCatagoryProduct}}
+						{{#each this.subCatagories}}
+						<li class="subCat" data-filter="{{this.name}}"><a href="#">{{this.name}}</a></li>
+						{{/each}}
+						{{/each}}
+					</ul>
+				</div>
+			</div>
+			<div class="col-md-8 col-lg-10 order-md-last ">
+				<div class="row" id="productCardDiv">
 					{{#each products}}
-					<div class="col-sm-6 col-md-6 col-lg-4 ftco-animate">
+					<div class="col-sm-6 col-md-6 col-lg-4 ftco-animate itemBox {{this.subCategory}} produtsdiv">
 						<div class="product">
 							<a href="/productView" class="img-prod"><img class="img-fluid"
 									src='/uploads/{{this.imagefileName.[0]}}' style="width: 400px; height: 400px "
 									alt="Image is not supported">
-								<span class="status">30%</span>
 								<div class="overlay"></div>
 							</a>
 							<div class="text py-3 px-3">
-								<h3><a href="/productview/{{this._id}}">{{this.name}}</a></h3>
+								<h3 ><a  href="/productview/{{this._id}}"><span class="produtsname">{{this.name}}</span></a></h3>
 								<div class="d-flex">
 									<div class="pricing">
 										<p class="price"><span class="mr-2 price-dc">{{this.price}}</span><span
@@ -43,30 +66,20 @@
 											<Button onclick="whislistAdd('{{this._id}}')" id="whislistbtn"><i
 													class="fas fa-heart"></i></Button>
 											{{/if}}
-											{{!-- <a><img style="width: 20px; height:20px " src="/images/eye.png"></a>
-											--}}
-											{{!-- <button onclick="whislistAdd('{{this._id}}')"><i
-													class="fa-solid fa-heart"></i></button> --}}
-											{{!-- <a href="#"
-												class="fs-14 cl3 hov-cl1 trans-04 lh-10 p-lr-5 p-tb-2 js-addwish-detail tooltip100"
-												data-tooltip="Add to Wishlist" onclick="whislistAdd('{{this._id}}')">
-												<i class="zmdi zmdi-favorite"></i></a> --}}
-											<a href="#"><span class="ion-ios-star-outline"></span></a>
+
 										</p>
 									</div>
 								</div>
 								<p class="bottom-area d-flex px-3">
 									<a class="add-to-cart text-center py-2 mr-1"
-										onclick="addToCart('{{this._id}}')"><span>Add to cart <i
-												class="ion-ios-add ml-1"></i></span></a>
-									<a href="#" class="buy-now text-center py-2">Buy now<span><i
-												class="ion-ios-cart ml-1"></i></span></a>
+										onclick="addToCart('{{this._id}}','{{this.stock}}')"><span>Add to cart <i
+												class="ion-ios-add ml-1"></i></span>
+									</a>
 								</p>
 							</div>
 						</div>
 					</div>
 					{{/each}}
-
 				</div>
 				<div class="row mt-5">
 					<div class="col text-center">
@@ -83,58 +96,86 @@
 				</div>
 			</div>
 
-			<div class="col-md-4 col-lg-2 sidebar">
-				<div class="sidebar-box-2">
-					<h2 class="heading mb-4"><a href="#">Clothing</a></h2>
-					<ul>
-						<li><a href="#">Shirts &amp; Tops</a></li>
-						<li><a href="#">Dresses</a></li>
-						<li><a href="#">Shorts &amp; Skirts</a></li>
-						<li><a href="#">Jackets</a></li>
-						<li><a href="#">Coats</a></li>
-						<li><a href="#">Sleeveless</a></li>
-						<li><a href="#">Trousers</a></li>
-						<li><a href="#">Winter Coats</a></li>
-						<li><a href="#">Jumpsuits</a></li>
-					</ul>
-				</div>
-				<div class="sidebar-box-2">
-					<h2 class="heading mb-4"><a href="#">Jeans</a></h2>
-					<ul>
-						<li><a href="#">Shirts &amp; Tops</a></li>
-						<li><a href="#">Dresses</a></li>
-						<li><a href="#">Shorts &amp; Skirts</a></li>
-						<li><a href="#">Jackets</a></li>
-						<li><a href="#">Coats</a></li>
-						<li><a href="#">Jeans</a></li>
-						<li><a href="#">Sleeveless</a></li>
-						<li><a href="#">Trousers</a></li>
-						<li><a href="#">Winter Coats</a></li>
-						<li><a href="#">Jumpsuits</a></li>
-					</ul>
-				</div>
-				<div class="sidebar-box-2">
-					<h2 class="heading mb-2"><a href="#">Bags</a></h2>
-					<h2 class="heading mb-2"><a href="#">Accessories</a></h2>
-				</div>
-				<div class="sidebar-box-2">
-					<h2 class="heading mb-4"><a href="#">Shoes</a></h2>
-					<ul>
-						<li><a href="#">Nike</a></li>
-						<li><a href="#">Addidas</a></li>
-						<li><a href="#">Skechers</a></li>
-						<li><a href="#">Jackets</a></li>
-						<li><a href="#">Coats</a></li>
-						<li><a href="#">Jeans</a></li>
-					</ul>
-				</div>
-			</div>
+
 		</div>
 	</div>
 
 
 </section>
+<style>
+	.searchbar {
+		margin-bottom: auto;
+		margin-top: auto;
+		height: 60px;
+		background-color: #353b48;
+		border-radius: 30px;
+		padding: 10px;
+	}
 
+	.search_input {
+		color: white;
+		border: 0;
+		outline: 0;
+		background: none;
+		width: 0;
+		caret-color: transparent;
+		line-height: 40px;
+		transition: width 0.4s linear;
+	}
 
+	.searchbar:hover>.search_input {
+		padding: 0 10px;
+		width: 350px;
+		caret-color: red;
+		transition: width 0.4s linear;
+	}
+
+	.searchbar:hover>.search_icon {
+		background: white;
+		color: #e74c3c;
+	}
+
+	.search_icon {
+		height: 40px;
+		width: 40px;
+		float: right;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-radius: 50%;
+		color: white;
+		text-decoration: none;
+	}
+</style>
 
 {{>userfooter}}
+<script>
+	$(document).ready(function () {
+		$('.subCat').click(function () {
+			const value = $(this).attr('data-filter');
+			$('.itemBox').not('.' + value).hide('1000');
+			$('.itemBox').filter('.' + value).show('1000');
+		})
+	})
+</script>
+
+<script>
+	function searchh(){
+  value = document.getElementById('search').value
+  var filter = value.toUpperCase()
+  products = document.querySelectorAll('.produtsname')
+  div = document.querySelectorAll('.produtsdiv')
+for(var i=0; i<products.length; i++){
+  let productsss=products[i].innerHTML																																																																																																											 		
+if (productsss.toUpperCase().search(filter) !=-1) {
+          div[i].hidden=false
+
+      } else {
+          div[i].hidden=true
+      }																																																	
+}
+
+}
+</script>
+
+	

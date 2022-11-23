@@ -89,7 +89,6 @@ module.exports = {
             // },
           ])
           .toArray();
-        console.log(userwhislist);
         resolve(userwhislist);
       } else {
         resolve([]);

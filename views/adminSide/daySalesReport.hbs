@@ -56,12 +56,21 @@
                             <td>{{inc @ index}}</td>
                             <td>{{this._id.name}}</td>
                             <td>{{this._id.price}}</td>
-                            <td>{{this.totalPrice}}</td>
+                            <td class="totalAmount">{{this.totalPrice}}</td>
                             <td>{{this.qtysum}}</td>
                             </td>
                         </tr>
                         {{/each}}
                     </tbody>
+                    <tfoot>
+                        <tr>
+                           <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td id="sum"></td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div> <!-- table-responsive //end -->
         </div>
@@ -76,4 +85,13 @@
         });
     });
 </script>
+<script>
+      var GrandTotal = 0
+      let total = document.querySelectorAll('.totalAmount')
+      total.forEach((elemnt) => {
+        let value = parseInt(elemnt.innerHTML)
+        GrandTotal += value
+      })
+      document.getElementById('sum').innerHTML = GrandTotal
+    </script>
 {{>adminjs}}

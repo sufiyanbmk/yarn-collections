@@ -4,12 +4,14 @@ const { v4: uuidv4 } = require("uuid");
 const userHelper = require("../helpers/userHelper");
 
 module.exports = {
+  
   checkoutPage: async (req, res, next) => {
     try {
       let address = await orderHelper.getAddress(req.session.user._id);
       let total = await userCartHelper.getTotalAmount(req.session.user._id);
       let subTotal = req.body.subtotal;
       let couponAmt = req.body.finalAmount;
+      let couponId = req.body.couponId
       let walletAmount = await orderHelper.walletAmount(req.session.user._id);
       let walletAmt = walletAmount.Total;
       res.render("userSide/checkout", {
@@ -18,6 +20,7 @@ module.exports = {
         total,
         subTotal,
         couponAmt,
+        couponId,
         walletAmt,
       });
     } catch (error) {
@@ -56,7 +59,7 @@ module.exports = {
 
   deleteAddress: (req, res) => {
     orderHelper.deleteAddress(req.params.id).then(() => {
-      res.redirect("/my-account");
+      res.redirect("/my-account#address");
     });
   },
 
@@ -70,6 +73,9 @@ module.exports = {
       orderHelper
         .placeOrder(req.body, products, address, totalPrice)
         .then(async (orderId) => {
+          if(req.body.couponAmt){
+            req.session.existCoupon = req.body.couponId
+          }
           if (req.body["paymentMethod"] == "COD") {
             res.json({ codSuccess: true });
           } else if (req.body["paymentMethod"] == "Razorpay") {

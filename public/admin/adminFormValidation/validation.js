@@ -1,3 +1,4 @@
+
 function categoryvalidation() {
     let Catagory = document.getElementById("catagory").value 
     let error1 = document.getElementById('error1');
@@ -45,3 +46,11 @@ function valid() {
 
 }
 
+//grand total 
+      var GrandTotal = 0
+      let total = document.querySelectorAll('.totalAmount')
+      total.forEach((elemnt) => {
+        let value = parseInt(elemnt.innerHTML)
+        GrandTotal += value
+      })
+      document.getElementById('sum').innerHTML = GrandTotal

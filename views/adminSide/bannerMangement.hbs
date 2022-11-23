@@ -3,14 +3,11 @@
 {{>adminSidebar}}
 <main class="main-wrap">
     {{>adminHeader}}
-
     <div class="card">
         <div class="card-header">
             <h3 class="card-title">Banners</h3>
             <a class="btn btn-primary offset-10" type="button" href="/admin/add-banners">Add Banner</a>
         </div>
-
-
         <div class="card-body">
             <table class="table table-bordered" id="tab">
                 <thead>
@@ -25,7 +22,6 @@
                 </thead>
                 <tbody>
                     {{#each banner}}
-
                     <tr>
                         <td>{{inc @index }}</td>
                         <td><img style="width:90px; height:70px border-radius: 0; !important"
@@ -39,7 +35,6 @@
                         <td>{{this.description}}</td>
                         <td>{{this.date}}</td>
                         <td>
-
                             <a href="/admin/delete-banner/{{this._id}}" class="btn btn-secondary"
                                 onclick="return confirm('Are you sure you want to delete {{this.Category}}?')">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
@@ -49,7 +44,6 @@
                                     <path fill-rule="evenodd"
                                         d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
                                 </svg></a>
-
                         </td>
                     </tr>
                     {{/each}}
@@ -57,25 +51,20 @@
             </table>
         </div>
 
-        {{!-- <div class="card-footer clearfix">
-            <ul class="pagination pagination-sm m-0 float-right">
-                <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
-                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
-            </ul>
-        </div> --}}
+        <div class="tm-table-mt tm-table-actions-row m-4">
+            <div class="tm-table-actions-col-right offset-10">
+                <span class="tm-pagination-label">Page</span>
+                <nav aria-label="Page navigation" class="d-inline-block">
+                    <ul class="pagination tm-pagination">
+                        {{#each pagesArray}}
+                        <li class="page-item active"><a class="page-link" href="?page={{this}}">{{this}}</a></li>
+                        {{/each}}
+                    </ul>
+                </nav>
+            </div>
+        </div>
     </div>
 </main>
-
-<script>
-    $(document).ready(function () {
-        $('#tab').DataTable();
-    });
-</script>
-
-
 {{>adminjs}}
 </main>
 {{>adminjs}}

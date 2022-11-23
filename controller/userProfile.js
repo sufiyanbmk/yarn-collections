@@ -2,6 +2,7 @@ const userhelpers = require("../helpers/userHelper");
 const adminHelper = require("../helpers/adminHelper");
 const userCartHelper = require("../helpers/userCartHelper");
 const orderHelper = require("../helpers/orderHelper");
+const { v4: uuidv4 } = require("uuid");
 
 module.exports = {
   profile: async (req, res, next) => {
@@ -24,13 +25,13 @@ module.exports = {
       );
       let couponCollection = await adminHelper.copuonView();
       let wallet = await userhelpers.getWallet(req.session.user._id);
-      let value = orderhistory.forEach((orderhistory, index) => {
-        if (orderhistory.status === "Delivered") {
-          orderhistory.delivered = true;
-        } else if (orderhistory.status === "order cancelled") {
-          orderhistory.cancelled = true;
-        }
-      });
+      // let value = orderhistory.forEach((orderhistory, index) => {
+      //   if (orderhistory.status === "Delivered") {
+      //     orderhistory.delivered = true;
+      //   } else if (orderhistory.status === "order cancelled") {
+      //     orderhistory.cancelled = true;
+      //   }
+      // });
       res.render("userSide/userAccount", {
         user: req.session.user,
         userDetail,
@@ -46,7 +47,14 @@ module.exports = {
     }
   },
 
+  viewProductDetail: async(req,res)=>{
+    let productlist = await orderHelper.adminViewDetails(req.params.id);
+    console.log(productlist)
+  res.render("userSide/orderHistoryProduct", { productlist ,  user: req.session.user,});
+  },
+
   editProfile: (req, res) => {
+    console.log(req.body)
     userhelpers.editProfile(req.session.user._id, req.body).then(() => {
       res.json({ status: true });
     });
@@ -74,7 +82,7 @@ module.exports = {
     orderHelper
       .addAccountAddress(req.session.user._id, addressDetails, uid)
       .then(() => {
-        res.redirect("/my-account");
+        res.redirect("/my-account#address");
       });
   },
 
@@ -100,4 +108,15 @@ module.exports = {
         res.json(response);
       });
   },
+
+  walletHistory:(req,res) => {
+    userhelpers.userWalletHistory(req.params.id).then((history)=>{
+      for(let i=0;i<history.History.length;i++){
+        if(history.History[i].Recieved){
+          history.History[i].crdited = true;
+        }
+      }
+      res.render('userSide/walletHistory',{history})
+    })
+  }
 };

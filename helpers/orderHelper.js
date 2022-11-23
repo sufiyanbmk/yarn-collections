@@ -8,6 +8,7 @@ const { resolve } = require("path");
 let paypal = require("paypal-rest-sdk");
 const e = require("express");
 const { ObjectID } = require("bson");
+const { Console } = require("console");
 
 var instance = new Razorpay({
   key_id: "rzp_test_oXgNaRuBSLuUSI",
@@ -131,6 +132,16 @@ module.exports = {
       products.forEach((Element) => {
         Element.paymentStatus = "order placed";
       });
+      let totalAmt = total
+      let couponDiscount = order.couponAmt||0
+      if(couponDiscount>0){
+        totalAmt = couponDiscount
+        couponDiscount = total-couponDiscount
+      }
+      
+      console.log(couponDiscount);
+     console.log(total)
+     console.log(total-couponDiscount)
       let status = order.paymentMethod === "COD" ? "Success" : "pending";
       let orderObj = {
         address: {
@@ -144,8 +155,8 @@ module.exports = {
         },
         userId: objectID(order.userId),
         paymentMethod: order.paymentMethod,
-        totalAmount: total,
-        couponAmt: order.couponAmt,
+        totalAmount: totalAmt,
+        couponAmt: couponDiscount,
         products: products,
         status: status,
         orderDate: new Date().toLocaleDateString("en-US", {
@@ -160,13 +171,11 @@ module.exports = {
         year: new Date().getFullYear(),
         time: new Date().getTime(),
       };
-      db.get()
-        .collection(collection.ORDER_COLLECTION)
-        .insertOne(orderObj)
+       db.get()
+         .collection(collection.ORDER_COLLECTION)
+         .insertOne(orderObj)
         .then((response) => {
-          // db.get()
-          //   .collection(collection.CART_COLLECTION)
-          //   .deleteOne({ user: objectID(order.userId) });
+          
           products.forEach((element) => {
             element.quantity = parseInt(element.quantity);
             db.get()
@@ -174,17 +183,26 @@ module.exports = {
               .updateOne(
                 { _id: objectID(element.product) },
                 {
-                  $inc: { stock: -element.quantity },
+                  $inc: { stock: element.quantity },
                 }
               );
           });
-
           resolve(response.insertedId);
         });
+        // })
     });
   },
+  //count order
+  countOrder : (userId)=>{
+    return new Promise(async (resolve,reject) => {
+      count = await db.get().collection(collection.ORDER_COLLECTION).find({$and:[{userId:objectID(userId)},{"products.paymentStatus":{$ne:"Order Cancelled"}}]}).count()
+      console.log(count)
+      resolve(count)
+    })
+  },
   //view orderlist
-  viewOrderList: (userId) => {
+  viewOrderList: (userId,pageNum,perPage) => {
+    console.log(pageNum)
     return new Promise(async (resolve, reject) => {
       order = await db
         .get()
@@ -192,19 +210,13 @@ module.exports = {
         .aggregate([
           {
             $match: {
-              $and: [
-                { userId: objectID(userId) },
-                {
-                  products: {
-                    $elemMatch: {
-                      paymentStatus: "order placed",
-                    },
-                  },
-                },
-              ],
+                 userId: objectID(userId) 
             },
           },
           { $unwind: "$products" },
+          {
+            $match:{"products.paymentStatus":{$ne:"Order Cancelled"}}
+          },
           {
             $project: {
               name: "$address.name",
@@ -217,6 +229,7 @@ module.exports = {
               totalAmount: 1,
               orderDate: 1,
               time: 1,
+              couponAmt:1,
             },
           },
           {
@@ -237,72 +250,10 @@ module.exports = {
               quantity: 1,
               productTotal: 1,
               totalAmount: 1,
-
+              couponAmt:1,
               orderDate: 1,
               time: 1,
               products: { $arrayElemAt: ["$cartItems", 0] },
-            },
-          },
-          {
-            $sort: {
-              time: -1,
-            },
-          },
-        ])
-        .toArray();
-
-      resolve(order);
-    });
-  },
-
-  //order history
-  orderhistory: (userId,pageNum,perPage) => {
-    console.log(pageNum)
-    return new Promise(async (resolve, reject) => {
-      orderHistory = await db
-        .get()
-        .collection(collection.ORDER_COLLECTION)
-        .aggregate([
-          {
-            $match: {
-              userId: objectID(userId),
-            },
-          },
-          {
-            $unwind: "$products",
-          },
-          {
-            $project: {
-              Amount: 1,
-              Mobile: 1,
-              payment: 1,
-              status: "$products.paymentStatus",
-              product: "$products.product",
-              quantity: "$products.quantity",
-              orderDate: 1,
-              time: 1,
-            },
-          },
-          {
-            $lookup: {
-              from: collection.PRODUCT_COLLECTION,
-              localField: "product",
-              foreignField: "_id",
-              as: "cartItems",
-            },
-          },
-          {
-            $project: {
-              Amount: 1,
-              Mobile: 1,
-              payment: 1,
-              status: 1,
-              orderDate: 1,
-              time: 1,
-              product: 1,
-              products: {
-                $arrayElemAt: ["$cartItems", 0],
-              },
             },
           },
           {
@@ -318,7 +269,22 @@ module.exports = {
           }
         ])
         .toArray();
-        console.log(orderHistory)
+
+      resolve(order);
+    });
+  },
+
+  //order history
+  orderhistory: (userID,pageNum,perPage) => {
+    return new Promise(async (resolve, reject) => {
+      orderHistory = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .find({userId:objectID(userID)})
+        .sort({time:-1})
+        .skip((pageNum - 1) * perPage)
+        .limit(perPage)
+        .toArray();
       resolve(orderHistory);
     });
   },
@@ -356,35 +322,60 @@ module.exports = {
                {
                   $inc: {stock : element.quantity}
                }).then((result)=>{ 
-                   db.get().collection(collection.ORDER_COLLECTION).findOne({_id:ObjectID(id)}).then((order)=>{
-                 
-                       db.get().collection(collection.WALLET_COLLECTION).updateOne({user:ObjectID(userId)},
-                       {
-                           $inc:{
-                            Total:order.totalAmount
-                           }
-                       }).then((hai)=>{
-                      
-                       })
-                   })
+                if (order.paymentMethod != "COD"){
+                  history = {
+                    From: "YARN",
+                    Recieved : order.totalAmount,
+                    Time:new Date(),
+                  }
+
+                  db.get().collection(collection.ORDER_COLLECTION).findOne({_id:ObjectID(id)}).then((order)=>{
+                
+                      db.get().collection(collection.WALLET_COLLECTION).updateOne({user:ObjectID(userId)},
+                      {
+                          $inc:{
+                           Total:order.totalAmount
+                          },$push:{History:history}
+                      }).then((hai)=>{
+                     
+                      })
+                  })
+                  
+                }
+                else{
+                  console.log('cod method')
+                }
                })
             });
                
            })
-          resolve();
+          resolve(response);
         });
     });
   },
   //admin order
-  adminorderlist: () => {
+  adminorderlist: (pageNum,perPage) => {
     return new Promise(async (resolve, reject) => {
       order = await db
         .get()
         .collection(collection.ORDER_COLLECTION)
         .find()
+        .sort({time:-1})
+        .skip((pageNum - 1) * perPage)
+        .limit(perPage)
         .toArray();
       resolve(order);
     });
+  },
+  //admin order count
+  adminOrderCount : () =>{
+    return new Promise(async (resolve, reject) => {
+      orderCount = await db
+        .get()
+        .collection(collection.ORDER_COLLECTION)
+        .find().count()
+        resolve(orderCount)
+    }) 
   },
   //admin product list
   adminViewDetails: (orderId) => {
@@ -412,10 +403,12 @@ module.exports = {
               productTotal: "$products.Total",
               addressName: "$address.name",
               addressCountru: "$address.country",
+              addressCity:"$address.city",
               addressState: "$address.state",
               addressPincode: "$address.pincode",
               addressPhone: "$address.phone",
               adddressEmail: "$address.email",
+              orderDate:1,
             },
           },
           {
@@ -439,12 +432,14 @@ module.exports = {
               addressName: 1,
               addressCountru: 1,
               addressState: 1,
+              addressCity:1,
               addressPincode: 1,
               addressPhone: 1,
               adddressEmail: 1,
               products: {
                 $arrayElemAt: ["$cartItems", 0],
               },
+              orderDate:1
             },
           },
         ])
@@ -469,6 +464,36 @@ module.exports = {
           }
         )
         .then((response) => {
+          if(details.action == 'Order Cancelled'){
+            db.get().collection(collection.ORDER_COLLECTION).findOne({_id:ObjectID(details.orderId)}).then((order)=>{
+              order.products.forEach(element => {
+                 db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:ObjectID(element.product)},
+                 {
+                    $inc: {stock : element.quantity}
+                 }).then((result)=>{ 
+                  if (order.paymentMethod != "COD"){
+
+                    db.get().collection(collection.ORDER_COLLECTION).findOne({_id:ObjectID(details.orderId)}).then((order)=>{
+                     console.log(order.userId)
+                        db.get().collection(collection.WALLET_COLLECTION).updateOne({user:ObjectID(order.userId)},
+                        {
+                            $inc:{
+                             Total:order.totalAmount
+                            }
+                        }).then((hai)=>{ 
+                         resolve(hai)
+                        })
+                    })
+                  }
+                  else{
+                    console.log('cod method')
+                  }
+                 })
+              });
+                 
+             })
+         
+          }
           resolve(response);
         });
     });
@@ -582,6 +607,16 @@ module.exports = {
           resolve();
         });
     });
+  },
+
+  //pending order cancel
+  deletePendingOrder:(orderId)=>{
+    console.log(orderId)
+    return new Promise((resolve,reject)=>{
+      db.get().collection(collection.ORDER_COLLECTION).deleteOne({_id:objectID(orderId)}).then((response)=>{
+        resolve(response)
+      })
+    })
   },
   //paypal items taking
   paypalItems: (user, orderId) => {
@@ -720,12 +755,17 @@ module.exports = {
   // wallet purchase
   walletPurchase: (userId, price) => {
     return new Promise((resolve, reject) => {
+      history = {
+        From: "Purchased",
+        Sended : -price,
+        Time:new Date(),
+      }
       db.get()
         .collection(collection.WALLET_COLLECTION)
         .updateOne(
           { user: objectID(userId) },
           {
-            $inc: { Total: parseInt(-price) },
+            $inc: { Total: parseInt(-price) },$push:{History:history}
           }
         )
         .then(() => {
@@ -774,7 +814,7 @@ module.exports = {
   },
 
   //-------------apply coupen in user side -----//
-  applyCoupon: (code, total, date) => {
+  applyCoupon: (code, total, date,userId) => {
     return new Promise(async (resolve, reject) => {
       let response = {};
       let checkCoupon = await db
@@ -785,6 +825,15 @@ module.exports = {
         const expireDate = new Date(checkCoupon.date);
 
         if (expireDate >= date) {
+          let usedCoupon = await db.get().collection(collection.USER_COLLECTION).findOne({$and:[{_id:objectID(userId)},{coupon:{$in:[checkCoupon._id]}}]})
+          if(usedCoupon){
+            response.usedCoupon = true;
+            response.usedCouponMsg = "Coupon is Already used"
+            resolve(response)
+          }
+          else{
+            checkCoupon.usedCoupon = true;
+          }
           checkCoupon.dateChecked = true;
           resolve(checkCoupon);
           if (total >= checkCoupon.minAmt) {
@@ -796,7 +845,7 @@ module.exports = {
             resolve(response);
           }
         } else {
-          response.dateChecked = false;
+          response.dateChecked = true;
           response.dateInvalidMessage = "Date is expired";
           resolve(response);
         }
@@ -806,7 +855,7 @@ module.exports = {
         resolve(response);
       }
 
-      if (checkCoupon && checkCoupon.dateChecked && checkCoupon.minChecked) {
+      if (checkCoupon && checkCoupon.dateChecked && checkCoupon.minChecked && checkCoupon.usedCoupon) {
         checkCoupon.couponVerified = true;
         resolve(checkCoupon);
       } else {
@@ -914,6 +963,11 @@ module.exports = {
   //refund
   refund: (amount, userId) => {
     return new Promise((resolve, reject) => {
+      history = {
+        From: "YARN Fashions",
+        Recieved : price,
+        Time:new Date(),
+      }
       db.get()
         .collection(collection.WALLET_COLLECTION)
         .updateOne(
@@ -921,7 +975,7 @@ module.exports = {
           {
             $inc: {
               Total: amount,
-            },
+            },$push:{History:history}
           }
         )
         .then((response) => {
@@ -943,7 +997,6 @@ module.exports = {
           }
         )
         .then((response) => {
-          console.log(response);
           resolve();
         });
     });

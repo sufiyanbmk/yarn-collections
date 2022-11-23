@@ -1,20 +1,48 @@
 const orderHelper = require("../helpers/orderHelper");
 const userCartHelper = require("../helpers/userCartHelper");
+//pdf puppeter
+const puppeteer = require("puppeteer")
+let fsextra = require("fs-extra")
+let hbs = require("handlebars")
 
 module.exports = {
-  order: (req, res) => {
+  order: (req, res) => {  
+    if(req.session.existCoupon){
+    userCartHelper.insertCouponId(req.session.user._id,req.session.existCoupon)
+    }
     userCartHelper.orderRemoveCart(req.session.user._id).then((response) => {
       res.render("userSide/orderplaced");
     });
   },
 
   viewOrder: async (req, res) => {
-    orderList = await orderHelper.viewOrderList(req.session.user._id);
-    res.render("userSide/viewOrder", { orderList, user: req.session.user });
+    if (req.query.page) {
+      var pageNum = req.query.page;
+    } else {
+      console.log('else')
+      var pageNum = 1;
+    }  
+    const perPage = 10;
+    let orderCount = await orderHelper.countOrder(req.session.user._id)
+       let pages = Math.ceil(orderCount / perPage);
+       let pagesArray = Array.from({ length: pages }, (_, i) => i + 1);
+    orderList = await orderHelper.viewOrderList(req.session.user._id, pageNum, perPage);
+    let value = orderList.forEach((orderList, index) => {
+      if (orderList.paymentStatus === "Delivered") {
+        orderList.delivered = true;
+      } else if (orderList.paymentStatus === "Requested Return") {
+        orderList.return = true;
+      } else if(orderList.paymentStatus == "Return Rejected" || orderList.paymentStatus == "Returned"){
+        orderList.none = true
+      }else if(orderList.couponAmt != "" ){
+        orderList.coupon = true
+      }
+    })
+    res.render("userSide/viewOrder", { orderList, user: req.session.user ,pagesArray});
   },
 
   cancelOrder: (req, res) => {
-    orderHelper.orderCancel(req.params.id, req.session.user._id).then(() => {
+    orderHelper.orderCancel(req.params.id, req.session.user._id).then((response) => {
       res.redirect("/view-order");
     });
   },
@@ -32,6 +60,24 @@ module.exports = {
       });
   },
 
+  razorpayFailed :(req,res)=>{
+    orderHelper.deletePendingOrder(req.body["orderId[receipt]"]).then(()=>{
+
+      res.json({status:true})
+    })
+  },
+
+  razorpayDismiss : (req,res)=>{
+   orderHelper.deletePendingOrder(req.body["orderId[receipt]"]).then((response)=>{
+    console.log(response)
+      res.json({status:true})
+    })
+  },
+
+  paymentFailed :(req,res)=>{
+    res.render('userSide/onlinePaymentFailed')
+  },
+
   paypalVerify: (req, res) => {
     const payerId = req.query.PayerID;
     const paymentId = req.query.paymentId;
@@ -42,8 +88,8 @@ module.exports = {
       });
   },
 
-  cancelPaypal: () => {
-    res.redirect("/cart");
+  cancelPaypal: (req,res) => {
+    res.redirect("/payment-failed");
   },
 
   applyCoupon: async (req, res, next) => {
@@ -52,7 +98,7 @@ module.exports = {
       let user = req.session.user._id;
       const date = new Date();
       let total = await userCartHelper.getTotalAmount(user);
-      let applyCoupon = await orderHelper.applyCoupon(code, total, date);
+      let applyCoupon = await orderHelper.applyCoupon(code, total, date,user);
       if (applyCoupon.couponVerified) {
         let discountAmount = (total * parseInt(applyCoupon.value)) / 100;
         let couponAmount = total - discountAmount;
@@ -66,4 +112,29 @@ module.exports = {
       next(error);
     }
   },
+
+  //invoice
+  invoice : async(req,res) =>{
+    let invoice = await orderHelper.adminViewDetails(req.params.id);
+    let pdfDocument = await orderHelper.adminViewDetails(req.params.id);
+    let browser = await puppeteer.launch()
+    let page = await browser.newPage()
+    let html = await fsextra.readFile('./form.hbs', 'utf8')
+
+    let content = hbs.compile(html)({ data: pdfDocument })
+
+    await page.setContent(content)
+    await page.pdf({
+        path: 'output.pdf',
+        format: 'A4',
+        printBackground: true
+    })
+    await browser.close()
+
+    res.render('userSide/invoice',{invoice})
+  },
+
+  pdfDownload : async(req,res) =>{
+    res.download('output.pdf')
+  }
 };

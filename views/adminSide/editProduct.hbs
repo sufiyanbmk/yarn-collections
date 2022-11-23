@@ -1,24 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    <!--
-
+<!--
     Template 2108 Dashboard
-
 	http://www.tooplate.com/view/2108-dashboard
-
     -->
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600">
+    {{!--
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600"> --}}
     <!-- https://fonts.google.com/specimen/Open+Sans -->
-
-    <link rel="stylesheet" href="jquery-ui-datepicker/jquery-ui.min.css" type="text/css" />
+    {{!--
+    <link rel="stylesheet" href="jquery-ui-datepicker/jquery-ui.min.css" type="text/css" /> --}}
     <!-- http://api.jqueryui.com/datepicker/ -->
     <link rel="stylesheet" href="/admin/css/bootstrap.min.css">
     <!-- https://getbootstrap.com/ -->
     <link rel="stylesheet" href="/admin/css/tooplate.css">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.11/cropper.js"></script>
     {{>adminlinks}}
+    <style>
+        .g-height-50 {
+            height: 50px;
+        }
+
+        .g-width-50 {
+            width: 50px !important;
+        }
+
+        @media (min-width: 0) {
+            .g-pa-30 {
+                padding: 2.14286rem !important;
+            }
+        }
+
+        .g-bg-secondary {
+            background-color: #fafafa !important;
+        }
+
+        .u-shadow-v18 {
+            box-shadow: 0 5px 10px -6px rgba(0, 0, 0, 0.15);
+        }
+
+        .g-color-gray-dark-v4 {
+            color: #777 !important;
+        }
+
+        .g-font-size-12 {
+            font-size: 0.85714rem !important;
+        }
+
+        .media-comment {
+            margin-top: 20px
+        }
+
+        .singleImageCanvasContainer {
+            overflow: hidden;
+            height: 350px;
+            width: 30%;
+            display: inline-block;
+            position: relative;
+            padding-right: 0px;
+            margin-right: 15px;
+            border: 2px solid #dfdfdf;
+            margin-bottom: 10px;
+            padding: 4px;
+            border-radius: .25rem;
+        }
+
+        .singleImageCanvasContainer .singleImageCanvasCloseBtn {
+            position: absolute;
+            right: 0;
+        }
+
+        .singleImageCanvasContainer .singleImageCanvas {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+    </style>
 </head>
 
 <body>
@@ -43,15 +107,17 @@
                                     <label for="name" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Product
                                         Name
                                     </label>
-                                    <input id="name" name="name" type="text" value="{{product.name}}"
+                                    <input id="name" name="name" type="text" value="{{product.name}}" onkeyup="fname()"
                                         class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" required>
                                 </div>
+                                   <p id="error1" style="color: red;"></p>
                                 <div class="input-group mb-3">
                                     <label for="description"
                                         class="col-xl-4 col-lg-4 col-md-4 col-sm-5 mb-2">Description</label>
-                                    <input class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" rows="3"
-                                        name='Description' value="{{product.Description}}" required></input>
+                                    <input class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" rows="3" id="description"
+                                        name='Description' value="{{product.Description}}" onkeyup="description()" required></input>
                                 </div>
+                                  <p id="error2" style="color: red;"></p>
                                 <div class="input-group mb-3">
                                     <label for="category"
                                         class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Category</label>
@@ -65,29 +131,41 @@
                                     </select>
                                 </div>
                                 <div class="input-group mb-3">
+                                    <label for="category" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Sub
+                                        Category</label>
+                                    <select name="subCategory" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7"
+                                        id="subCategory" required>
+                                        
+
+                                    </select>
+                                </div>
+                                <div class="input-group mb-3">
                                     <label for="expire_date"
                                         class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">price
                                     </label>
-                                    <input name="price" type="text" value="{{product.price}}"
+                                    <input name="price" type="text" value="{{product.price}}" onkeyup="price()" id="price"
                                         class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7"
                                         data-large-mode="true" required>
                                 </div>
+                                     <p id="error4" style="color: red;"></p>
                                 <div class="input-group mb-3">
                                     <label for="expire_date"
                                         class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Offer price
                                     </label>
-                                    <input name="offerPrice" type="text" value="{{product.offerPrice}}"
-                                        class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7"
+                                    <input name="offerPrice" type="text" value="{{product.offerPrice}}" onkeyup="offerprice()" id="offerprice"
+                                        class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" onkeyup="offerprice()" id="offerprice"
                                         data-large-mode="true" required>
                                 </div>
+                                     <p id="error5" style="color: red;"></p>
                                 <div class="input-group mb-3">
                                     <label for="stock" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Units
                                         In
                                         Stock
                                     </label>
-                                    <input id="stock" name="stock" type="number" value="{{product.stock}}"
+                                    <input id="stock" name="stock" type="number" value="{{product.stock}}" onkeyup="stock()" 
                                         class="form-control validate col-xl-9 col-lg-8 col-md-7 col-sm-7" required>
                                 </div>
+                                    <p id="error6" style="color: red;"></p>
                                 <div class="input-group mb-3">
                                     <div class="ml-auto col-xl-8 col-lg-8 col-md-8 col-sm-7 pl-0">
                                         <button type="submit" class="btn btn-primary">Update
@@ -98,29 +176,31 @@
                             <div class="col-xl-4 col-lg-6 col-md-12 mx-auto mb-4">
                                 <div class="tm-product-img-dummy mx-auto">
                                     <i class="fas fa-5x fa-cloud-upload-alt"></i>
-                                    {{!-- onclick="document.getElementById('fileInput').click();"></i> --}}
                                     <img id='imgView1' style="width: 200px; height:'300px'"
                                         src='/uploads/{{product.imagefileName.[0]}}'>
                                 </div>
                                 <div class="tm-product-img-dummy mx-auto">
                                     <i class="fas fa-5x fa-cloud-upload-alt"></i>
-                                    {{!-- onclick="document.getElementById('fileInput').click();"></i> --}}
                                     <img id='imgView2' style="width: 200px; height:'300px'"
                                         src='/uploads/{{product.imagefileName.[1]}}'>
                                 </div>
                                 <div class="tm-product-img-dummy mx-auto">
                                     <i class="fas fa-5x fa-cloud-upload-alt"></i>
-                                    {{!-- onclick="document.getElementById('fileInput').click();"></i> --}}
-                                    <img id='imgView2' style="width: 200px; height:'300px'"
+                                    <img id='imgView3' style="width: 200px; height:'300px'"
                                         src='/uploads/{{product.imagefileName.[2]}}'>
                                 </div>
 
-                                <div class="custom-file mt-3 mb-3">
+                                {{!-- <div class="custom-file mt-3 mb-3">
 
                                     <input id="fileInput" name="image" type="file" class='imgView'
-                                        onchange="viewImageEdit(event)" style="display:none;" multiple required>
+                                        onchange="viewImageEdit(event)" style="display:none;" multiple>
                                     <input type="button" name="images" class="btn btn-primary d-block mx-auto"
                                         value="Upload ..." onclick="document.getElementById('fileInput').click();" />
+                                </div> --}}
+                                <div class=" mb-4">
+                                    <label for="id_image">Image</label><br>
+                                    <input class="form-control" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                        type="file" id="id_image" name="image" accept="image/*" onchange="viewImageEdit(event)" multiple><br>
                                 </div>
                             </div>
                     </form>
@@ -130,28 +210,147 @@
         </div>
         </div>
         </div>
-        <script defer src="https://cdn.crop.guide/loader/l.js?c=FMLTXQ"></script>
-        <script src="js/jquery-3.3.1.min.js"></script>
-        <!-- https://jquery.com/download/ -->
-        <script src="jquery-ui-datepicker/jquery-ui.min.js"></script>
-        <!-- https://jqueryui.com/download/ -->
-        <script src="js/bootstrap.min.js"></script>
-        <!-- https://getbootstrap.com/ -->
-        <script>
-            $(function () {
-                $('#expire_date').datepicker();
-            });
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-xl" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                        <div class="modal-header border-bottom-0">
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group row" id="test">
+                        </div>
+                    </div>
+                    <div class="modal-header text-center">
+                        <button class="btn btn-success" type="button" data-bs-dismiss="modal" aria-label="Close">Save
+                            Changes</button>
+                    </div>
+                </div>
+                   
+            </div>
+        </div>
+    </main>
+    <script>
+        const input = document.getElementById('id_image')
+        const test = document.getElementById('test')
+        input.addEventListener('change', () => {
+            // Getting image file object from the input variable
+            const img_data = []
+            const imagebox = []
+            const crop_btn = []
+            const confirm_btn = []
+            const url = []
+            const length = input.files.length
+            for (i = 0; i < length; i++) {
+                test.innerHTML += `<div class="col-4"><div id="image-box${i}" class="image-container" style="height: 350px; width: 350px;"> </div>
+    <button class="btn btn-outline-info" id="crop-btn${i}" style="width: 100%; margin-top: 10px; display: block;" type="button">Crop</button> </div>`
+            }
+            for (i = 0; i < length; i++) {
+                img_data[i] = input.files[i]
+            }
 
-            function viewImageEdit(event) {
-                document.getElementById('imgView1').src = URL.createObjectURL(event.target.files[0])
+            img_data.forEach((image_data, i) => {
+                url[i] = URL.createObjectURL(image_data)
+            })
+            // createObjectURL() static method creates a DOMString containing a URL representing the object given in the parameter.
+            // The new object URL represents the specified File object or Blob object.
+            url.forEach((url, i) => {
+                document.getElementById('image-box' + i).innerHTML = `<img src="${url}" id="image${i}" style="width:100%;">`
+            })
+
+            // Creating a image tag inside imagebox which will hold the cropping view image(uploaded file) to it using the url created before.
+
+            // Storing that cropping view image in a variable
+
+
+            // Displaying the image box
+            for (i = 0; i < length; i++) {
+                document.getElementById('image-box' + i).style.display = 'block'
+                document.getElementById('crop-btn' + i).style.display = 'block'
             }
-            function viewImageEdit(event) {
-                document.getElementById('imgView1').src = URL.createObjectURL(event.target.files[0])
+
+
+            for (i = 0; i < length; i++) {
+                cropper(img_data[i], document.getElementById('image' + i), i, document.getElementById('crop-btn' + i), document.getElementById('image-box' + i))
             }
-            function viewImageEdit(event) {
-                document.getElementById('imgView1').src = URL.createObjectURL(event.target.files[0])
+
+
+
+            // Creating a croper object with the cropping view image
+            // The new Cropper() method will do all the magic and diplay the cropping view and adding cropping functionality on the website
+            // For more settings, check out their official documentation at https://github.com/fengyuanchen/cropperjs
+            let container = new DataTransfer();
+            let fileInputElement = document.getElementById('id_image');
+
+
+
+            function cropper(img_data, image, index, crop_btn, imagebox) {
+
+                const cropper = new Cropper(image, {
+                    autoCropArea: 1,
+                    viewMode: 1,
+                    scalable: false,
+                    zoomable: false,
+                    movable: false,
+                    minCropBoxWidth: 50,
+                    minCropBoxHeight: 50,
+                })
+
+                // When crop button is clicked this event will get triggered
+                crop_btn.addEventListener('click', () => {
+                    // This method coverts the selected cropped image on the cropper canvas into a blob object
+                    cropper.getCroppedCanvas().toBlob((blob) => {
+
+                        // Gets the original image data
+                        // Make a new cropped image file using that blob object, image_data.name will make the new file name same as original image
+                        let file = new File([blob], img_data.name, { type: "image/*", lastModified: new Date().getTime() });
+                        // Create a new container
+
+                        // Add the cropped image file to the container
+                        container.items.add(file);
+
+                        fileInputElement.files = container.files
+
+                        // Replace the original image file with the new cropped image file
+
+
+
+                        // Hide the cropper box
+                        imagebox.style.display = 'none'
+                        // Hide the crop button
+                        crop_btn.style.display = 'none'
+                    });
+                });
             }
-        </script>
+        });
+    </script>
+      <script src="/admin/ajaxAdmin.js"></script>
+    {{!--
+    <script defer src="https://cdn.crop.guide/loader/l.js?c=FMLTXQ"></script> --}}
+    {{!--
+    <script src="js/jquery-3.3.1.min.js"></script> --}}
+    <!-- https://jquery.com/download/ -->
+    {{!--
+    <script src="jquery-ui-datepicker/jquery-ui.min.js"></script> --}}
+    <!-- https://jqueryui.com/download/ -->
+    {{!--
+    <script src="js/bootstrap.min.js"></script> --}}
+    <!-- https://getbootstrap.com/ -->
+        <script src="/admin/adminFormValidation/addProduct.js"></script>
+    <script>
+        $(function () {
+            $('#expire_date').datepicker();
+        });
+
+        function viewImageEdit(fileInput) {
+            document.getElementById('imgView1').src = URL.createObjectURL(event.target.files[0])
+            document.getElementById('imgView2').src = URL.createObjectURL(event.target.files[1])
+            document.getElementById('imgView3').src = URL.createObjectURL(event.target.files[2])
+        }
+    </script>
 </body>
 
 </html>

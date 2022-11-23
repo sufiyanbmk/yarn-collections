@@ -1,0 +1,77 @@
+{{>adminlinks}}
+
+{{>adminSidebar}}
+<main class="main-wrap">
+    {{>adminHeader}}
+   
+  <section class="content-main">
+            <div class="content-header">
+                <div>
+                    <h2 class="content-title card-title">Sub Categories</h2>
+                </div>
+            </div>
+            <div class="card" id="subCatagoryTable">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <form id="subcatagoryAdd">
+                                <div class="mb-4">
+                                    <label for="product_name" class="form-label">Name</label>
+                                    <input type="text" placeholder="Type here" name="subCatagoryName" class="form-control" id="product_name" />
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Catagory</label>
+                                    <select class="form-select" name="catagory">
+                                        {{#each catagory}}
+                                        <option>{{this.categories}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label">Description</label>
+                                    <textarea placeholder="Type here" name="description" class="form-control"></textarea>
+                                </div>
+                                <div class="d-grid">
+                                    <button class="btn btn-primary" type="submit">Create category</button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-9" >
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="subcat-table">
+                                    <thead>
+                                        <tr>
+                                       
+                                            <th>Catagory Name</th>
+                                            <th>Sub Catagory</th>
+                                            <th >Action</th>
+                                        
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {{#each catagory}}
+                                        {{#each this.subCatagories}}
+                                        <tr>
+                                           
+                                            <td><b>{{../this.categories}}</b></td> 
+                                            <td>{{this.name}}</td>
+                                            <td><a class="dropdown-item text-danger" onclick="updateSubCatagory('{{../this._id}}','{{this.name}}')">Delete</a></td>
+                                        </tr>
+                                        {{/each}}
+                                        {{/each}}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div> <!-- .col// -->
+                    </div> <!-- .row // -->
+                </div> <!-- card body .// -->
+            </div> <!-- card .// -->
+        </section> <!-- content-main end// -->
+
+
+<script>
+    $(document).ready(function () {
+        $('#subcat-table').DataTable();
+    });
+</script>
+{{>adminjs}}

@@ -18,6 +18,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="/user/assets/imgs/theme/favicon.svg">
     <!-- Template CSS -->
     <link rel="stylesheet" href="/user/assets/css/main.css">
+    <link rel="stylesheet" href="/user/userAccount.css">
     {{>userhead}}
 </head>
 
@@ -51,7 +52,7 @@
                                         <li class="nav-item">
                                             <a class="nav-link" id="orders-tab" data-bs-toggle="tab" href="#orders"
                                                 role="tab" aria-controls="orders" aria-selected="false"><i
-                                                    class="fi-rs-shopping-bag mr-10"></i>OrderHistory</a>
+                                                    class="fi-rs-shopping-bag mr-10"></i>Order History</a>
                                         </li>
                                         {{!-- <li class="nav-item">
                                             <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab"
@@ -81,6 +82,7 @@
                                     </ul>
                                 </div>
                             </div>
+                            {{!-- profile section --}}
                             <div class="col-md-8">
                                 <div class="tab-content dashboard-content">
                                     <div class="tab-pane fade active show" id="dashboard" role="tabpanel"
@@ -96,17 +98,17 @@
                                                         account details.</a></p>
                                             </div>
                                             <div class="container emp-profile">
-
                                                 <div class="row">
                                                     <div class="col-md-4">
-                                                        <form action="/profile-img" method='post'
+                                                        <form action="/profile-img" id="profileImg" method='post'
                                                             enctype="multipart/form-data">
                                                             <div class="profile-img">
                                                                 <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS52y5aInsxSm31CvHOFHWujqUx_wWTS9iM6s7BAm21oEN_RiGoog"
                                                                     alt="" />
                                                                 <div class="file btn btn-lg btn-primary">
-                                                                    Photo
-                                                                    <input type="file" name="file" multiple />
+                                                                    {{!-- Photo --}}
+                                                                    {{!-- <input type="file" onchange="profileimg()"
+                                                                        name="file" multiple /> --}}
                                                                 </div>
                                                             </div>
                                                         </form>
@@ -177,7 +179,7 @@
                                                             <a href="">PHP, .Net</a><br />
                                                         </div> --}}
                                                     </div>
-                                                    <div class="col-md-8">
+                                                    <div class="col-md-8" id="editProfileDiv">
                                                         <div class="tab-content profile-tab" id="myTabContent">
                                                             <div class="tab-pane fade show active" id="home"
                                                                 role="tabpanel" aria-labelledby="home-tab">
@@ -230,7 +232,8 @@
                                                                 <div class="row">
                                                                     <div class="col-md-12">
                                                                         <label></label><br />
-                                                                        <p>Full Wallet History</p>
+                                                                        <a href="wallet-history/{{wallet._id}}">Full
+                                                                            Wallet History</a>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -241,6 +244,7 @@
                                             </div>
                                         </div>
                                     </div>
+                                    {{!-- order section --}}
                                     <div class="tab-pane fade" id="orders" role="tabpanel" aria-labelledby="orders-tab">
                                         <div class="card1">
                                             <div class="card-header">
@@ -251,31 +255,26 @@
                                                     <table id="orderhistory">
                                                         <thead>
                                                             <tr>
-                                                                <th>Image</th>
+                                                                <th>OrderID</th>
                                                                 <th>Name</th>
-                                                                <th>Price</th>
-                                                                <th>Status</th>
+                                                                <th>paymentMethod</th>
+
                                                                 <th>orderDate</th>
-                                                                <th></th>
+                                                                <th>Total</th>
+                                                                <th>View</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             {{#each orderhistory}}
                                                             <tr>
-                                                                <td style="width: 50px; height :50px;"><img
-                                                                        src='/uploads/{{this.products.imagefileName.[0]}}'>
-                                                                </td>
-                                                                <td>{{this.products.name}}</td>
-                                                                <td>{{this.products.offerPrice}}</td>
-                                                                <td>{{this.status}}</td>
+                                                                <td>{{this._id}}</td>
+                                                                <td>{{this.address.name}}</td>
+                                                                <td>{{this.paymentMethod}}</td>
                                                                 <td>{{this.orderDate}}</td>
-                                                                {{#if this.delivered}}
-                                                                <td><a href="/replace/{{this._id}}/{{this.product}}"
-                                                                        class="btn-small d-block">Return</a></td>
-                                                                {{else }}
-                                                                <td><a href="#" class="btn-small d-block"></a></td>
-
-                                                                {{/if}}
+                                                                <td>${{this.totalAmount}}</td>
+                                                                <td><a class="btn btn-primary"
+                                                                        href="order-viewdetails/{{this._id}}">View</a>
+                                                                </td>
                                                             </tr>
                                                             {{/each}}
                                                         </tbody>
@@ -288,7 +287,7 @@
                                                         </li>
                                                         {{#each pagesArray}}
                                                         <li class="page-item"><a class="page-link"
-                                                                href="?page={{this}}">{{this}}</a></li>
+                                                                href="?page={{this}}#orders">{{this}}</a></li>
                                                         {{/each}}
                                                         <li class="page-item">
                                                             <a class="page-link" href="#">Next</a>
@@ -334,9 +333,7 @@
                                     </div>
                                     <div class="tab-pane fade" id="address" role="tabpanel"
                                         aria-labelledby="address-tab">
-
-
-
+                                        {{!-- address modal --}}
 
                                         <head>
                                             <title>Title of the document</title>
@@ -576,29 +573,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            {{!-- <div id="modalTwo" class="modal">
-                                                <div class="modal-content">
-                                                    <div class="contact-form">
-                                                        <span class="close">&times;</span>
-                                                        <form action="/">
-                                                            <h2>Complaint form</h2>
-                                                            <div>
-                                                                <input class="fname" type="text" name="name"
-                                                                    placeholder="Full name" />
-                                                                <input type="text" name="name" placeholder="Email" />
-                                                                <input type="text" name="name"
-                                                                    placeholder="Phone number" />
-                                                                <input type="text" name="name" placeholder="Website" />
-                                                            </div>
-                                                            <span>Message</span>
-                                                            <div>
-                                                                <textarea rows="4"></textarea>
-                                                            </div>
-                                                            <button type="submit" href="/">Submit</button>
-                                                        </form>
-                                                    </div>
-                                                </div>
-                                            </div> --}}
+
                                             <script>
                                                 let modalBtns = [...document.querySelectorAll(".button")];
                                                 modalBtns.forEach(function (btn) {
@@ -669,19 +644,64 @@
                                             {{/each}}
                                         </div>
                                     </div>
+                                    {{!-- password change section --}}
                                     <div class="tab-pane fade" id="account-detail" role="tabpanel"
                                         aria-labelledby="account-detail-tab">
-                                        <div class="card1">
+                                        <div class="card1" id="changePswDiv">
                                             <div class="card-header">
                                                 <h5>Password change</h5>
                                             </div>
                                             <div class="card-body">
-                                                {{!-- <p>Already have an account? <a href="page-login-register.html">Log
-                                                        in
-                                                        instead!</a></p> --}}
                                                 <form id="passwordChange" onclick="return passwordChangeValid()">
                                                     <div class="row">
-                                                        {{!-- <div class="form-group col-md-6">
+                                                    </div>
+                                                    <div class="form-group col-md-12">
+                                                        <label>Current Password <span class="required">*</span></label>
+                                                        <input required="" class="form-control square"
+                                                            id="currentpassword" onkeyup="cpassword()" name="password"
+                                                            type="password" required>
+                                                    </div>
+                                                    <p id="error1" style="color: red;"></p>
+                                                    <div class="form-group col-md-12">
+                                                        <label>New Password <span class="required">*</span></label>
+                                                        <input required="" id="new" class="form-control square"
+                                                            onkeyup="newpassword()" name="npassword" type="password"
+                                                            required>
+                                                    </div>
+                                                    <p id="error2" style="color: red;"></p>
+                                                    <div class="form-group col-md-12">
+                                                        <label>Confirm Password <span class="required">*</span></label>
+                                                        <input required="" class="form-control square"
+                                                            id="confirmPassword" onkeyup="repass()" name="cpassword"
+                                                            type="password" required>
+                                                    </div>
+                                                    <p id="error3" style="color: red;"></p>
+                                                    <div class="col-md-12">
+                                                        <button type="submit" class="btn btn-fill-out submit"
+                                                            name="submit" value="Submit">Save</button>
+                                                    </div>
+
+                                                    {{#if pswerror}}
+                                                    <p style="color:red;">{{pswerror}}</p>
+                                                    {{/if}}
+                                            </div>
+                                            </form>
+                                        </div>
+
+                                    </div>
+                                    {{!-- <div class="tab-pane fade" id="profile-edit" role="tabpanel"
+                                        aria-labelledby="account-detail-tab">
+                                        <div class="card1">
+                                            <div class="card-header">
+                                                <h5>Account Details</h5>
+                                            </div>
+                                            <div class="card-body">
+                                                <p>Already have an account? <a href="page-login-register.html">Log
+                                                        in
+                                                        instead!</a></p>
+                                                <form method="post" name="enq">
+                                                    <div class="row">
+                                                        <div class="form-group col-md-6">
                                                             <label>First Name <span class="required">*</span></label>
                                                             <input required="" class="form-control square" name="name"
                                                                 type="text">
@@ -698,135 +718,61 @@
                                                         <div class="form-group col-md-12">
                                                             <label>Email Address <span class="required">*</span></label>
                                                             <input required="" class="form-control square" name="email"
-                                                                type="email"> --}}
+                                                                type="email">
                                                         </div>
                                                         <div class="form-group col-md-12">
                                                             <label>Current Password <span
                                                                     class="required">*</span></label>
                                                             <input required="" class="form-control square"
-                                                                id="currentpassword" onkeyup="cpassword()"
-                                                                name="password" type="password" required>
+                                                                name="password" type="password">
                                                         </div>
-                                                        <p id="error1" style="color: red;"></p>
                                                         <div class="form-group col-md-12">
                                                             <label>New Password <span class="required">*</span></label>
-                                                            <input required="" id="new" class="form-control square"
-                                                                onkeyup="newpassword()" name="npassword" type="password"
-                                                                required>
+                                                            <input required="" class="form-control square"
+                                                                name="npassword" type="password">
                                                         </div>
-                                                        <p id="error2" style="color: red;"></p>
                                                         <div class="form-group col-md-12">
                                                             <label>Confirm Password <span
                                                                     class="required">*</span></label>
                                                             <input required="" class="form-control square"
-                                                                id="confirmPassword" onkeyup="repass()" name="cpassword"
-                                                                type="password" required>
+                                                                name="cpassword" type="password">
                                                         </div>
-                                                        <p id="error3" style="color: red;"></p>
                                                         <div class="col-md-12">
                                                             <button type="submit" class="btn btn-fill-out submit"
                                                                 name="submit" value="Submit">Save</button>
                                                         </div>
-
-                                                        {{#if pswerror}}
-                                                        <p style="color:red;">{{pswerror}}</p>
-                                                        {{/if}}
                                                     </div>
                                                 </form>
                                             </div>
-
                                         </div>
-                                        <div class="tab-pane fade" id="profile-edit" role="tabpanel"
-                                            aria-labelledby="account-detail-tab">
+                                    </div> --}}
+                                    {{!-- coupon section --}}
+                                    <div class="tab-pane fade" id="coupon" role="tabpanel"
+                                        aria-labelledby="address-tab">
+                                        {{#each couponCollection}}
+                                        <div class="col-lg-6">
                                             <div class="card1">
                                                 <div class="card-header">
-                                                    <h5>Account Details</h5>
+                                                    <h5 class="mb-0">Coupon</h5>
                                                 </div>
                                                 <div class="card-body">
-                                                    <p>Already have an account? <a href="page-login-register.html">Log
-                                                            in
-                                                            instead!</a></p>
-                                                    <form method="post" name="enq">
-                                                        <div class="row">
-                                                            <div class="form-group col-md-6">
-                                                                <label>First Name <span
-                                                                        class="required">*</span></label>
-                                                                <input required="" class="form-control square"
-                                                                    name="name" type="text">
-                                                            </div>
-                                                            <div class="form-group col-md-6">
-                                                                <label>Last Name <span class="required">*</span></label>
-                                                                <input required="" class="form-control square"
-                                                                    name="phone">
-                                                            </div>
-                                                            <div class="form-group col-md-12">
-                                                                <label>Display Name <span
-                                                                        class="required">*</span></label>
-                                                                <input required="" class="form-control square"
-                                                                    name="dname" type="text">
-                                                            </div>
-                                                            <div class="form-group col-md-12">
-                                                                <label>Email Address <span
-                                                                        class="required">*</span></label>
-                                                                <input required="" class="form-control square"
-                                                                    name="email" type="email">
-                                                            </div>
-                                                            <div class="form-group col-md-12">
-                                                                <label>Current Password <span
-                                                                        class="required">*</span></label>
-                                                                <input required="" class="form-control square"
-                                                                    name="password" type="password">
-                                                            </div>
-                                                            <div class="form-group col-md-12">
-                                                                <label>New Password <span
-                                                                        class="required">*</span></label>
-                                                                <input required="" class="form-control square"
-                                                                    name="npassword" type="password">
-                                                            </div>
-                                                            <div class="form-group col-md-12">
-                                                                <label>Confirm Password <span
-                                                                        class="required">*</span></label>
-                                                                <input required="" class="form-control square"
-                                                                    name="cpassword" type="password">
-                                                            </div>
-                                                            <div class="col-md-12">
-                                                                <button type="submit" class="btn btn-fill-out submit"
-                                                                    name="submit" value="Submit">Save</button>
-                                                            </div>
-                                                        </div>
-                                                    </form>
+
+                                                    <address>
+                                                        {{this.codeGeneraor}}<br>
+                                                        {{this.description}} <br>{{this.value}}%
+                                                        <br>Expire date {{this.date}}
+                                                    </address>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="tab-pane fade" id="coupon" role="tabpanel"
-                                            aria-labelledby="address-tab">
-                                            {{#each couponCollection}}
-                                            <div class="col-lg-6">
-                                                <div class="card1">
-                                                    <div class="card-header">
-                                                        <h5 class="mb-0">Coupon</h5>
-                                                    </div>
-                                                    <div class="card-body">
-
-                                                        <address>
-                                                            {{this.codeGeneraor}}<br>
-                                                            {{this.description}} <br>{{this.value}}%
-                                                            <br>Expire date {{this.date}}
-                                                        </address>
-
-
-
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            {{/each}}
-                                        </div>
+                                        {{/each}}
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
         </section>
     </main>
     <!-- Preloader Start -->
@@ -844,7 +790,7 @@
             </div>
         </div>
     </div>
-    {{>userfooter}}
+
     <!-- Vendor JS-->
     <script src="/user/assets/js/vendor/modernizr-3.6.0.min.js"></script>
     <script src="/user/assets/js/vendor/jquery-3.6.0.min.js"></script>
@@ -868,6 +814,9 @@
     <!-- Template  JS -->
     <script src="/user/assets/js/main.js"></script>
 
+ {{>userfooter}}
+ 
+
     <script>
         $(function () {
             var hash = window.location.hash;
@@ -889,6 +838,11 @@
 
         });
 
+    </script>
+    <script>
+        function profileimg() {
+            document.getElementById('profileImg').submit()
+        }
     </script>
 
 </body>

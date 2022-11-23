@@ -19,6 +19,7 @@ const checkout = require("../controller/userCheckout");
 const userCheckout = require("../controller/userCheckout");
 const order = require("../controller/userOrder");
 const profile = require("../controller/userProfile");
+const pdf = require('../controller/invoicepdf')
 
 let userauth = function (req, res, next) {
   req.session.returnUrl = req.originalUrl
@@ -105,15 +106,31 @@ router.get("/order-cancel/:id", order.cancelOrder);
 
 router.post("/verify-payment", order.razorPayVerify);
 
+router.delete("/razorPayFailed" ,order.razorpayFailed)
+
+router.delete('/razorpayDismisal' ,order.razorpayDismiss)
+
+router.get('/payment-failed' ,order.paymentFailed)
+
 router.get("/verify-paypal", order.paypalVerify);
 
 router.get("/cancel-paypal",order.cancelPaypal)
 
 router.post("/apply-coupon", order.applyCoupon);
 
+router.get("/replace/:id/:proId", profile.returnOrder);
+
+router.post("/replace-check", profile.returnOrderPost);
+
+router.get("/invoice/:id/:proId", order.invoice);
+
+router.get('/download-pdf', order.pdfDownload)
+
 //---------------user profile account---------//
 
 router.get("/my-account",userauth, profile.profile);
+
+router.get("/order-viewdetails/:id", profile.viewProductDetail)
 
 router.put("/edit-profile", profile.editProfile);
 
@@ -123,8 +140,7 @@ router.post("/account-address/:id", userauth, profile.profileAddress);
 
 router.get("/default-address/:id", profile.defaultAddress);
 
-router.get("/replace/:id/:proId", profile.returnOrder);
-
-router.post("/replace-check", profile.returnOrderPost);
+router.get("/wallet-history/:id", profile.walletHistory)
 
 module.exports = router;
+

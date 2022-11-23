@@ -6,10 +6,11 @@
     <div class="offset-10 m-5">
         <a class="btn btn-warning" href="/admin/add-coupon">Add coupun</a>
     </div>
+    <div class="col-md-6">
     {{#each couponCollection}}
-    <div class="card-body">
-        <div class="row gx-3 row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-xl-4 row-cols-xxl-5">
-            <div class="col">
+    <div class="card-body ">
+        <div class="row">
+            <div class="col-md-6">
                 <div class="card card-product-grid">
 
                     <div class="info-wrap">
@@ -30,7 +31,7 @@
             </div> <!-- col.// -->
         </div> <!-- row.// -->
     </div>
-
     {{/each}}
+    </div>
 </main>
 {{>adminjs}}

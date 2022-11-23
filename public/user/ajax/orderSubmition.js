@@ -13,13 +13,20 @@ $("#applyCoupon").submit((e) => {
 
         document.getElementById("sendSubTotal").value = response.subtotal;
         document.getElementById("sendfinalAmount").value = response.amount;
+        document.getElementById("sendCouponId").value = response._id;
       } else {
-        if (response.dateChecked) {
-          document.getElementById("errMsg").innerHTML = dateInvalidMessage;
-          response.dateInvalidMessage;
+        if (response.dateChecked){
+          alert('date expired')
+          swal("out of Stock!", "", "failed");
+          document.getElementById("errMsg").innerHTML = response.dateInvalidMessage;
         } else if (response.minChecked) {
+          alert('minimum amount')
           document.getElementById("errMsg").innerHTML = response.minAmoutMsg;
-        } else {
+        } else if(response.usedCoupon){
+          alert('used Coupon')
+          document.getElementById("errMsg").innerHTML = response.usedCouponMsg;
+        }
+        else {
           document.getElementById("errMsg").innerHTML = response.invalidMessage;
         }
       }
@@ -35,7 +42,7 @@ $("#replace").submit((e) => {
     type: "post",
     data: $("#replace").serialize(),
     success: (response) => {
-      location.href = "/my-account";
+      location.href = "/view-order";
     },
   });
 });

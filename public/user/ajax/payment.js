@@ -1,11 +1,13 @@
-alert()
+
 $('#checkoutSubmit').submit((e) => {
     e.preventDefault()
-    var addressId = $('input[name="address"]:checked').val();
-    var userID = $('input[name="userId"]').val();
-    var paymentMethod = $('input[name="paymentMethod"]:checked').val();
-    var subtotal = $('input[name="subtotal"]').val();
-    var couponAmt = $('input[name = "couponAmt"]').val()
+    const addressId = $('input[name="address"]:checked').val();
+    const userID = $('input[name="userId"]').val();
+    const paymentMethod = $('input[name="paymentMethod"]:checked').val();
+    const subtotal = $('input[name="subtotal"]').val();
+    const couponAmt = $('input[name = "couponAmt"]').val()
+    const coupId = $('input[name ="couponID"]').val()
+
     $.ajax({
         url: '/placeOrder',
         method: 'post',
@@ -14,7 +16,8 @@ $('#checkoutSubmit').submit((e) => {
             userId: userID,
             paymentMethod: paymentMethod,
             subtotal: subtotal,
-            couponAmt: couponAmt
+            couponAmt: couponAmt,
+            couponId:coupId
         },
         success: (response) => {
             if (response.codSuccess) {

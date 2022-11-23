@@ -30,12 +30,14 @@ module.exports = {
       }
     });
   },
-  viewCategories: () => {
+  viewCategories: (pageNum,perPage) => {
     return new Promise(async (resolve, reject) => {
       let catagorlist = await db
         .get()
         .collection(collection.CATEGORY_COLLECTION)
         .find()
+        .skip((pageNum - 1) * perPage)
+        .limit(perPage)
         .toArray();
       resolve(catagorlist);
     });
@@ -77,6 +79,60 @@ module.exports = {
           resolve(response);
         });
     });
+  },
+  getCatagoryCount :() =>{
+    return new Promise(async (resolve, reject) => {
+      let catagoryCount = await db
+        .get()
+        .collection(collection.CATEGORY_COLLECTION)
+        .find()
+        .count()
+        resolve(catagoryCount)
+    })
+  },
+  //sub catagory
+  getCatagory : () => {
+    return new Promise(async (resolve, reject) => {
+      let catagorlist = await db
+        .get()
+        .collection(collection.CATEGORY_COLLECTION)
+        .find()
+        .toArray()
+        resolve(catagorlist)
+    })
+  },
+
+  catagorySelection:(catagoryName) => {
+    return new Promise(async(resolve,reject) => { 
+      let subCatagoryList = await db
+      .get()
+      .collection(collection.CATEGORY_COLLECTION)
+      .findOne({categories:catagoryName})
+      resolve(subCatagoryList)
+    })
+  },
+
+  addSubCatagory : (details) =>{
+    return new Promise((resolve,reject) => {
+      db.get().collection(collection.CATEGORY_COLLECTION).updateOne({categories : details.catagory},{
+        $push: {
+          subCatagories:{name:details.subCatagoryName}
+        }
+      }).then((response)=>{
+        resolve(response)
+      })
+    })
+  },
+
+  deleteSubCatagory :(details) =>{
+    console.log(details)
+    return new Promise((resolve,reject) => {
+      db.get().collection(collection.CATEGORY_COLLECTION).updateOne({_id: objectID(details.cataId)},{
+        $pull:{subCatagories:{name : details.cataName}}
+      }).then((response) => {
+        resolve(response)
+      })
+    })
   },
   //products
   addProduct: (products) => {
@@ -124,7 +180,9 @@ module.exports = {
 
   updateProduct: (proId, productDetails) => {
     return new Promise((resolve, reject) => {
-      db.get()
+      // productDetails = parseInt(productDetails.stock)
+      if(productDetails.imagefileName.length > 0){
+        db.get()
         .collection(collection.PRODUCT_COLLECTION)
         .updateOne(
           { _id: objectID(proId) },
@@ -132,7 +190,8 @@ module.exports = {
             $set: {
               name: productDetails.name,
               Description: productDetails.Description,
-              category: productDetails.category,
+              Category: productDetails.category,
+              subCategory: productDetails.subCategory,
               price: productDetails.price,
               offerPrice: productDetails.offerPrice,
               stock: productDetails.stock,
@@ -143,6 +202,30 @@ module.exports = {
         .then((response) => {
           resolve(response);
         });
+      }
+      else{
+        console.log(productDetails)
+        db.get()
+        .collection(collection.PRODUCT_COLLECTION)
+        .updateOne(
+          { _id: objectID(proId) },
+          {
+            $set: {
+              name: productDetails.name,
+              Description: productDetails.Description,
+              Category: productDetails.Category,
+              subCategory: productDetails.subCategory,
+              price: productDetails.price,
+              offerPrice: productDetails.offerPrice,
+              stock: productDetails.stock,
+            },
+          }
+        )
+        .then((response) => {
+          resolve(response);
+        });
+      }
+     
     });
   },
 
@@ -169,14 +252,28 @@ module.exports = {
   },
 
   //customer
-  viewUser: () => {
+  viewUser: (pageNum,perPage) => {
     return new Promise(async (resolve, reject) => {
       let users = await db
         .get()
         .collection(collection.USER_COLLECTION)
         .find()
+        .skip((pageNum - 1) * perPage)
+        .limit(perPage)
         .toArray();
       resolve(users);
+    });
+  },
+
+  //count user
+  getCountUser : () =>{
+    return new Promise(async (resolve, reject) => {
+      var docCount = await db
+        .get()
+        .collection(collection.USER_COLLECTION)
+        .find()
+        .count();
+      resolve(docCount);
     });
   },
 
@@ -229,15 +326,27 @@ module.exports = {
         });
     });
   },
-  viewBanner: () => {
+  viewBanner: (pageNum,perPage) => {
     return new Promise(async (resolve, reject) => {
       let banner = await db
         .get()
         .collection(collection.BANNER_COLLECTION)
         .find()
+        .skip((pageNum - 1) * perPage)
+        .limit(perPage)
         .toArray();
       resolve(banner);
     });
+  },
+  //banner count
+  bannerCount :() =>{
+    return new Promise(async (resolve, reject) => {
+      orderCount = await db
+        .get()
+        .collection(collection.BANNER_COLLECTION)
+        .find().count()
+        resolve(orderCount)
+    }) 
   },
   //delete banner
   deleteBanner: (deleteid) => {
@@ -373,7 +482,18 @@ module.exports = {
       resolve(paymentGraph);
     });
   },
-
+  
+  //get product details for sales reports
+  getproductsForReport : () => {
+    return new Promise(async (resolve, reject) => {
+      let products = await db
+        .get()
+        .collection(collection.PRODUCT_COLLECTION)
+        .find()
+        .toArray()
+        resolve(products)
+    })
+  },
   //sales report day
   daySalesReport: async (productId, date) => {
     var fmtDate = date.replace(/(\d{4})\-(\d{2})\-(\d{2})/gm, "$2/$3/$1");
@@ -577,16 +697,14 @@ module.exports = {
   //--------------- add coupen section ----------//
   addCoupon: (couponDetails) => {
     return new Promise(async (resolve, reject) => {
-      let coupon = await db
-        .get()
-        .collection(collection.COUPON_COLLECTION)
-        .findOne({ couponCode: couponDetails.couponCode });
-      if (coupon) {
-        console.log("coupn is already exist");
-      } else {
-        couponDetails.codeGeneraor = Couponcodes.generate({
+      // let coupon = await db
+      //   .get()
+      //   .collection(collection.COUPON_COLLECTION)
+      //   .findOne({ couponCode: couponDetails.couponCode });
+        codeGeneraor = Couponcodes.generate({
           length: 8,
         });
+        couponDetails.couponCode = codeGeneraor[0]
         db.get()
           .collection(collection.COUPON_COLLECTION)
           .insertOne(couponDetails)
@@ -595,7 +713,7 @@ module.exports = {
             resolve(response);
           });
       }
-    });
+    );
   },
   // -----------coupon view -----------//
   copuonView: () => {
@@ -703,7 +821,6 @@ module.exports = {
           }
         )
         .then((response) => {
-          console.log(response);
           resolve();
         })
         .catch((err) => {

@@ -47,11 +47,21 @@ router.post("/updateCategory/:id", controller.editCatagoryPost);
 
 router.get("/delete/:id", controller.deleteCatagory);
 
+//sub catagory
+
+router.get("/sub-Catagory", controller.subCatagory)
+
+router.post("/add-sub-catagory", controller.postSubCatagory)
+
+router.put("/delete-subcatagory", controller.deleteSubCatagory)
+
 //products
 
 router.get("/productmange", controller.products);
 
 router.get("/addProduct", controller.addProducts);
+
+router.post("/catagory-selection", controller.catagorySelectionOption)
 
 router.get("/backProduct", controller.backToProducts);
 

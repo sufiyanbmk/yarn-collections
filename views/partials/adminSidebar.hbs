@@ -1,118 +1,81 @@
-{{!--
-<!-- ======= Sidebar ======= -->
-<aside id="sidebar" class="sidebar">
-
-  <ul class="sidebar-nav" id="sidebar-nav">
-
-    <li class="nav-item">
-      <a class="nav-link " href="/admin/dashboard">
-        <i class="bi bi-grid"></i>
-        <span>Dashboard</span>
-      </a>
-    </li><!-- End Dashboard Nav -->
-
-    <li class="nav-item">
-      <a class="nav-link " href="/admin/usermange">
-        <i class="bi bi-grid"></i>
-        <span>Customer</span>
-      </a>
-    </li>
-
-    <li class="nav-item">
-      <a class="nav-link " href="/admin/categorymange">
-        <i class="bi bi-grid"></i>
-        <span>Category mangement</span>
-      </a>
-    </li>
-
-    <li class="nav-item">
-      <a class="nav-link " href="/admin/productmange">
-        <i class="bi bi-grid"></i>
-        <span>Product mangement</span>
-      </a>
-    </li>
-
-    <li class="nav-item">
-      <a class="nav-link " href="/admin/order-management">
-        <i class="bi bi-grid"></i>
-        <span>Order mangement</span>
-      </a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link " href="/admin/banner">
-        <i class="bi bi-grid"></i>
-        <span>Banner Mangement</span>
-      </a>
-    </li>
-  </ul>
-
-</aside><!-- End Sidebar--> --}}
-
 <body>
   <div class="screen-overlay"></div>
   <aside class="navbar-aside" id="offcanvas_aside">
     <div class="aside-top">
-      <a href="index.html" class="brand-wrap">
-        <img src="assets/imgs/theme/logo.svg" class="logo" alt="Evara Dashboard">
+      <a class="brand-wrap">
+        <h1>ABAD</h1>
       </a>
       <div>
-        <button class="btn btn-icon btn-aside-minimize"> <i class="text-muted material-icons md-menu_open"></i>
+        <button class="btn btn-icon btn-aside-minimize">
+          <i class="text-muted material-icons md-menu_open"></i>
         </button>
       </div>
     </div>
     <nav>
       <ul class="menu-aside">
-        <li class="menu-item active">
-          <a class="menu-link" href="/admin/dashboard"> <i class="icon material-icons md-home"></i>
+        <li id="dashboard-tab" class="menu-item">
+          <a class="menu-link" href="/admin/dashboard#dashboard-tab">
+            <i class="icon material-icons md-home"></i>
             <span class="text">Dashboard</span>
           </a>
         </li>
-        <li class="menu-item">
-          <a class="menu-link" href="/admin/productmange"> <i class="icon material-icons md-shopping_bag"></i>
+        <li id="product-tab" class="menu-item">
+          <a class="menu-link" href="/admin/productmange#product-tab">
+            <i class="icon material-icons md-shopping_bag"></i>
             <span class="text">Products</span>
           </a>
         </li>
-        <li class="menu-item">
-          <a class="menu-link" href="/admin/order-management"> <i class="icon material-icons md-shopping_cart"></i>
+        <li id="orders-tab" class="menu-item">
+          <a class="menu-link" href="/admin/order-management#orders-tab">
+            <i class="icon material-icons md-shopping_cart"></i>
             <span class="text">Orders</span>
           </a>
-
         </li>
-
-
-        <li class="menu-item ">
-          <a class="menu-link" href="/admin/usermange"> <i class="icon material-icons md-monetization_on"></i>
+        <li id="user-tab" class="menu-item ">
+          <a class="menu-link" href="/admin/usermange#user-tab">
+            <i class="icon material-icons md-monetization_on"></i>
             <span class="text">Customers</span>
           </a>
-
         </li>
-        <li class="menu-item">
-          <a class="menu-link" href="/admin/categorymange"> <i class="icon material-icons md-store"></i>
-            <span class="text">Catagories</span>
+        <li id="cata-tab" class="menu-item has-submenu">
+          <a class="menu-link" href="#">
+            <i class="icon material-icons  md-store"></i>
+            <span class="text">Catagory</span>
           </a>
-
-        <li class="menu-item">
-          <a class="menu-link" href="/admin/banner"> <i class="icon material-icons md-pie_chart"></i>
+          <div class="submenu">
+            <a href="/admin/categorymange#cata-tab">Catagories</a>
+            <a href="/admin/sub-Catagory#cata-tab">Sub Catagories</a>
+          </div>
+        </li>
+        <li id="banner-tab" class="menu-item">
+          <a class="menu-link" href="/admin/banner#banner-tab">
+            <i class="icon material-icons md-pie_chart"></i>
             <span class="text">Banner Mangement</span>
           </a>
         </li>
-        <li class="menu-item has-submenu">
-          <a class="menu-link" href="#"> <i class="icon material-icons md-stars"></i>
+        <li id="offer-tab" class="menu-item has-submenu">
+          <a class="menu-link" href="#">
+            <i class="icon material-icons md-stars"></i>
             <span class="text">Offer Modules</span>
           </a>
           <div class="submenu">
-            <a href="/admin/coupon">Coupon</a>
-            <a href="/admin/catagory-offer">Catagory Offers</a>
+            <a href="/admin/coupon#offer-tab">Coupon</a>
+            <a href="/admin/catagory-offer#offer-tab">Catagory Offers</a>
           </div>
         </li>
-        <li class="menu-item">
-          <a class="menu-link" href="/admin/sales-report"> <i class="icon material-icons  md-comment"></i>
+        <li id="report-tab" class="menu-item">
+          <a class="menu-link" href="/admin/sales-report#report-tab">
+            <i class="icon material-icons  md-comment"></i>
             <span class="text">Sales Report</span> </a>
         </li>
       </ul>
       <hr>
-
       <br>
       <br>
     </nav>
   </aside>
+
+  <script>
+    var hash = window.location.hash;
+    $(hash).addClass("active");
+  </script>

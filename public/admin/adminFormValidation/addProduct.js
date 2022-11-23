@@ -1,3 +1,4 @@
+
 function fname() {
   let name = document.getElementById("name").value;
   let error1 = document.getElementById("error1");

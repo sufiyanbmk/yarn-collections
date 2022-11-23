@@ -55,6 +55,43 @@ module.exports = {
     });
   },
 
+  // gotoCart: (userId)=>{
+  //   return new Promise(async (resolve, reject) => {
+  //     let wishlist = await db
+  //       .get()
+  //       .collection(collection.CART_COLLECTION)
+  //        .find({user:objectID(userId)})
+  //       .toArray();
+  //     resolve(wishlist);
+  //   });
+  // },
+
+  cartThere: (userid, proid) => {
+    var data = {};
+    return new Promise(async (resolve, reject) => {
+      let cart = await db
+        .get()
+        .collection(collection.CART_COLLECTION)
+        .findOne({ user: objectID(userid) });
+      if (cart) {
+        let productexist = cart.products.findIndex(
+          (products) => products.product == proid
+        );
+        if (productexist == -1) {
+          data.exists = false;
+          resolve(data);
+        } else {
+          console.log('else ')
+          data.exists = true;
+          resolve(data);
+        }
+      } else {
+        data.exists = false;
+        resolve(data);
+      }
+    });
+  },
+
   getCartProducts: (userId) => {
     return new Promise(async (resolve, reject) => {
       let user = await db
@@ -104,7 +141,7 @@ module.exports = {
             {
               $project: {
                 quantity: 1,
-                insertionTime: 1,
+                inertionTime: 1,
                 product: 1,
                 total: {
                   $sum: {
@@ -115,12 +152,11 @@ module.exports = {
             },
             {
               $sort: {
-                insertionTime: -1,
+                inertionTime: -1,
               },
             },
           ])
           .toArray();
-        console.log(cartItems);
         resolve(cartItems);
       } else {
         resolve([]);
@@ -245,6 +281,16 @@ module.exports = {
         reject("user not found");
       }
     });
+  },
+  //insert coupon id of used coupon
+  insertCouponId: (userId,couponId)=>{
+    return new Promise((resolve,reject) => {
+      db.get().collection(collection.USER_COLLECTION).updateOne({_id:objectID(userId)},{
+        $push:{coupon:objectID(couponId)}
+      }).then(()=>{
+        resolve();
+      })
+    })
   },
   //removing cart when ordered
   orderRemoveCart: (userId) => {

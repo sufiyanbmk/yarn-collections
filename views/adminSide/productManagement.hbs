@@ -20,6 +20,7 @@
                                 <th scope="col">NO</th>
                                 <th scope="col">Product Name</th>
                                 <th scope="col" class="text-center">category</th>
+                                <th scope="col" class="text-center">Sub Catagory</th>
                                 <th scope="col" class="text-center">Description</th>
                                 <th scope="col" class="text-center">In Stock</th>
                                 <th scope="col" class="text-center">Price</th>
@@ -34,6 +35,7 @@
                                 <td class="tm-product-name">{{inc @ index}}</td>
                                 <td class="tm-product-name">{{this.name}}</td>
                                 <td class="text-center">{{this.Category}}</td>
+                                <td class="text-center">{{this.subCategory}}</td>
                                 <td class="text-center">{{this.Description}}</td>
                                 <td class="text-center">{{this.stock}}</td>
                                 <td class="text-center">{{this.price}}</td>
@@ -70,8 +72,8 @@
                                                     <path fill-rule="evenodd"
                                                         d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z" />
                                                 </svg></a>
-                                                <a class="dropdown-item btn btn-secondary" style="width: 100px;"
-                                                  href="/admin/product-offer/{{this._id}}">Offer</a>
+                                            <a class="dropdown-item btn btn-secondary" style="width: 100px;"
+                                                href="/admin/product-offer/{{this._id}}">Offer</a>
                                         </div>
                                     </div> <!-- dropdown //end -->
                                 </td>
@@ -81,16 +83,28 @@
                     </table>
                 </div>
                 <div class="tm-table-mt tm-table-actions-row m-4">
-                     <div class="tm-table-actions-col-right offset-10">
+                    <div class="tm-table-actions-col-right offset-10">
                         <span class="tm-pagination-label">Page</span>
                         <nav aria-label="Page navigation" class="d-inline-block">
                             <ul class="pagination tm-pagination">
                                 {{#each pagesArray}}
-                                <li class="page-item active"><a class="page-link" href="?page={{this}}">{{this}}</a></li>
+                                {{!-- {{#if }} --}}
+                                {{!-- <li class="page-item active"><a class="page-link"
+                                        href="?page={{this.page}}">{{this.page}}</a></li> --}}
+                                {{!-- {{else}} --}}
+                                {{#if (eq this.current this.page)}}
+                                    <li class="page-item active"><a class="page-link" href="?page={{this.page}}">{{this.page}}</a></li>
+                                {{else}}
+                                    <li class="page-item"><a class="page-link" href="?page={{this.page}}">{{this.page}}</a></li>
+                                {{/if}}
+                                
+                                {{!-- {{/if}} --}}
+                                {{!-- <li class="page-item"><a class="page-link"
+                                        href="?page={{this.page}}">{{this.page}}</a></li> --}}
                                 {{/each}}
                             </ul>
                         </nav>
-                    </div> 
+                    </div>
                 </div>
             </div>
         </div>

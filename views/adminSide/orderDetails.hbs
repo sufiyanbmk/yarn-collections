@@ -46,7 +46,7 @@
                     <td>
                       <div class="d-flex mb-2">
                         <div class="flex-shrink-0">
-                          <img src='/uploads/{{this.products.imagefileName.[0]}}' alt="" width="35" class="img-fluid">
+                          <img src='/uploads/{{this.products.imagefileName.[0]}}' alt="product is deleted" width="35" class="img-fluid">
                         </div>
                         <div class="flex-lg-grow-1 ms-3">
                           <h6 class="small mb-0"><a href="#" class="text-reset">{{this.products.name}}</a></h6>
@@ -79,7 +79,7 @@
                           <button class="dropdown-item"
                             onclick="changeStatus('{{this._id}}','{{this.product}}','Delivered')">Delivered</button>
                           <button class="dropdown-item text-danger"
-                            onclick="changeStatus('{{this._id}}','{{this.product}}','order cancelled')">Cancel</button>
+                            onclick="changeStatus('{{this._id}}','{{this.product}}','Order Cancelled')">Cancel</button>
                         </div>
                       </div>
                       {{/if}}
@@ -176,7 +176,7 @@
         },
         method: 'post',
         success: (response) => {
-          location.reload()
+              $("#orderDetails").load(location.href+" #orderDetails>*",""); 
         }
       })
     }
@@ -195,7 +195,6 @@
           }
           else {
             alert('it is in the cash on delevery')
-            swal("Good job!", "Added to Cart! You Can Check There", "success");
           }
 
         }

@@ -14,10 +14,11 @@ function changeQuantity(cartId,proId,userId,count,quantity){
         success:(response)=>{
             if(response.removeProduct){
                 alert('product removed')
-                location.reload()
+                $("#changeCartDiv").load(location.href+" #changeCartDiv>*",""); 
             }
+            $("#changeCartDiv").load(location.href+" #changeCartDiv>*",""); 
         //  document.getElementById('total'),innerHTML=response.total 
-        location.reload()
+        // location.reload()
         }
     })
 
