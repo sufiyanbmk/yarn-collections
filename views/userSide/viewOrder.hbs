@@ -12,9 +12,8 @@
 							<tr class="text-center">
 								<th>Image</th>
 								<th>Product</th>
-
 								<th>Quantity</th>
-								<th>Total</th>
+								<th>Price</th>
 								<th>Payment</th>
 								<th>status</th>
 								<th>orderDate</th>
@@ -46,8 +45,8 @@
 								</td>
 
 								<td class="total">${{this.productTotal}}<br>
-								{{#if this.coupon}}
-								Discounted:${{this.couponAmt}}</td>
+									{{#if this.coupon}}
+									Discounted:${{this.couponAmt}}</td>
 								{{else}}
 								{{/if}}
 								<td>{{this.paymentMethod}}</td>
@@ -55,25 +54,27 @@
 								<td>{{this.orderDate}}</td>
 								{{!-- {{#if this.cancelled}}
 								{{else}}
-								<td><button onclick="orderCanceled('{{this._id}}')" class="btn btn-primary">__X__</button></td>
+								<td><button onclick="orderCanceled('{{this._id}}')"
+										class="btn btn-primary">__X__</button></td>
 							</tr><!-- END TR-->
 							{{/if}} --}}
 							<td>
-                {{#if this.none}}
-                {{else}}
-                {{#if this.return}}
-                {{else}}
-                {{#if this.delivered}}
-                <a href="/replace/{{this._id}}/{{this.products._id}}"
-                     class="btn btn-warning p-2">Return</a>
-					  <a href="/invoice/{{this._id}}/{{this.products._id}}"
-                     class="btn btn-success pt-2 ">Invoice</a>
-                {{else}}
-                <button onclick="orderCanceled('{{this._id}}')" class="btn btn-danger p-2">Cancel Order</button>
-              {{/if}}
-              {{/if}}
-              {{/if}}
-              </td>
+								{{#if this.none}}
+								{{else}}
+								{{#if this.return}}
+								{{else}}
+								{{#if this.delivered}}
+								<a href="/replace/{{this._id}}/{{this.products._id}}"
+									class="btn btn-warning p-2">Return</a>
+								<a href="/invoice/{{this._id}}/{{this.products._id}}"
+									class="btn btn-success pt-2 ">Invoice</a>
+								{{else}}
+								<button onclick="orderCanceled('{{this._id}}')" class="btn btn-danger p-2">Cancel
+									Order</button>
+								{{/if}}
+								{{/if}}
+								{{/if}}
+							</td>
 							{{/each}}
 
 
@@ -86,20 +87,24 @@
 	</div>
 </section>
 
-	<div class="row mt-5">
-					<div class="col text-center">
-						<div class="block-27">
-							<ul>
-								{{!-- <li><a href="#">&lt;</a></li> --}}
-								{{#each pagesArray}}
-								<li><a class="active" href="?page={{this}}">{{this}}</a></li>
-								{{/each}}
-								{{!-- <li><a href="#">&gt;</a></li> --}}
-							</ul>
-						</div>
-					</div>
-				</div>
-			</div>
+<div class="row mt-5">
+	<div class="col text-center">
+		<div class="block-27">
+			<ul>
+				{{!-- <li><a href="#">&lt;</a></li> --}}
+				{{#each pagesArray}}
+				{{#if (eq this.current this.page)}}
+				<li class="active"><a  href="?page={{this.page}}">{{this.page}}</a></li>
+				{{else}}
+			   <li><a class="" href="?page={{this.page}}">{{this.page}}</a></li>
+				{{/if}}
+				{{/each}}
+				{{!-- <li><a href="#">&gt;</a></li> --}}
+			</ul>
+		</div>
+	</div>
+</div>
+</div>
 
 
 
@@ -113,16 +118,10 @@
 			type: "get",
 			success: (response) => {
 
-				      $("#orderViewTable").load(location.href+" #orderViewTable>*",""); 
+				$("#orderViewTable").load(location.href + " #orderViewTable>*", "");
 			},
 		});
 	}
 </script>
 
 
-<script>
-$("li").click(function () {
-$(this).siblings().removeClass("active");
-  $(this).addClass("active")
-});
-</script>

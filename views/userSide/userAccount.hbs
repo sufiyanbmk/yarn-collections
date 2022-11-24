@@ -280,7 +280,28 @@
                                                         </tbody>
                                                     </table>
                                                 </div>
-                                                <nav aria-label="Page navigation example">
+                                                <div class="row mt-5">
+                                                    <div class="col text-center">
+                                                        <div class="block-27">
+                                                            <ul>
+                                                                {{!-- <li><a href="#">&lt;</a></li> --}}
+                                                                {{#each pagesArray}}
+                                                                {{#if (eq this.current this.page)}}
+                                                                <li class="active"><a
+                                                                        href="?page={{this.page}}#orders">{{this.page}}</a>
+                                                                </li>
+                                                                {{else}}
+                                                                <li><a class=""
+                                                                        href="?page={{this.page}}#orders">{{this.page}}</a>
+                                                                </li>
+                                                                {{/if}}
+                                                                {{/each}}
+                                                                {{!-- <li><a href="#">&gt;</a></li> --}}
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {{!-- <nav aria-label="Page navigation example">
                                                     <ul class="pagination justify-content-end">
                                                         <li class="page-item disabled">
                                                             <a class="page-link" href="#" tabindex="-1">Previous</a>
@@ -293,7 +314,7 @@
                                                             <a class="page-link" href="#">Next</a>
                                                         </li>
                                                     </ul>
-                                                </nav>
+                                                </nav> --}}
                                             </div>
                                         </div>
                                     </div>
@@ -814,8 +835,8 @@
     <!-- Template  JS -->
     <script src="/user/assets/js/main.js"></script>
 
- {{>userfooter}}
- 
+    {{>userfooter}}
+
 
     <script>
         $(function () {

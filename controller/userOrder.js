@@ -19,13 +19,15 @@ module.exports = {
     if (req.query.page) {
       var pageNum = req.query.page;
     } else {
-      console.log('else')
       var pageNum = 1;
     }  
     const perPage = 10;
     let orderCount = await orderHelper.countOrder(req.session.user._id)
        let pages = Math.ceil(orderCount / perPage);
-       let pagesArray = Array.from({ length: pages }, (_, i) => i + 1);
+      //  let pagesArray = Array.from({ length: pages }, (_, i) => i + 1);
+      let pagesArray = Array.from({ length: pages }, (_, i) =>  {
+        return {page: i + 1, current: Number(pageNum)}
+      })
     orderList = await orderHelper.viewOrderList(req.session.user._id, pageNum, perPage);
     let value = orderList.forEach((orderList, index) => {
       if (orderList.paymentStatus === "Delivered") {
@@ -38,7 +40,7 @@ module.exports = {
         orderList.coupon = true
       }
     })
-    res.render("userSide/viewOrder", { orderList, user: req.session.user ,pagesArray});
+    res.render("userSide/viewOrder", { orderList, user: req.session.user ,pagesArray,pageNum});
   },
 
   cancelOrder: (req, res) => {

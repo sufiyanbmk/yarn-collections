@@ -15,7 +15,9 @@ module.exports = {
       const perPage = 6;
       let orderCount = await orderHelper.orderCount(req.session.user._id);
       let pages = Math.ceil(orderCount / perPage);
-      let pagesArray = Array.from({ length: pages }, (_, i) => i + 1);
+      let pagesArray = Array.from({ length: pages }, (_, i) =>  {
+        return {page: i + 1, current: Number(pageNum)}
+      })
       let userDetail = await userhelpers.userProfile(req.session.user._id);
       let address = await orderHelper.getAddress(req.session.user._id);
       let orderhistory = await orderHelper.orderhistory(
@@ -40,6 +42,7 @@ module.exports = {
         couponCollection,
         wallet,
         pagesArray,
+        pageNum
       });
       req.session.pswchangeError = false;
     } catch (error) {
