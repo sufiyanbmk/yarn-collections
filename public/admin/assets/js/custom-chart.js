@@ -5,6 +5,22 @@
     $.ajax({
       url: "graphData",
       success: (res) => {
+        let today=new Date().getMonth()
+        const Months= [
+          "Jan",
+          "Feb",
+          "Mar",
+          "Apr",
+          "May",
+          "Jun",
+          "Jul",
+          "Aug",
+          "Sep",
+          "Oct",
+          "Nov",
+          "Dec"
+        ]
+        let label=Months.splice(0,today+1)
         var ctx = document.getElementById("myChart").getContext("2d");
         var chart = new Chart(ctx, {
           // The type of chart we want to create
@@ -20,19 +36,7 @@
           },
           // The data for our dataset
           data: {
-            labels: [
-              "Jan",
-              "Feb",
-              "Mar",
-              "Apr",
-              "May",
-              "Jun",
-              "Jul",
-              "Aug",
-              "Sep",
-              "Oct",
-              "Nov",
-            ],
+            labels:label,
             datasets: [
               {
                 label: "Sales",
