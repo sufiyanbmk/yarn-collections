@@ -86,6 +86,8 @@ router.delete("/whislistDelete/:id", whislist.deleteWhislist);
 
 //--------------proceed to checkout-----------//
 
+router.get("/checkout", userauth,userCheckout.getCheckout)
+
 router.post("/checkout", userauth, userCheckout.checkoutPage);
 
 router.get("/addAddress", userauth, userCheckout.addressForm);

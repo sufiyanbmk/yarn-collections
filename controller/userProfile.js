@@ -112,6 +112,9 @@ module.exports = {
   walletHistory:(req,res) => {
     userhelpers.userWalletHistory(req.params.id).then((history)=>{
       for(let i=0;i<history.History.length;i++){
+        date=history.History[i].Time
+        history.History[i].Time=date.getFullYear()+'-' + (date.getMonth()+1) + '-'+date.getDate();//prints expected format.
+        console.log(history.History[i].Time);
         if(history.History[i].Recieved){
           history.History[i].crdited = true;
         }

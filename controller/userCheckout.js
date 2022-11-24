@@ -4,25 +4,31 @@ const { v4: uuidv4 } = require("uuid");
 const userHelper = require("../helpers/userHelper");
 
 module.exports = {
-  
+
+  getCheckout: async (req,res) => {
+    let address = await orderHelper.getAddress(req.session.user._id);
+    let total = await userCartHelper.getTotalAmount(req.session.user._id);
+    let walletAmount = await orderHelper.walletAmount(req.session.user._id);
+    let walletAmt = walletAmount.Total;
+    let [subTotal,couponAmt,couponId]=req.session.coupon
+    res.render("userSide/checkout", {
+      user: req.session.user._id,
+      addressShow: address,
+      total,
+      subTotal,
+      couponAmt,
+      couponId,
+      walletAmt,
+    });
+  },
+
   checkoutPage: async (req, res, next) => {
     try {
-      let address = await orderHelper.getAddress(req.session.user._id);
-      let total = await userCartHelper.getTotalAmount(req.session.user._id);
       let subTotal = req.body.subtotal;
       let couponAmt = req.body.finalAmount;
       let couponId = req.body.couponId
-      let walletAmount = await orderHelper.walletAmount(req.session.user._id);
-      let walletAmt = walletAmount.Total;
-      res.render("userSide/checkout", {
-        user: req.session.user._id,
-        addressShow: address,
-        total,
-        subTotal,
-        couponAmt,
-        couponId,
-        walletAmt,
-      });
+      req.session.coupon=[subTotal,couponAmt,couponId]
+      res.redirect("/checkout");
     } catch (error) {
       next(error);
     }
@@ -41,17 +47,7 @@ module.exports = {
         addressDetails,
         uid
       );
-      let address = await orderHelper.getAddress(req.session.user._id);
-      let total = await userCartHelper.getTotalAmount(req.session.user._id);
-      let subTotal = req.body.subtotal;
-      let couponAmt = req.body.finalAmount;
-      res.render("userSide/checkout", {
-        user: req.session.user._id,
-        addressShow: address,
-        total,
-        subTotal,
-        couponAmt,
-      });
+      res.redirect('/checkout')
     } catch (error) {
       next(error);
     }
