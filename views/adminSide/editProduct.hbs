@@ -135,7 +135,7 @@
                                         Category</label>
                                     <select name="subCategory" class="custom-select col-xl-9 col-lg-8 col-md-8 col-sm-7"
                                         id="subCategory" required>
-                                        
+                                        <option>{{product.subCategory}}</option>
 
                                     </select>
                                 </div>
@@ -148,15 +148,16 @@
                                         data-large-mode="true" required>
                                 </div>
                                      <p id="error4" style="color: red;"></p>
-                                <div class="input-group mb-3">
+                                        <div class="input-group mb-3">
                                     <label for="expire_date"
                                         class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Offer price
                                     </label>
                                     <input name="offerPrice" type="text" value="{{product.offerPrice}}" onkeyup="offerprice()" id="offerprice"
-                                        class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" onkeyup="offerprice()" id="offerprice"
+                                        class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7"
                                         data-large-mode="true" required>
                                 </div>
-                                     <p id="error5" style="color: red;"></p>
+                                <p id="error5" style="color: red;"></p>
+                                
                                 <div class="input-group mb-3">
                                     <label for="stock" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Units
                                         In

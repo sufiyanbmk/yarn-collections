@@ -257,14 +257,16 @@ exports.orders = async (req, res) => {
   const perPage = 10;
   const orderCount =await orderHelper.adminOrderCount()
   let pages = Math.ceil(orderCount / perPage);
-  let pagesArray = Array.from({ length: pages }, (_, i) => i + 1);
+  let pagesArray = Array.from({ length: pages }, (_, i) =>  {
+    return {page: i + 1, current: Number(pageNum)}
+  });
   orderHelper.adminorderlist(pageNum,perPage).then((order) => {
     let value = order.forEach((order, index) => {
       if (order.status === "pending") {
         order.pending = true;
       }
     });
-    res.render("adminSide/orderMangement", { order ,pagesArray});
+    res.render("adminSide/orderMangement", { order ,pagesArray,pageNum});
   });
 };
 

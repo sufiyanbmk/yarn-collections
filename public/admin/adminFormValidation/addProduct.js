@@ -1,4 +1,3 @@
-
 function fname() {
   let name = document.getElementById("name").value;
   let error1 = document.getElementById("error1");
@@ -53,6 +52,7 @@ function price() {
   }
 }
 function offerprice() {
+  alert()
   let priceCheck = document.getElementById('price').value;
   let offerprice = document.getElementById("offerprice").value;
   let error5 = document.getElementById("error5");
@@ -119,3 +119,6 @@ function valid() {
 }
 
 
+function test(){
+  alert()
+}
