@@ -7,7 +7,7 @@
 				<span class="oi oi-menu"></span> Menu
 			</button>
 
-			<div class="collapse navbar-collapse" id="ftco-nav" id="nav-div">
+			<div class="collapse navbar-collapse" id="ftco-nav">
 				<ul class="navbar-nav ml-auto">
 					<li class="nav-item active"><a href="/home" class="nav-link">Home</a></li>
 					<li class="nav-item dropdown">
@@ -22,10 +22,10 @@
 					{{#if bracket}}
 					<li class="nav-item cta cta-colored"><a href="/cart" class="nav-link"><span>
 								<img src="/images/icons8-shopping-cart.gif"
-									style="width: 15px; height:15px"></span>[{{cartCount}}]</a></li>
-					<li class="nav-item cta cta-colored"><a href="/whislist" class="nav-link"><span>
+									style="width: 15px; height:15px"></span>[<span id="cartCount">{{cartCount}}</span>]</a></li>
+					<li class="nav-item cta cta-colored" ><a href="/whislist" class="nav-link"><span>
 								<img src="/images/icons8-favorite-15 (1).png"
-									style="width: 15px; height:15px"></span>[{{whislistCount}}]</a></li>
+									style="width: 15px; height:15px"></span>[<span id="whislistCount">{{whislistCount}}</span>]</a></li>
 					{{else}}
 							<li class="nav-item cta cta-colored"><a href="/cart" class="nav-link"><span>
 								<img src="/images/icons8-shopping-cart.gif"
@@ -36,7 +36,7 @@
 					{{/if}}								
 					{{#if user}}
 					<li class="nav-item dropdown">
-						<a class="nav-link dropdown-toggle text-dark" href="/shop" id="dropdown04"
+						<a class="nav-link dropdown-toggle text-dark" href= id="dropdown04"
 							data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Account</a>
 						<div class="dropdown-menu" aria-labelledby="dropdown04">
 

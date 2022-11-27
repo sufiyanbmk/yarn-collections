@@ -30,11 +30,16 @@ let userauth = function (req, res, next) {
   }
 };
 
+let returnurl=function(req,res,next){
+  req.session.returnUrl=req.originalUrl
+  next()
+}
+
 /* GET home page. */
 
-router.get("/", home.home);
+router.get("/", returnurl,home.home);
 
-router.get("/home", home.backToHome);
+router.get("/home", returnurl,home.backToHome);
 
 //-------------login for user--------------//
 
@@ -62,7 +67,7 @@ router.get("/logout", verifications.logout);
 
 //-----------------products view-------------------//
 
-router.get("/catagory-wise/:catagory",userauth, products.getCatagoryProducts)
+router.get("/catagory-wise/:catagory", products.getCatagoryProducts)
 
 router.get("/productview/:id", products.singleProduct);
 
@@ -80,9 +85,11 @@ router.delete("/delete/:id", cart.removeItemCart);
 
 router.get("/whislist", userauth, whislist.whislist);
 
-router.post("/addWhislist/:id", userauth, whislist.addToWhislist);
+router.post("/addWhislist/:id", whislist.addToWhislist);
 
 router.delete("/whislistDelete/:id", whislist.deleteWhislist);
+
+router.get('whislistviewCount', whislist.whislistNavCount)
 
 //--------------proceed to checkout-----------//
 

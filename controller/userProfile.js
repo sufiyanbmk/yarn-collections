@@ -3,6 +3,7 @@ const adminHelper = require("../helpers/adminHelper");
 const userCartHelper = require("../helpers/userCartHelper");
 const orderHelper = require("../helpers/orderHelper");
 const { v4: uuidv4 } = require("uuid");
+const userHelper = require("../helpers/userHelper");
 
 module.exports = {
   profile: async (req, res, next) => {
@@ -26,7 +27,8 @@ module.exports = {
         perPage
       );
       let couponCollection = await adminHelper.copuonView();
-      let wallet = await userhelpers.getWallet(req.session.user._id);
+      let wallet = await userhelpers.getWallet(req.session.user._id); 
+      let Category =await adminHelper.getCatagory()
       // let value = orderhistory.forEach((orderhistory, index) => {
       //   if (orderhistory.status === "Delivered") {
       //     orderhistory.delivered = true;
@@ -42,7 +44,8 @@ module.exports = {
         couponCollection,
         wallet,
         pagesArray,
-        pageNum
+        pageNum,
+        Category
       });
       req.session.pswchangeError = false;
     } catch (error) {

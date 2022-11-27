@@ -11,7 +11,10 @@ function addToCart(proId,stock) {
     type: "post",
     success: (response) => {
       if (response.status) {
-              $("#singleProductCartDiv").load(location.href + " #singleProductCartDiv");
+        $("#singleProductCartDiv").load(location.href + " #singleProductCartDiv");
+             let count = $('#cartCount').html()
+             count = parseInt(count)+1
+             $('#cartCount').html(count)
       } else {
         location.href = "/login";
       }

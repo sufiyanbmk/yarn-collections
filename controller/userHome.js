@@ -11,14 +11,7 @@ module.exports = {
       cartCount = await userHelper.getCartCount(req.session.user._id);
       whislistCount = await userHelper.getWhislistCount(req.session.user._id);
        bracket = true
-       let whislist = await whislistHelper.getuserWhislist(req.session.user._id);
-       topProduct.forEach((element)=>{
-        // whislist.forEach((item)=>{
-        //   if(element.products._id.equals(item.product._id)){
-        //     element.whislist =true;
-        //   }
-        // })
-       })
+     
     }
     adminHelper.getCatagory().then(async (Category) => {
       let banner = await userHelper.getBanner();

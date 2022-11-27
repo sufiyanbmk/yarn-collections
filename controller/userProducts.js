@@ -23,7 +23,8 @@ module.exports = {
       if (req.session.user) {
         let [whislist] = await whislistHelper.getuserWhislist(
           req.session.user._id
-        );
+         );
+         
         if (whislist) {
           for (i = 0; i < products.length; i++) {
             for (j = 0; j < whislist.product.length; j++) {
@@ -49,7 +50,6 @@ module.exports = {
           })
         })
       }
-      console.log(products)
       let cartCount = null;
       let whislistCount = null;
       let bracket;
@@ -57,8 +57,8 @@ module.exports = {
         cartCount = await userHelper.getCartCount(req.session.user._id);
         whislistCount = await userHelper.getWhislistCount(req.session.user._id);
          bracket = true
-
-      }
+       }
+       let Category =await adminHelper.getCatagory()
       res.render("userSide/women", {
         products,
         user: req.session.user,
@@ -66,7 +66,8 @@ module.exports = {
         cartCount,
         whislistCount,
         bracket,
-        subCatagoryProduct
+        subCatagoryProduct,
+        Category
       });
     } catch (error) {
       next(error);

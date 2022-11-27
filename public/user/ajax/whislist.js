@@ -5,10 +5,17 @@ function whislistAdd(prodId) {
     url: "/addWhislist/" + prodId,
     type: "post",
     success: (response) => {
+      if (response.status) {
+        document.getElementById('whislistbtn').style.color = '#ff0000';
+        let count = $('#whislistCount').html()
+        count = parseInt(count)+1
+        $('#whislistCount').html(count)
+ } else {
+   location.href = "/login";
+ }
         // swal("Good job!", "Added to Whislist!", "success");
       
         // $("#productCard").load(location.href + " #productCard");
-        document.getElementById('whislistbtn').style.color = '#ff0000';
     },
   });
 }
@@ -40,4 +47,15 @@ function whislistRemove(proId){
       location.reload()
     }
   })
+}
+
+function whislistCounttt(){
+  alert('whislist')
+  // $.ajax({
+  //   url:"/whislistviewCount",
+  //   type:'get',
+  //   success: ()=>{
+
+  //   }
+  // })
 }

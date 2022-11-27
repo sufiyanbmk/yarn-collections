@@ -68,9 +68,9 @@
                             class="material-icons md-more_horiz"></i> </a>
                         <div class="dropdown-menu">
                           {{#if this.return}}
-                          <button id="refundBtn" class="btn btn-warning p-2"
+                          <button id="refundBtn" class="btn btn-warning m-1"
                             onclick="refund('{{this._id}}','{{this.product}}')">Refund</button>
-                          <button class="btn btn-danger p-2"
+                          <button class="btn btn-danger m-"
                             onclick="changeStatus('{{this._id}}','{{this.product}}','Return Rejected')">Return
                             Rejected</button>
                           {{else}}
