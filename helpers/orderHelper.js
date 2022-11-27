@@ -67,6 +67,24 @@ module.exports = {
       }
     });
   },
+  updateAddress:(addressDetails)=>{
+    return new Promise(async (resolve,reject) => {
+      await db.get().collection(collection.ADDRESS_COLLECTION).updateOne({addressID:addressDetails.addressId},{
+        $set:{
+          "details.fname" : addressDetails.fname,
+          "details.state" : addressDetails.state,
+          "details.appartment": addressDetails.appartment,
+          "details.city": addressDetails.city,
+          "details.pincode": addressDetails.pincode,
+          "details.phone": addressDetails.phone,
+          "details.email": addressDetails.email,
+        }
+      }).then((response)=>{
+        console.log(response)
+        resolve()
+      })
+    })
+  },
   //deleete address
   deleteAddress: (addressId) => {
     return new Promise((resolve, reject) => {
@@ -138,10 +156,6 @@ module.exports = {
         totalAmt = couponDiscount
         couponDiscount = total-couponDiscount
       }
-      
-      console.log(couponDiscount);
-     console.log(total)
-     console.log(total-couponDiscount)
       let status = order.paymentMethod === "COD" ? "Success" : "pending";
       let orderObj = {
         address: {
@@ -752,6 +766,14 @@ module.exports = {
       );
     });
   },
+  //pending delete
+  deletePendingOrder :(userID)=>{
+    return new Promise(async(resolve,reject) => {
+      await db.get().collection(collection.ORDER_COLLECTION).deleteMany({userId:objectID(userID),status:"pending"}).then(()=>{
+        resolve()
+      })
+    })
+  },
   // wallet purchase
   walletPurchase: (userId, price) => {
     return new Promise((resolve, reject) => {
@@ -820,7 +842,7 @@ module.exports = {
       let checkCoupon = await db
         .get()
         .collection(collection.COUPON_COLLECTION)
-        .findOne({ codeGeneraor: code });
+        .findOne({ couponCode: code });
       if (checkCoupon) {
         const expireDate = new Date(checkCoupon.date);
 
@@ -835,11 +857,11 @@ module.exports = {
             checkCoupon.usedCoupon = true;
           }
           checkCoupon.dateChecked = true;
-          resolve(checkCoupon);
+          // resolve(checkCoupon);
           if (total >= checkCoupon.minAmt) {
             checkCoupon.minChecked = true;
           } else {
-            response.minChecked = false;
+            response.minChecked = true;
             response.maxAmountMsg =
               "your maximum purchase should be" + checkCoupon.minAmt;
             resolve(response);

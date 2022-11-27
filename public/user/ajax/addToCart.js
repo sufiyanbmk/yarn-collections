@@ -11,6 +11,7 @@ function addToCart(proId,stock) {
     type: "post",
     success: (response) => {
       if (response.status) {
+              $("#singleProductCartDiv").load(location.href + " #singleProductCartDiv");
       } else {
         location.href = "/login";
       }

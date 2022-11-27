@@ -65,9 +65,9 @@
 								{{else}}
 								{{#if this.delivered}}
 								<a href="/replace/{{this._id}}/{{this.products._id}}"
-									class="btn btn-warning p-2">Return</a>
+									class="btn btn-warning px-3 m-3">Return</a>
 								<a href="/invoice/{{this._id}}/{{this.products._id}}"
-									class="btn btn-success pt-2 ">Invoice</a>
+									class="btn btn-success px-3 m-3">Invoice</a>
 								{{else}}
 								<button onclick="orderCanceled('{{this._id}}')" class="btn btn-danger p-2">Cancel
 									Order</button>

@@ -107,7 +107,7 @@
                                     <label for="name" class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Product
                                         Name
                                     </label>
-                                    <input id="name" name="name" type="text" value="{{product.name}}" onkeyup="fname()"
+                                    <input id="name" name="name" type="text" value="{{product.name}}" onkeyup="editFname()"
                                         class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" required>
                                 </div>
                                    <p id="error1" style="color: red;"></p>
@@ -115,7 +115,7 @@
                                     <label for="description"
                                         class="col-xl-4 col-lg-4 col-md-4 col-sm-5 mb-2">Description</label>
                                     <input class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7" rows="3" id="description"
-                                        name='Description' value="{{product.Description}}" onkeyup="description()" required></input>
+                                        name='Description' value="{{product.Description}}" onkeyup="editDescription()" required></input>
                                 </div>
                                   <p id="error2" style="color: red;"></p>
                                 <div class="input-group mb-3">
@@ -143,7 +143,7 @@
                                     <label for="expire_date"
                                         class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">price
                                     </label>
-                                    <input name="price" type="text" value="{{product.price}}" onkeyup="price()" id="price"
+                                    <input name="price" type="text" value="{{product.price}}" onkeyup="editPrice()" id="price"
                                         class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7"
                                         data-large-mode="true" required>
                                 </div>
@@ -152,7 +152,7 @@
                                     <label for="expire_date"
                                         class="col-xl-4 col-lg-4 col-md-4 col-sm-5 col-form-label">Offer price
                                     </label>
-                                    <input name="offerPrice" type="text" value="{{product.offerPrice}}" onkeyup="offerprice()" id="offerprice"
+                                    <input name="offerPrice" type="text" value="{{product.offerPrice}}" onkeyup="editOfferprice()" id="offerprice"
                                         class="form-control validate col-xl-9 col-lg-8 col-md-8 col-sm-7"
                                         data-large-mode="true" required>
                                 </div>
@@ -163,7 +163,7 @@
                                         In
                                         Stock
                                     </label>
-                                    <input id="stock" name="stock" type="number" value="{{product.stock}}" onkeyup="stock()" 
+                                    <input id="stock" name="stock" type="number" value="{{product.stock}}" onkeyup="editStock()" 
                                         class="form-control validate col-xl-9 col-lg-8 col-md-7 col-sm-7" required>
                                 </div>
                                     <p id="error6" style="color: red;"></p>

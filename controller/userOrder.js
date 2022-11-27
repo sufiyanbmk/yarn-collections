@@ -71,7 +71,6 @@ module.exports = {
 
   razorpayDismiss : (req,res)=>{
    orderHelper.deletePendingOrder(req.body["orderId[receipt]"]).then((response)=>{
-    console.log(response)
       res.json({status:true})
     })
   },
@@ -91,7 +90,10 @@ module.exports = {
   },
 
   cancelPaypal: (req,res) => {
-    res.redirect("/payment-failed");
+    orderHelper.deletePendingOrder(req.session.user._id).then(()=>{
+
+      res.redirect("/payment-failed");
+    })
   },
 
   applyCoupon: async (req, res, next) => {
@@ -104,8 +106,15 @@ module.exports = {
       if (applyCoupon.couponVerified) {
         let discountAmount = (total * parseInt(applyCoupon.value)) / 100;
         let couponAmount = total - discountAmount;
-        applyCoupon.subtotal = Math.round(discountAmount);
-        applyCoupon.amount = Math.round(couponAmount);
+        let upTo = parseInt(applyCoupon.upto)
+        if(discountAmount<upTo){
+          applyCoupon.subtotal = Math.round(discountAmount);
+          applyCoupon.amount = Math.round(couponAmount);
+        }
+        else{
+          applyCoupon.subtotal = upTo
+          applyCoupon.amount = total - upTo
+        }
         res.json(applyCoupon);
       } else {
         res.json(applyCoupon);

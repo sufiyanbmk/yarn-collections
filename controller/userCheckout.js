@@ -5,7 +5,8 @@ const userHelper = require("../helpers/userHelper");
 
 module.exports = {
 
-  getCheckout: async (req,res) => {
+  getCheckout: async (req,res,next) => {
+    try{
     let address = await orderHelper.getAddress(req.session.user._id);
     let total = await userCartHelper.getTotalAmount(req.session.user._id);
     let walletAmount = await orderHelper.walletAmount(req.session.user._id);
@@ -20,6 +21,9 @@ module.exports = {
       couponId,
       walletAmt,
     });
+  }catch(error){
+    next(error)
+  }
   },
 
   checkoutPage: async (req, res, next) => {
@@ -29,7 +33,7 @@ module.exports = {
       let couponId = req.body.couponId
       req.session.coupon=[subTotal,couponAmt,couponId]
       res.redirect("/checkout");
-    } catch (error) {
+    } catch (error){
       next(error);
     }
   },
@@ -51,6 +55,17 @@ module.exports = {
     } catch (error) {
       next(error);
     }
+  },
+
+  editAddress : async(req,res)=>{
+    let address = await orderHelper.getAddresByID(req.params.id);
+    res.json(address)
+  },
+
+  updateAddressPost : (req,res)=>{
+    orderHelper.updateAddress(req.body).then(()=>{
+
+    })
   },
 
   deleteAddress: (req, res) => {

@@ -1,5 +1,10 @@
+// $("#editAddressBtn").on("click", (e) => {
+//     e.preventDefault()
+//     console.log("clicked me");
+//     $('#editModal').modal('show');
+// });
 
-$('#checkoutSubmit').submit((e) => {
+$("#placeOrderBtn").on("click", (e) => {
     e.preventDefault()
     const addressId = $('input[name="address"]:checked').val();
     const userID = $('input[name="userId"]').val();

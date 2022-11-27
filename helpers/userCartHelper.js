@@ -55,16 +55,20 @@ module.exports = {
     });
   },
 
-  // gotoCart: (userId)=>{
-  //   return new Promise(async (resolve, reject) => {
-  //     let wishlist = await db
-  //       .get()
-  //       .collection(collection.CART_COLLECTION)
-  //        .find({user:objectID(userId)})
-  //       .toArray();
-  //     resolve(wishlist);
-  //   });
-  // },
+  gotoCart: (userId)=>{
+    return new Promise(async (resolve, reject) => {
+      let wishlist = await db
+        .get()
+        .collection(collection.CART_COLLECTION)
+         .aggregate([{
+          $match:{user:objectID(userId)}
+         },{
+          $unwind:"$products"
+         }])
+        .toArray();
+      resolve(wishlist);
+    });
+  },
 
   cartThere: (userid, proid) => {
     var data = {};
@@ -164,9 +168,10 @@ module.exports = {
     });
   },
   // increament and decrement of product
-  changeQuantity: (details) => {
+  changeQuantity: async (details) => {   
     details.quantity = parseInt(details.quantity);
     details.count = parseInt(details.count);
+    let cartProduct = await db.get().collection(collection.PRODUCT_COLLECTION).findOne({_id:objectID(details.product)})
     return new Promise((resolve, reject) => {
       if (details.count == -1 && details.quantity == 1) {
         db.get()
@@ -185,6 +190,12 @@ module.exports = {
             resolve({ removeProduct: true });
           });
       } else {
+        // if(cartProduct.stock <= 0 && details.count ==1){
+        //   console.log("if")
+        //   let obj = {prodId:product._id,outOfStock:true}
+        //   reject(obj)
+        // }
+        // else{
         db.get()
           .collection(collection.CART_COLLECTION)
           .updateOne(
@@ -200,6 +211,7 @@ module.exports = {
             resolve(response);
           });
       }
+    // }
     });
   },
 

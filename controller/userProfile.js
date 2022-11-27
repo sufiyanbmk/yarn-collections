@@ -57,7 +57,6 @@ module.exports = {
   },
 
   editProfile: (req, res) => {
-    console.log(req.body)
     userhelpers.editProfile(req.session.user._id, req.body).then(() => {
       res.json({ status: true });
     });
@@ -117,7 +116,6 @@ module.exports = {
       for(let i=0;i<history.History.length;i++){
         date=history.History[i].Time
         history.History[i].Time=date.getFullYear()+'-' + (date.getMonth()+1) + '-'+date.getDate();//prints expected format.
-        console.log(history.History[i].Time);
         if(history.History[i].Recieved){
           history.History[i].crdited = true;
         }

@@ -39,17 +39,15 @@ module.exports = {
           }
         }
   
-        // let cartItem = await userCartHelper.gotoCart(req.session.user._id) 
-        // console.log(cartItem)
-        // products.forEach((element)=>{
-        //   cartItem.forEach((item)=>{
-        //     console.log(item.products.product)
-        //     if(element._id.equals(item.products.product)){
-        //       element.cartList = true;
-        //       console.log('iiiiiiiiiiiiiiiiiiiiiiiiiiiiii')
-        //     }
-        //   })
-        // })
+        let cartItem = await userCartHelper.gotoCart(req.session.user._id) 
+        products.forEach((element)=>{
+          cartItem.forEach((item)=>{
+            console.log(item.products.product)
+            if(element._id.equals(item.products.product)){
+              element.cartList = true;
+            }
+          })
+        })
       }
       console.log(products)
       let cartCount = null;

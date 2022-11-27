@@ -25,7 +25,7 @@ module.exports = {
     userCartHelper.changeQuantity(req.body).then(async (response) => {
       // response.total = await userCartHelper.getTotalAmount(req.session.user._id);
       res.json(response);
-    });
+    })
   },
 
   removeItemCart: (req, res) => {

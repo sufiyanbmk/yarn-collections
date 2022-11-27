@@ -94,6 +94,10 @@ router.get("/addAddress", userauth, userCheckout.addressForm);
 
 router.post("/address/:id", userauth, userCheckout.addressFormPost);
 
+router.get("/edit-address:id",userCheckout.editAddress)
+
+router.patch("/updat-address", userCheckout.updateAddressPost)
+
 router.get("/delete-address/:id", userCheckout.deleteAddress);
 
 router.post("/placeOrder", userCheckout.submitCheckout);

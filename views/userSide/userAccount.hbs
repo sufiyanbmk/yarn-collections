@@ -91,12 +91,12 @@
                                             <div class="card-header">
                                                 <h5 class="mb-0">Hello {{userDetail.name}}! </h5>
                                             </div>
-                                            <div class="card-body">
+                                            {{!-- <div class="card-body">
                                                 <p>From your account dashboard. you can easily check &amp; view your <a
                                                         href="#">recent orders</a>, manage your <a href="#">shipping and
                                                         billing addresses</a> and <a href="#">edit your password and
                                                         account details.</a></p>
-                                            </div>
+                                            </div> --}}
                                             <div class="container emp-profile">
                                                 <div class="row">
                                                     <div class="col-md-4">
@@ -656,8 +656,6 @@
                                                             onclick="return confirm('Are you sure you want to delete {{this.Category}}?')">Delete
                                                         </a>
                                                         <div>
-                                                            <a href="/default-address/{{this._id}}"
-                                                                class="btn btn-small">Set as Default Address</a>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -779,9 +777,10 @@
                                                 <div class="card-body">
 
                                                     <address>
-                                                        {{this.codeGeneraor}}<br>
-                                                        {{this.description}} <br>{{this.value}}%
-                                                        <br>Expire date {{this.date}}
+                                                        Coupon Code:-{{this.couponCode}}<br>
+                                                        {{this.description}} <br>Value:-{{this.value}}%
+                                                        <br>Expire date {{this.date}}<br>
+                                                        UPTO:-{{this.upto}}
                                                     </address>
                                                 </div>
                                             </div>
@@ -796,6 +795,7 @@
             </div>
         </section>
     </main>
+    <hr>
     <!-- Preloader Start -->
     <div id="preloader-active">
         <div class="preloader d-flex align-items-center justify-content-center">
@@ -835,7 +835,43 @@
     <!-- Template  JS -->
     <script src="/user/assets/js/main.js"></script>
 
-    {{>userfooter}}
+
+
+<!-- loader -->
+<div id="ftco-loader" class="show fullscreen"><svg class="circular" width="48px" height="48px">
+    <circle class="path-bg" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke="#eeeeee" />
+    <circle class="path" cx="24" cy="24" r="22" fill="none" stroke-width="4" stroke-miterlimit="10" stroke="#F96D00" />
+  </svg></div>
+
+<script src="/user/css/js/jquery.min.js"></script>
+<script src="/user/css/js/jquery-migrate-3.0.1.min.js"></script>
+<script src="/user/css/js/popper.min.js"></script>
+<script src="/user/css/js/bootstrap.min.js"></script>
+<script src="/user/css/js/jquery.easing.1.3.js"></script>
+<script src="/user/css/js/jquery.waypoints.min.js"></script>
+<script src="/user/css/js/jquery.stellar.min.js"></script>
+<script src="/user/css/js/owl.carousel.min.js"></script>
+<script src="/user/css/js/jquery.magnific-popup.min.js"></script>
+<script src="/user/css/js/aos.js"></script>
+<script src="/user/css/js/jquery.animateNumber.min.js"></script>
+<script src="/user/css/js/bootstrap-datepicker.js"></script>
+<script src="/user/css/js/scrollax.min.js"></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBVWaKrjvy3MaE7SQ74_uJiULgl1JY0H2s&sensor=false"></script>
+<script src="/user/css/js/google-map.js"></script>
+<script src="/user/css/js/main.js"></script>
+<script src="https://kit.fontawesome.com/f6dcf461c1.js" crossorigin="anonymous"></script>
+<!---ajax  -->
+<script src="/user/ajax/addToCart.js"></script>
+<script src="/user/ajax/quantity.js"></script>
+<script src="/user/ajax/whislist.js"></script>
+<script src="/user/ajax/orderSubmition.js"></script>
+<script src="/user/ajax/editProfile.js"></script>
+<script src="/user/userformvalidation/passwordchange.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+</body>
+
+
 
 
     <script>

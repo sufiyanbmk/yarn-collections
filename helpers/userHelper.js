@@ -42,7 +42,7 @@ module.exports = {
                         {
                           RefferdFrom: referaluser._id,
                           user: referaluser.name,
-                          credited: 10,
+                          Recieved: 10,
                           Time: new Date(),
                         },
                       ],
@@ -59,8 +59,8 @@ module.exports = {
                           $push: {
                             History: {
                               RefferdTo: data.insertedId,
-                              name: userData.name,
-                              credited: 10,
+                              name: userData.name+('referal'),
+                              Recieved: 10,
                               Time: new Date(),
                             },
                           },

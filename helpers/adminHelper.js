@@ -745,11 +745,12 @@ module.exports = {
           { _id: objectID(couponId) },
           {
             $set: {
-              codeGeneraor: couponDetails.couponCode,
+              couponCode: couponDetails.couponCode,
               description: couponDetails.description,
               value: couponDetails.value,
               date: couponDetails.date,
               type: couponDetails.type,
+              upto:couponDetails.upto,
             },
           }
         )
