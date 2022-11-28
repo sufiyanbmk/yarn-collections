@@ -141,6 +141,7 @@ module.exports = {
           },
         ])
         .toArray();
+        console.log(cart)
       resolve(cart);
     });
   },

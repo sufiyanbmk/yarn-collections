@@ -74,6 +74,7 @@ exports.paymentGraph = async (req, res) => {
   res.json({ value: value, pay: method });
 };
 
+
 //-----------------catagory-------------//
 
 exports.catagory =async (req, res) => {

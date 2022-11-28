@@ -31,6 +31,9 @@ router.get("/graphData", controller.graphData);
 router.get("/piechart", controller.pieChartData);
 
 router.get("/payment-graph", controller.paymentGraph)
+
+
+
 //category
 
 router.get("/categorymange", controller.catagory);
@@ -57,7 +60,7 @@ router.put("/delete-subcatagory", controller.deleteSubCatagory)
 
 //products
 
-router.get("/productmange", controller.products);
+router.get("/productmange",auth, controller.products);
 
 router.get("/addProduct", controller.addProducts);
 

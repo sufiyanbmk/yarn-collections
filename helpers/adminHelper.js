@@ -190,7 +190,7 @@ module.exports = {
             $set: {
               name: productDetails.name,
               Description: productDetails.Description,
-              Category: productDetails.category,
+              Category: productDetails.Category,
               subCategory: productDetails.subCategory,
               price: productDetails.price,
               offerPrice: productDetails.offerPrice,
@@ -482,6 +482,7 @@ module.exports = {
       resolve(paymentGraph);
     });
   },
+
   
   //get product details for sales reports
   getproductsForReport : () => {
