@@ -305,25 +305,16 @@ module.exports = {
   },
 
   // user cancel order
-  orderCancel: (id,userId) => {
+  orderCancel: (id,userId,refundAmount,proId) => {
+    let refundTotal = parseInt(refundAmount)
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.ORDER_COLLECTION)
         .updateOne(
-          {
-            $and: [
+
               {
-                _id: objectID(id),
-              },
-              {
-                products: {
-                  $elemMatch: {
-                    paymentStatus: "order placed",
-                  },
-                },
-              },
-            ],
-          },
+                _id: objectID(id), "products.product": objectID(proId)
+              },         
           {
             $set: {
               "products.$.paymentStatus": "Order Cancelled",
@@ -333,6 +324,7 @@ module.exports = {
         .then(() => {
           db.get().collection(collection.ORDER_COLLECTION).findOne({_id:ObjectID(id)}).then((order)=>{
             order.products.forEach(element => {
+              if(element.product.equals(proId)){            
                db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:ObjectID(element.product)},
                {
                   $inc: {stock : element.quantity}
@@ -340,7 +332,7 @@ module.exports = {
                 if (order.paymentMethod != "COD"){
                   history = {
                     From: "YARN",
-                    Recieved : order.totalAmount,
+                    Recieved : refundTotal,
                     Time:new Date(),
                   }
 
@@ -349,7 +341,7 @@ module.exports = {
                       db.get().collection(collection.WALLET_COLLECTION).updateOne({user:ObjectID(userId)},
                       {
                           $inc:{
-                           Total:order.totalAmount
+                           Total:refundTotal
                           },$push:{History:history}
                       }).then((hai)=>{
                      
@@ -361,6 +353,7 @@ module.exports = {
                   console.log('cod method')
                 }
                })
+              }
             });
                
            })
@@ -482,19 +475,24 @@ module.exports = {
           if(details.action == 'Order Cancelled'){
             db.get().collection(collection.ORDER_COLLECTION).findOne({_id:ObjectID(details.orderId)}).then((order)=>{
               order.products.forEach(element => {
+                if(element.product.equals(details.proId)){  
+                  console.log(element.total)
                  db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:ObjectID(element.product)},
                  {
                     $inc: {stock : element.quantity}
                  }).then((result)=>{ 
                   if (order.paymentMethod != "COD"){
-
+                    history = {
+                      From: "YARN",
+                      Recieved : element.total,
+                      Time:new Date(),
+                    }
                     db.get().collection(collection.ORDER_COLLECTION).findOne({_id:ObjectID(details.orderId)}).then((order)=>{
-                     console.log(order.userId)
                         db.get().collection(collection.WALLET_COLLECTION).updateOne({user:ObjectID(order.userId)},
                         {
                             $inc:{
-                             Total:order.totalAmount
-                            }
+                             Total:element.total
+                            },$push:{History:history}
                         }).then((hai)=>{ 
                          resolve(hai)
                         })
@@ -504,6 +502,7 @@ module.exports = {
                     console.log('cod method')
                   }
                  })
+                }
               });
                  
              })
@@ -607,6 +606,7 @@ module.exports = {
 
   //change payment status
   changePaymentStatus: (orderId) => {
+    console.log(orderId)
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.ORDER_COLLECTION)
@@ -614,7 +614,7 @@ module.exports = {
           { _id: objectID(orderId) },
           {
             $set: {
-              status: "order placed",
+              status: "Success",
             },
           }
         )
@@ -1041,6 +1041,15 @@ module.exports = {
     return new Promise( async(resolve,reject) => {
       let wallet = db.get().collection(collection.WALLET_COLLECTION).findOne({user: objectID(userId)})
       resolve(wallet)
+    })
+  },
+  //delete wallet order
+
+  deleteWalletOrder:(orderId)=>{
+    return new Promise((resolve,reject)=>{
+      db.get().collection(collection.ORDER_COLLECTION).deleteOne({_id:objectID(orderId)}).then(()=>{
+        resolve()
+      })
     })
   }
 };

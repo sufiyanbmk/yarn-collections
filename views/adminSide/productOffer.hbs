@@ -31,7 +31,12 @@
         if (price == "") {
             error4.innerHTML = "Enter the price";
             return false;
-        } else if (price.match(/^[A-Za-z]+$/)) {
+        } 
+         else if(parseInt(price)>100){
+            error4.innerHTML = "You can put only 100%"
+            return false;
+        }
+        else if (price.match(/^[A-Za-z]+$/)) {
             error4.innerHTML = "Please Enter valid number";
             return false;
         } else {

@@ -1,6 +1,6 @@
 // const { response } = require("express");
 
-function addToCart(proId,stock) {
+function addToCart(divId,proId,stock) {
   if(parseInt(stock) <= 0){
 
     swal("out of Stock!", "", "failed");
@@ -11,7 +11,7 @@ function addToCart(proId,stock) {
     type: "post",
     success: (response) => {
       if (response.status) {
-        $("#singleProductCartDiv").load(location.href + " #singleProductCartDiv");
+        $(""+divId).load(location.href + " "+divId);
              let count = $('#cartCount').html()
              count = parseInt(count)+1
              $('#cartCount').html(count)

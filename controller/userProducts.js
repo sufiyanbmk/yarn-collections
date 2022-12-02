@@ -94,8 +94,11 @@ module.exports = {
           data.stockExist = true;
         }
         res.render("userSide/singleProduct", { data, user: req.session.user ,cartCount,whislistCount,bracket,existCart});
+      }).catch(err => {
+        next(err)
       });
     } catch (error) {
+      console.log("errorr");
       next(error);
     }
   },

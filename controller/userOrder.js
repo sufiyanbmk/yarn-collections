@@ -44,7 +44,7 @@ module.exports = {
   },
 
   cancelOrder: (req, res) => {
-    orderHelper.orderCancel(req.params.id, req.session.user._id).then((response) => {
+    orderHelper.orderCancel(req.params.id, req.session.user._id,req.body.refundAmount,req.body.proId).then((response) => {
       res.redirect("/view-order");
     });
   },
@@ -85,7 +85,9 @@ module.exports = {
     orderHelper
       .verifyPaypal(payerId, paymentId, req.session.paypalTotal)
       .then(() => {
-        res.redirect("/orderplaced");
+        orderHelper.changePaymentStatus(req.session.orderId).then(() => {
+          res.redirect("/orderplaced");
+        });  
       });
   },
 

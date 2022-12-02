@@ -35,8 +35,10 @@ $("#placeOrderBtn").on("click", (e) => {
             else if (response.walletSucces) {
                 document.location.href = '/orderplaced'
             }
+            else if (response.walletPaymentFail) {
+             alert("you don't have enough balance")
+            }
             else {
-
                 document.location.href = response.href
             }
         }

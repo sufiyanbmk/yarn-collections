@@ -2,6 +2,7 @@ const orderHelper = require("../helpers/orderHelper");
 const userCartHelper = require("../helpers/userCartHelper");
 const { v4: uuidv4 } = require("uuid");
 const userHelper = require("../helpers/userHelper");
+const { order } = require("./userOrder");
 
 module.exports = {
 
@@ -84,6 +85,7 @@ module.exports = {
       orderHelper
         .placeOrder(req.body, products, address, totalPrice)
         .then(async (orderId) => {
+          req.session.orderId = orderId
           if(req.body.couponAmt){
             req.session.existCoupon = req.body.couponId
           }
@@ -102,9 +104,13 @@ module.exports = {
               orderHelper
                 .walletPurchase(req.session.user._id, totalPrice)
                 .then(() => {
-                  console.log("jidjfskdfjslkdfjsdlfjosdlf");
                   res.json({ walletSucces: true });
                 });
+            }
+            else{
+              orderHelper.deleteWalletOrder(orderId).then(()=>{
+                res.json({walletFailed:true})
+              })
             }
           } else {
             let items = await orderHelper.paypalItems(

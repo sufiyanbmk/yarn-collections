@@ -115,7 +115,7 @@ router.get("/orderplaced", order.order);
 
 router.get("/view-order", userauth, order.viewOrder);
 
-router.get("/order-cancel/:id", order.cancelOrder);
+router.post("/order-cancel/:id", order.cancelOrder);
 
 router.post("/verify-payment", order.razorPayVerify);
 

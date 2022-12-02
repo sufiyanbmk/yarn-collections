@@ -242,11 +242,19 @@ module.exports = {
 
   findProductDetails: (proId) => {
     return new Promise((resolve, reject) => {
+      console.log(proId);
+      try {
+        var prodObjId = objectID(proId);
+      } catch (error) {
+        reject(error)
+      }
       db.get()
         .collection(collection.PRODUCT_COLLECTION)
-        .findOne({ _id: objectID(proId) })
+        .findOne({ _id:  prodObjId})
         .then((product) => {
           resolve(product);
+        }).catch(err => {
+          console.log(errrs);
         });
     });
   },

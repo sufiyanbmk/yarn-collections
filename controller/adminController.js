@@ -101,6 +101,7 @@ exports.addCatagoryPost = (req, res) => {
     return file.filename;
   }
   let CatagoryDetails = req.body;
+   CatagoryDetails.categories = CatagoryDetails.categories.toUpperCase();
   CatagoryDetails.imagefileName = loc;
   adminHelper.addCategories(CatagoryDetails).then((response) => {
     if (response.catagoryExist) {

@@ -69,7 +69,7 @@
 								<a href="/invoice/{{this._id}}/{{this.products._id}}"
 									class="btn btn-success px-3 m-3">Invoice</a>
 								{{else}}
-								<button onclick="orderCanceled('{{this._id}}')" class="btn btn-danger p-2">Cancel
+								<button onclick="orderCanceled('{{this._id}}','{{this.products._id}}','{{this.productTotal}}')" class="btn btn-danger p-2">Cancel
 									Order</button>
 								{{/if}}
 								{{/if}}
@@ -111,11 +111,14 @@
 
 {{>userfooter}}
 <script>
-	function orderCanceled(userId) {
-
+	function orderCanceled(userId,proID,total) {
 		$.ajax({
 			url: "/order-cancel/" + userId,
-			type: "get",
+			data:{
+				refundAmount:total,
+				proId:proID
+			},
+			method: "post",
 			success: (response) => {
 
 				$("#orderViewTable").load(location.href + " #orderViewTable>*", "");
