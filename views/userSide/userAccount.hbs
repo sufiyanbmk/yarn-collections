@@ -26,15 +26,6 @@
     {{>userHeader}}
 
     <main class="main">
-        {{!-- <div class="page-header breadcrumb-wrap">
-            <div class="container">
-                <div class="breadcrumb">
-                    <a href="index.html" rel="nofollow">Home</a>
-                    <span></span> Pages
-                    <span></span> Account
-                </div>
-            </div>
-        </div> --}}
         <section class="pt-150 pb-150">
             <div class="container">
                 <div class="row">
@@ -54,12 +45,6 @@
                                                 role="tab" aria-controls="orders" aria-selected="false"><i
                                                     class="fi-rs-shopping-bag mr-10"></i>Order History</a>
                                         </li>
-                                        {{!-- <li class="nav-item">
-                                            <a class="nav-link" id="track-orders-tab" data-bs-toggle="tab"
-                                                href="#track-orders" role="tab" aria-controls="track-orders"
-                                                aria-selected="false"><i
-                                                    class="fi-rs-shopping-cart-check mr-10"></i>Track Your Order</a>
-                                        </li> --}}
                                         <li class="nav-item">
                                             <a class="nav-link" id="address-tab" data-bs-toggle="tab" href="#address"
                                                 role="tab" aria-controls="address" aria-selected="true"><i
@@ -91,12 +76,6 @@
                                             <div class="card-header">
                                                 <h5 class="mb-0">Hello {{userDetail.name}}! </h5>
                                             </div>
-                                            {{!-- <div class="card-body">
-                                                <p>From your account dashboard. you can easily check &amp; view your <a
-                                                        href="#">recent orders</a>, manage your <a href="#">shipping and
-                                                        billing addresses</a> and <a href="#">edit your password and
-                                                        account details.</a></p>
-                                            </div> --}}
                                             <div class="container emp-profile">
                                                 <div class="row">
                                                     <div class="col-md-4">
@@ -115,10 +94,6 @@
                                                     </div>
                                                     <div class="col-md-6">
                                                         <div class="profile-head">
-                                                            {{!-- <h5>
-                                                                Kshiti Ghelani
-                                                            </h5> --}}
-
                                                             <ul class="nav nav-tabs" id="myTab" role="tablist">
                                                                 <li class="nav-item">
                                                                     <a class="nav-link active" id="home-tab"
@@ -158,26 +133,10 @@
 
 
                                                     <div class="col-md-2">
-                                                        {{!-- <a type="submit" class="profile-edit-btn"
-                                                            name="btnAddMore" value="Edit Profile"
-                                                            href="#account-detail-tab">Edit
-                                                            profile</a> --}}
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-4">
-                                                        {{!-- <div class="profile-work">
-                                                            <p>WORK LINK</p>
-                                                            <a href="">Website Link</a><br />
-                                                            <a href="">Bootsnipp Profile</a><br />
-                                                            <a href="">Bootply Profile</a>
-                                                            <p>SKILLS</p>
-                                                            <a href="">Web Designer</a><br />
-                                                            <a href="">Web Developer</a><br />
-                                                            <a href="">WordPress</a><br />
-                                                            <a href="">WooCommerce</a><br />
-                                                            <a href="">PHP, .Net</a><br />
-                                                        </div> --}}
                                                     </div>
                                                     <div class="col-md-8" id="editProfileDiv">
                                                         <div class="tab-content profile-tab" id="myTabContent">
@@ -301,20 +260,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {{!-- <nav aria-label="Page navigation example">
-                                                    <ul class="pagination justify-content-end">
-                                                        <li class="page-item disabled">
-                                                            <a class="page-link" href="#" tabindex="-1">Previous</a>
-                                                        </li>
-                                                        {{#each pagesArray}}
-                                                        <li class="page-item"><a class="page-link"
-                                                                href="?page={{this}}#orders">{{this}}</a></li>
-                                                        {{/each}}
-                                                        <li class="page-item">
-                                                            <a class="page-link" href="#">Next</a>
-                                                        </li>
-                                                    </ul>
-                                                </nav> --}}
                                             </div>
                                         </div>
                                     </div>
@@ -621,20 +566,6 @@
 
 
                                         <div class="row">
-                                            {{!-- <div class="col-lg-6">
-                                                <div class="card1 mb-3 mb-lg-0">
-                                                    <div class="card-header">
-                                                        <h5 class="mb-0">Billing Address</h5>
-                                                    </div>
-                                                    <div class="card-body">
-                                                        <address>3522 Interstate<br> 75 Business Spur,<br> Sault Ste.
-                                                            <br>Marie, MI 49783
-                                                        </address>
-                                                        <p>New York</p>
-                                                        <a href="#" class="btn-small">Edit</a>
-                                                    </div>
-                                                </div>
-                                            </div> --}}
                                             {{#each address}}
 
                                             <div class="col-lg-12">
