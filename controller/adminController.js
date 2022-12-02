@@ -24,7 +24,6 @@ exports.loginPost = (req, res, next) => {
     req.session.adminlogedIn = true;
     res.redirect("/admin");
   } else {
-    console.log("incoore");
     req.session.validation = "Invalid username or password";
     res.redirect("/admin");
   }
@@ -174,7 +173,6 @@ exports.addProducts = (req, res) => {
 
 exports.catagorySelectionOption =async (req,res) => {
   subCatagory = await adminHelper.catagorySelection(req.body.catagoryName)
-  console.log(subCatagory)
   res.json(subCatagory)
 }
 
@@ -335,7 +333,6 @@ exports.banners = async (req, res) => {
   const pageNum = req.query.page;
   const perPage = 3;
   const bannerCount =await adminHelper.bannerCount()
-  console.log(bannerCount)
   let pages = Math.ceil(bannerCount / perPage);
   let pagesArray = Array.from({ length: pages }, (_, i) => i + 1);
   adminHelper.viewBanner(pageNum,perPage).then((banner) => {
@@ -475,7 +472,6 @@ exports.productOffer = (req, res) => {
 exports.productOfferPost = (req, res) => {
   let offer = req.body.offer;
   let proId = req.body.proId;
-  console.log(offer);
   offer = parseInt(offer);
   adminHelper.productOffer(offer, proId).then((response) => {});
   res.redirect("/admin/productmange");

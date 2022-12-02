@@ -125,7 +125,6 @@ module.exports = {
   },
 
   deleteSubCatagory :(details) =>{
-    console.log(details)
     return new Promise((resolve,reject) => {
       db.get().collection(collection.CATEGORY_COLLECTION).updateOne({_id: objectID(details.cataId)},{
         $pull:{subCatagories:{name : details.cataName}}
@@ -137,7 +136,6 @@ module.exports = {
   //products
   addProduct: (products) => {
     products.stock = parseInt(products.stock);
-    console.log(products);
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.PRODUCT_COLLECTION)
@@ -204,7 +202,7 @@ module.exports = {
         });
       }
       else{
-        console.log(productDetails)
+  
         db.get()
         .collection(collection.PRODUCT_COLLECTION)
         .updateOne(
@@ -242,7 +240,6 @@ module.exports = {
 
   findProductDetails: (proId) => {
     return new Promise((resolve, reject) => {
-      console.log(proId);
       try {
         var prodObjId = objectID(proId);
       } catch (error) {
@@ -461,7 +458,6 @@ module.exports = {
           { $group: { _id: "products", sum: { $sum: 1 } } },
         ])
         .toArray();
-      console.log(total);
       resolve(total);
     });
   },
@@ -718,7 +714,6 @@ module.exports = {
           .collection(collection.COUPON_COLLECTION)
           .insertOne(couponDetails)
           .then((response) => {
-            console.log("coupen is created");
             resolve(response);
           });
       }
@@ -810,13 +805,11 @@ module.exports = {
 
   //-----------product offer------//
   productOffer: (percentage, proId) => {
-    console.log(proId);
     return new Promise(async (resolve, reject) => {
       let product = await db
         .get()
         .collection(collection.PRODUCT_COLLECTION)
         .findOne({ _id: objectID(proId) });
-      console.log(product);
       let offerPrice =
         product.offerPrice - (product.offerPrice * percentage) / 100;
       await db

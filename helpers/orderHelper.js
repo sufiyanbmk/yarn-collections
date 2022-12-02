@@ -80,7 +80,6 @@ module.exports = {
           "details.email": addressDetails.email,
         }
       }).then((response)=>{
-        console.log(response)
         resolve()
       })
     })
@@ -141,7 +140,6 @@ module.exports = {
           },
         ])
         .toArray();
-        console.log(cart)
       resolve(cart);
     });
   },
@@ -211,13 +209,11 @@ module.exports = {
   countOrder : (userId)=>{
     return new Promise(async (resolve,reject) => {
       count = await db.get().collection(collection.ORDER_COLLECTION).find({$and:[{userId:objectID(userId)},{"products.paymentStatus":{$ne:"Order Cancelled"}}]}).count()
-      console.log(count)
       resolve(count)
     })
   },
   //view orderlist
   viewOrderList: (userId,pageNum,perPage) => {
-    console.log(pageNum)
     return new Promise(async (resolve, reject) => {
       order = await db
         .get()
@@ -476,7 +472,6 @@ module.exports = {
             db.get().collection(collection.ORDER_COLLECTION).findOne({_id:ObjectID(details.orderId)}).then((order)=>{
               order.products.forEach(element => {
                 if(element.product.equals(details.proId)){  
-                  console.log(element.total)
                  db.get().collection(collection.PRODUCT_COLLECTION).updateOne({_id:ObjectID(element.product)},
                  {
                     $inc: {stock : element.quantity}
@@ -606,7 +601,6 @@ module.exports = {
 
   //change payment status
   changePaymentStatus: (orderId) => {
-    console.log(orderId)
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.ORDER_COLLECTION)
@@ -626,7 +620,6 @@ module.exports = {
 
   //pending order cancel
   deletePendingOrder:(orderId)=>{
-    console.log(orderId)
     return new Promise((resolve,reject)=>{
       db.get().collection(collection.ORDER_COLLECTION).deleteOne({_id:objectID(orderId)}).then((response)=>{
         resolve(response)
@@ -947,8 +940,6 @@ module.exports = {
   },
   //return status changing in user side
   returnStatus: (orderId, proId) => {
-    console.log(orderId);
-    console.log(proId);
     return new Promise((resolve, reject) => {
       db.get()
         .collection(collection.ORDER_COLLECTION)
@@ -961,7 +952,6 @@ module.exports = {
           }
         )
         .then((response) => {
-          console.log(response);
           resolve(response);
         });
     });

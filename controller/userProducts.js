@@ -43,7 +43,6 @@ module.exports = {
         let cartItem = await userCartHelper.gotoCart(req.session.user._id) 
         products.forEach((element)=>{
           cartItem.forEach((item)=>{
-            console.log(item.products.product)
             if(element._id.equals(item.products.product)){
               element.cartList = true;
             }
@@ -85,7 +84,7 @@ module.exports = {
         whislistCount = await userHelper.getWhislistCount(req.session.user._id);
          bracket = true
          existCart = await userCartHelper.cartThere(req.session.user._id,req.params.id)
-         console.log(existCart)
+
       }
       adminHelper.findProductDetails(req.params.id).then((data) => {
         if(data.stock == 0){
@@ -98,7 +97,6 @@ module.exports = {
         next(err)
       });
     } catch (error) {
-      console.log("errorr");
       next(error);
     }
   },

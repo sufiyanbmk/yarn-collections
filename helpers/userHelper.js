@@ -81,7 +81,6 @@ module.exports = {
                 .collection(collection.USER_COLLECTION)
                 .insertOne(userData)
                 .then((data) => {
-                  console.log(data);
                   wallet = {
                     user: data.insertedId,
                     Total: 10,
@@ -270,7 +269,6 @@ module.exports = {
           }
         )
         .then((response) => {
-          console.log(response);
           resolve(response);
         });
     });
@@ -297,7 +295,6 @@ module.exports = {
                 }
               )
               .then((response) => {
-                console.log(response);
                 resolve(response);
               });
           } else {

@@ -50,7 +50,6 @@ module.exports = {
     let cartCount = null;
     if(req.session.user._id){
       cartCount = await userHelper.getCartCount(req.session.user._id);
-      console.log(cartCount)
     }
   }
 };

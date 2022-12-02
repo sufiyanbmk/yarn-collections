@@ -55,7 +55,6 @@ module.exports = {
 
   viewProductDetail: async(req,res)=>{
     let productlist = await orderHelper.adminViewDetails(req.params.id);
-    console.log(productlist)
   res.render("userSide/orderHistoryProduct", { productlist ,  user: req.session.user,});
   },
 
@@ -66,15 +65,14 @@ module.exports = {
   },
 
   changePassword: (req, res) => {
-    console.log(req.body);
+
     userhelpers
       .passwordChange(req.session.user._id, req.body)
       .then((response) => {
-        console.log(response);
+
         if (response.modifiedCount == 1) {
           res.json(response);
         } else {
-          console.log("wrong password");
           req.session.pswchangeError = "Wrong password ";
           res.json({ pswerr: req.session.pswchangeError });
         }
@@ -99,7 +97,6 @@ module.exports = {
 
   returnOrder: async (req, res) => {
     let returnProduct = await orderHelper.replaceOrder(req.params.id);
-    console.log(returnProduct);
     res.render("userSide/orderReplacement", {
       returnProduct,
       user: req.session.user,

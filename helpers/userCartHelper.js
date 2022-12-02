@@ -85,7 +85,6 @@ module.exports = {
           data.exists = false;
           resolve(data);
         } else {
-          console.log('else ')
           data.exists = true;
           resolve(data);
         }
