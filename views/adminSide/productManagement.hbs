@@ -88,19 +88,11 @@
                         <nav aria-label="Page navigation" class="d-inline-block">
                             <ul class="pagination tm-pagination">
                                 {{#each pagesArray}}
-                                {{!-- {{#if }} --}}
-                                {{!-- <li class="page-item active"><a class="page-link"
-                                        href="?page={{this.page}}">{{this.page}}</a></li> --}}
-                                {{!-- {{else}} --}}
                                 {{#if (eq this.current this.page)}}
                                     <li class="page-item active"><a class="page-link" href="?page={{this.page}}">{{this.page}}</a></li>
                                 {{else}}
                                     <li class="page-item"><a class="page-link" href="?page={{this.page}}">{{this.page}}</a></li>
                                 {{/if}}
-                                
-                                {{!-- {{/if}} --}}
-                                {{!-- <li class="page-item"><a class="page-link"
-                                        href="?page={{this.page}}">{{this.page}}</a></li> --}}
                                 {{/each}}
                             </ul>
                         </nav>

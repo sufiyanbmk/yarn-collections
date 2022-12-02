@@ -20,11 +20,6 @@
                     </div>
                     <div class="card-body">
                         <form action="/admin/post-coupon" method="post">
-                            {{!-- <div class="mb-4">
-                                <label for="product_name" class="form-label">Coupon Code</label>
-                                <input type="text" name="couponCode" placeholder="Type here" class="form-control"
-                                    id="code" required>
-                            </div> --}}
                             <p id="errorCode"></p>
                             <div class="mb-4">
                                 <label class="form-label">Description</label>
@@ -71,29 +66,10 @@
                             </div>
                     </div>
 
-
-                    {{!-- <label class="form-check mb-4">
-                        <input class="form-check-input" type="checkbox" value="">
-                        <span class="form-check-label"> Make a template </span>
-                    </label> --}}
-
                 </div>
             </div> <!-- card end// -->
 
         </div>
-        {{!-- <div class="col-lg-3">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h4>Media</h4>
-                </div>
-                <div class="card-body">
-                    <div class="input-upload">
-                        <img src="assets/imgs/theme/upload.svg" alt="">
-                        <input class="form-control" name="image" type="file">
-                    </div>
-                </div>
-            </div> <!-- card end// -->
-        </div> --}}
         <div>
             <button type="submit" onclick="return couponvalid()" class="btn btn-md rounded font-sm hover-up">Add
                 Coupon</button>
