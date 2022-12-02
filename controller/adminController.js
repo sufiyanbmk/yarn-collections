@@ -3,8 +3,14 @@ const adminHelper = require("../helpers/adminHelper");
 const orderHelper = require("../helpers/orderHelper");
 const store = require("../middleware/multer");
 const Couponcodes = require("voucher-code-generator");
-const adminDb = "admin";
-const passwordDb = "123";
+
+require('dotenv').config()
+// admin login credentials
+console.log(process.env.adminDb)
+const adminDetail = {
+    name: process.env.adminDb,
+    password: process.env.passwordDb,
+  };
 
 exports.home = async (req, res, next) => {
   if (req.session.adminlogedIn) {
@@ -20,7 +26,7 @@ exports.home = async (req, res, next) => {
 exports.loginPost = (req, res, next) => {
   var admin = req.body.admin;
   var password = req.body.password;
-  if (admin === adminDb && password === passwordDb) {
+  if (admin === adminDetail.name && password === adminDetail.password) {
     req.session.adminlogedIn = true;
     res.redirect("/admin");
   } else {
