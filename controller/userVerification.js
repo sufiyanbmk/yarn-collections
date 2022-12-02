@@ -1,6 +1,11 @@
 const userhelpers = require("../helpers/userHelper");
-const config = require("../config/twolio");
-const client = require("twilio")(config.accountSID, config.authToken);
+// const config = require("../config/twolio");
+// const clients = require("twilio")(config.accountSID, config.authToken);
+
+require('dotenv').config()
+// twilio client setup
+console.log(process.env.serviceID)
+const client = require("twilio")(process.env.accountSID, process.env.authToken);
 
 module.exports = {
   loginGet: (req, res) => {
@@ -68,7 +73,7 @@ module.exports = {
       if (response.status) {
         req.session.user = response.user;
         client.verify
-          .services(config.serviceID)
+          .services(process.env.serviceID)
           .verifications.create({
             to: `+91${req.body.mobilenumber}`,
             channel: "sms",
@@ -94,7 +99,7 @@ module.exports = {
 
   otpResend: (req, res) => {
     client.verify
-      .services(config.serviceID)
+      .services(process.env.serviceID)
       .verifications.create({
         to: req.session.mobilenumber,
         channel: "sms",
@@ -109,7 +114,7 @@ module.exports = {
     var otp = arr.toString().replaceAll(",", "");
 
     client.verify
-      .services(config.serviceID)
+      .services(process.env.serviceID)
       .verificationChecks.create({
         to: req.session.mobilenumber,
         code: otp,

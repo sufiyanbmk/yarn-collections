@@ -1,8 +1,8 @@
 var express = require("express");
 const { resource, response, render } = require("../app");
 var router = express.Router();
-const config = require("../config/twolio");
-const client = require("twilio")(config.accountSID, config.authToken);
+// const config = require("../config/twolio");
+// const client = require("twilio")(config.accountSID, config.authToken);
  const userhelpers = require("../helpers/userHelper");
 const { route } = require("./admin");
 const userHelper = require("../helpers/userHelper");

@@ -9,18 +9,21 @@ let paypal = require("paypal-rest-sdk");
 const e = require("express");
 const { ObjectID } = require("bson");
 const { Console } = require("console");
+require('dotenv').config()
 
 var instance = new Razorpay({
-  key_id: "rzp_test_oXgNaRuBSLuUSI",
-  key_secret: "fqXJij2KfofxWAEJ9wpserCl",
+  key_id: process.env.razor_pay_key_id,
+  key_secret: process.env.razor_pay_key_secret,
 });
+
+
 
 paypal.configure({
   mode: "sandbox", //sandbox or live
   client_id:
-    "ASg0UcR7OpK-QmnHuRYeY8A8KJquLUMSktx2yIDO-Svx-WjKOBFk3W4kgC2NlZH26qlAPNdxdRRS5Dm_",
+    process.env.paypal_client_id,
   client_secret:
-    "EJwPOmZd2IYqfHckowKAV5w7j7wv0m9xt48RRdhL5yZ7OiAnIE-eG5tamKkPNNufwEUUK23tMiQ7t6af",
+    process.env.paypal_client_secret,
 });
 
 module.exports = {
