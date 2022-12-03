@@ -1,8 +1,6 @@
 var express = require("express");
 var router = express.Router();
-// const config = require("../config/twolio");
-// const client = require("twilio")(config.accountSID, config.authToken);
- const userhelpers = require("../helpers/userHelper");
+const userhelpers = require("../helpers/userHelper");
 const userHelper = require("../helpers/userHelper");
 const verifications = require("../controller/userVerification");
 const products = require("../controller/userProducts");
