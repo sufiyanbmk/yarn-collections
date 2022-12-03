@@ -91,13 +91,13 @@
                         <i class="fa fa-plus text-muted"></i>
                      </div>
                      <div class="sub-price">
-                        <small>{{invoice.[0].paymentMethod}} FEE (3.4%)</small>
-                        <span class="text-inverse">$10.00</span>
+                        <small>{{invoice.[0].paymentMethod}}</small>
+                        <span class="text-inverse">0</span>
                      </div>
                   </div>
                </div>
                <div class="invoice-price-right">
-                  <small>TOTAL</small>$<span class="f-w-600" id="grandTotal"></span>
+                  <small>TOTAL</small>$<span class="f-w-600" id="grandTotal">{{data.[0].totalAmount}}</span>
                </div>
             </div>
             <!-- end invoice-price -->
@@ -246,10 +246,3 @@
     border-color: #d9dfe3;
 }
 </style>
-
-<script>
-    let total = document.getElementById('proTotal').innerHTML
-    let num = parseInt(total);
-    sum=num+10
-    document.getElementById('grandTotal').innerHTML = sum
-</script>
