@@ -2,12 +2,10 @@ const { compareSync } = require("bcrypt");
 var express = require("express");
 const {RecordingRulesInstance,
 } = require("twilio/lib/rest/video/v1/room/roomRecordingRule");
-const { response, off } = require("../app");
 const { Category } = require("../config/collection");
 const adminHelper = require("../helpers/adminHelper");
 const orderHelper = require("../helpers/orderHelper");
 const store = require("../middleware/multer");
-const { route } = require("./user");
 var router = express.Router();
 const controller = require("../controller/adminController");
 const auth = function (req, res, next) {

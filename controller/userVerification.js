@@ -5,7 +5,6 @@ const userhelpers = require("../helpers/userHelper");
 
 require('dotenv').config()
 // twilio client setup
-console.log(process.env.serviceID)
 const client = require("twilio")(process.env.ACCOUNTSID, process.env.AUTHTOCKEN);
 
 module.exports = {

@@ -2,7 +2,7 @@ const userHelper = require("../helpers/userHelper");
 const adminHelper = require("../helpers/adminHelper");
 const whislistHelper = require("../helpers/whislistHelper");
 const userCartHelper = require("../helpers/userCartHelper");
-const { render } = require("../app");
+
 
 module.exports = {
   getCatagoryProducts: async (req, res, next) => {
