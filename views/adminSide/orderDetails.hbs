@@ -42,6 +42,13 @@
               <table class="table table-borderless" id="orderDetails">
                 <tbody>
                   {{#each productlist}}
+                   {{#if this.delete}}
+                  <tr>
+                    <td></td>
+                  <td style="color: red; font-size: larger;">This Product Deleted</td>
+                  <td></td>
+                  </tr>
+                  {{else}}
                   <tr>
                     <td>
                       <div class="d-flex mb-2">
@@ -86,6 +93,7 @@
                       {{/if}}
                     </td>
                   </tr>
+                  {{/if}}
                   {{/each}}
                 </tbody>
                 <tfoot>

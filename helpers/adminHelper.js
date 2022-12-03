@@ -233,7 +233,13 @@ module.exports = {
         .collection(collection.PRODUCT_COLLECTION)
         .deleteOne({ _id: objectID(proId) })
         .then((response) => {
-          resolve(response);
+          db.get().collection(collection.ORDER_COLLECTION).updateMany({"products.product": objectID(proId)},  {
+            $set: {
+              "products.$.delete": true,
+            },
+          }).then((response)=>{
+            resolve(response);
+          })
         });
     });
   },

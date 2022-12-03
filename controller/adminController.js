@@ -6,7 +6,6 @@ const Couponcodes = require("voucher-code-generator");
 
 require('dotenv').config()
 // admin login credentials
-console.log(process.env.adminDb)
 const adminDetail = {
     name: process.env.adminDb,
     password: process.env.passwordDb,
@@ -128,7 +127,9 @@ exports.editCatagory = async (req, res) => {
 };
 
 exports.editCatagoryPost = (req, res) => {
-  adminHelper.updatedCategory(req.params.id, req.body).then((updatedlist) => {
+  let CatagoryDetails = req.body;
+  CatagoryDetails.categories = CatagoryDetails.categories.toUpperCase();
+  adminHelper.updatedCategory(req.params.id, CatagoryDetails).then((updatedlist) => {
     res.redirect("/admin/categorymange");
   });
 };
@@ -278,6 +279,7 @@ exports.orders = async (req, res) => {
 
 exports.orderDetailsView = async (req, res) => {
   let productlist = await orderHelper.adminViewDetails(req.params.id);
+  console.log(productlist)
   productlist.forEach((e) => {
     if (e.status == "Requested Return") {
       e.return = true;
