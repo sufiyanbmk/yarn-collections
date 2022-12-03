@@ -111,7 +111,7 @@ module.exports = {
 
   otpPostVerification: (req, res) => {
     var arr = Object.values(req.body);
-    var otp = arr.toString().replaceAll(",", "");
+    var otp = arr.toString().replace(/\,/, "");
 
     client.verify
       .services(process.env.SERVICEID)
