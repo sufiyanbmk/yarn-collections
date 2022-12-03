@@ -279,7 +279,6 @@ exports.orders = async (req, res) => {
 
 exports.orderDetailsView = async (req, res) => {
   let productlist = await orderHelper.adminViewDetails(req.params.id);
-  console.log(productlist)
   productlist.forEach((e) => {
     if (e.status == "Requested Return") {
       e.return = true;

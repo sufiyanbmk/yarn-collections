@@ -22,7 +22,12 @@
 						</thead>
 						<tbody>
 							{{#each orderList}}
+							{{#if this.delete}}
 
+							<tr>
+								<td>productdelete</td>
+							</tr>
+							{{else}}
 							<tr class="text-center">
 								<td class="image-prod"><img class="img"
 										src='/uploads/{{this.products.imagefileName.[0]}}'></img></td>
@@ -69,6 +74,7 @@
 								{{/if}}
 								{{/if}}
 							</td>
+							{{/if}}
 							{{/each}}
 
 
