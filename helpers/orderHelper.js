@@ -710,8 +710,8 @@ module.exports = {
           payment_method: "paypal",
         },
         redirect_urls: {
-          return_url: "http://localhost:3000/verify-paypal",
-          cancel_url: "http://localhost:3000/cancel-paypal",
+          return_url: "https://www.yarnfashion.tk/verify-paypal",
+          cancel_url: "https://www.yarnfashion.tk/cancel-paypal",
         },
         transactions: [
           {
