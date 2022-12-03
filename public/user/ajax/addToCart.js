@@ -15,6 +15,7 @@ function addToCart(divId,proId,stock) {
              let count = $('#cartCount').html()
              count = parseInt(count)+1
              $('#cartCount').html(count)
+             $("#singleProductCartDiv").load(location.href+" #singleProductCartDiv>*",""); 
       } else {
         location.href = "/login";
       }
