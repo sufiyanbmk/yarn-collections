@@ -1,7 +1,6 @@
 var db = require("../config/connection");
 var collection = require("../config/collection");
 const bcrypt = require("bcrypt");
-const { response } = require("../app");
 // const { ObjectID } = require('bson')
 const objectID = require("mongodb").ObjectId;
 
@@ -138,15 +137,15 @@ module.exports = {
             if (response.banned == false) {
               response.status = true;
               response.user = response.name;
-              resolve(response);
+              resolve(response)
             } else {
               console.log("blocked user");
               response.status = false;
-              resolve(response);
+              resolve(response)
             }
           } else {
-            console.log("failed");
-            resolve(response);
+            console.log("failed")
+            resolve(response)
           }
         });
     });
