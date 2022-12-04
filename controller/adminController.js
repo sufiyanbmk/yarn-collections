@@ -277,7 +277,8 @@ exports.orders = async (req, res) => {
   });
 };
 
-exports.orderDetailsView = async (req, res) => {
+exports.orderDetailsView = async (req, res,next) => {
+  try{
   let productlist = await orderHelper.adminViewDetails(req.params.id);
   productlist.forEach((e) => {
     if (e.status == "Requested Return") {
@@ -288,7 +289,11 @@ exports.orderDetailsView = async (req, res) => {
   });
 
   res.render("adminSide/orderDetails", { productlist });
+}catch (error) {
+  next(error);
+}
 };
+
 
 exports.cancelOrder = (req, res) => {
   orderHelper.cancelAdminOrder(req.params.id).then(() => {

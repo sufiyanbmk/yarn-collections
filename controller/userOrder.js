@@ -63,14 +63,13 @@ module.exports = {
   },
 
   razorpayFailed :(req,res)=>{
-    orderHelper.deletePendingOrder(req.body["orderId[receipt]"]).then(()=>{
-
+    orderHelper.deletePendingOrder(req.session.user._id).then(()=>{     
       res.json({status:true})
     })
   },
-
+  
   razorpayDismiss : (req,res)=>{
-   orderHelper.deletePendingOrder(req.body["orderId[receipt]"]).then((response)=>{
+   orderHelper.deletePendingOrder(req.session.user._id).then((response)=>{
       res.json({status:true})
     })
   },
@@ -93,7 +92,6 @@ module.exports = {
 
   cancelPaypal: (req,res) => {
     orderHelper.deletePendingOrder(req.session.user._id).then(()=>{
-
       res.redirect("/payment-failed");
     })
   },

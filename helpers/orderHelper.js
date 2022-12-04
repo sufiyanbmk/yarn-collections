@@ -321,7 +321,7 @@ module.exports = {
             },
           }
         )
-        .then(() => {
+        .then((response) => {
           db.get().collection(collection.ORDER_COLLECTION).findOne({_id:ObjectID(id)}).then((order)=>{
             order.products.forEach(element => {
               if(element.product.equals(proId)){            
@@ -769,7 +769,7 @@ module.exports = {
   //pending delete
   deletePendingOrder :(userID)=>{
     return new Promise(async(resolve,reject) => {
-      await db.get().collection(collection.ORDER_COLLECTION).deleteMany({userId:objectID(userID),status:"pending"}).then(()=>{
+      await db.get().collection(collection.ORDER_COLLECTION).deleteMany({userId:objectID(userID),status:"pending"}).then((response)=>{
         resolve()
       })
     })
