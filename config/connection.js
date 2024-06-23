@@ -2,7 +2,7 @@ const mongoclient = require('mongodb').MongoClient
 const state = {
     db:null
 }
-require('dotenv').config()
+require('dotenv').config() 
 module.exports.connect = function(done){
     const url = process.env.mongodbAtlas
     const dbname = 'project-ecommerce'
